@@ -3,7 +3,7 @@ package com.netwin.dto;
 public class PnNetwinReqDto {
 
 	private String pageId;
-	private String CustId;
+	private String custId;
 	private String userReqSrno;
 	private String panNo;
 	private String branchId;
@@ -18,11 +18,11 @@ public class PnNetwinReqDto {
 	}
 
 	public String getCustId() {
-		return CustId;
+		return custId;
 	}
 
 	public void setCustId(String custId) {
-		CustId = custId;
+		custId = custId;
 	}
 
 	public String getUserReqSrno() {
