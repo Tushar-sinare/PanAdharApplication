@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="error">
+  <Appenders>
+     <Console name="STDOUT" target="SYSTEM_OUT">
+      <PatternLayout pattern="%m%n"/>
+    </Console>
+    <JDBC name="databaseAppender" tableName="logs">
+      <ConnectionFactory class="com.netwin.config.ConnectionFactory" method="getDatabaseConnection" />
+      <Column name="EVENT_DATE" isEventTimestamp="true" />
+      <Column name="LEVEL" pattern="%level" />
+      <Column name="LOGGER" pattern="%logger" />
+      <Column name="MESSAGE" pattern="%message" />
+      <Column name="THROWABLE" pattern="%ex{full}" />
+    </JDBC>
+  </Appenders>
+  <Loggers>
+    <Root level="warn">
+      <AppenderRef ref="databaseAppender"/>
+    </Root>
+  </Loggers>
+</Configuration>
