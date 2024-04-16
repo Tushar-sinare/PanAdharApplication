@@ -13,9 +13,9 @@ import com.netwin.service.NetwinProductionDetailsService;
 
 @Service
 public class NetwinProductionDetailsServiceImpl implements NetwinProductionDetailsService{
-@Autowired
+
 private NetwinProductionDetailsRepo netwinProductionDetailsRepo;
-@Autowired
+
 ErrorApplicationService errorApplicationService;
 private static final Logger logger = LoggerFactory.getLogger(NetwinProductionDetailsServiceImpl.class);
 
@@ -30,8 +30,7 @@ private static final Logger logger = LoggerFactory.getLogger(NetwinProductionDet
 			logger.error(ex.getMessage());
 			
 			errorApplicationService.storeError(401, ex.getMessage());
-			//ex.printStackTrace();
-		}
+				}
 		return netwinProductionDetails;
 	}
 

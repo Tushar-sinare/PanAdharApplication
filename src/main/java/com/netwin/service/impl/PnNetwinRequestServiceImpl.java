@@ -7,7 +7,6 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -37,149 +36,145 @@ import com.netwin.validation.PnRequestValidation;
 @Service
 public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 
-	@Autowired
 	private PnNetwinRequestRepo pnNetwinRequestRepository;
 
-	@Autowired
 	private PnNetwinDecrypt pnNetwinDecrypt;
 
-	@Autowired
 	private PnNetwinRequestMapper mapper;
-	@Autowired
+
 	private QueryUtil queryUtil;
-	@Autowired
+
 	private JdbcTemplate jdbcTemplate;
-	@Autowired
+
 	private PnRequestValidation pnRequestValidation;
 
-	@Autowired
 	private NetwinCustomerDetailsService netwinCustomerDetailsService;
-	@Autowired
+
 	private PnVendorDetailsService pnVendorDetailsservice;
-	@Autowired
+
 	private NetwinProductionDetailsService netwinProductionDetailsService;
-	@Autowired
+
 	private PnRequestService pnRequestService;
-	@Autowired
+
 	private PnVndrRequestService pnVndrRequestService;
-	
-	@Autowired
+
 	private ErrorApplicationService errorApplicationService;
 	private Date date = new Date(System.currentTimeMillis());
-	PnRequest pnRequest = null;
+	
 
 	@Override
 	public String callPanRequest(String panRequestJson, String clientIp) {
 		PnNetwinRequestDto panRequestDto = new PnNetwinRequestDto();
 		// Call to Decrypt Data
-		System.out.println("panRequestJson ------------" +panRequestJson);
+
 		String pnRequestDecryptString = pnNetwinDecrypt.getPnRequestDecryptData(panRequestJson);
-		System.out.println("------------pnRequestDecryptString-------------"+pnRequestDecryptString);
-		panRequestDto.setReqEncrypt(panRequestJson.toString());
-		panRequestDto.setReqDecrypt(pnRequestDecryptString.toString());
+
+		panRequestDto.setReqEncrypt(panRequestJson);
+		panRequestDto.setReqDecrypt(pnRequestDecryptString);
 		panRequestDto.setEntryDate(date);
 		panRequestDto.setCallingIpAdr(clientIp);
 		// Mapping Dto to Entity
 		PnNetwinRequest pnNetwinRequest = mapper.toPnNetwinRequestEntity(panRequestDto);
 		if (pnNetwinRequest != null) {
 			// Save client request Data
-			 pnNetwinRequest = pnNetwinRequestRepository.save(pnNetwinRequest);
+			pnNetwinRequest = pnNetwinRequestRepository.save(pnNetwinRequest);
 		} else {
 			errorApplicationService.storeError(1003, "Error: Unable to map PnNetwinRequest entity from DTO.");
 			return "Error: Unable to map PnNetwinRequest entity from DTO.";
 		}
 //Call to mapping database field Name
-			// if decrypt string null then return error show
-		
-			String pnRespons = getMappingDataBaseThrough(pnRequestDecryptString, pnNetwinRequest);
-			return pnRespons;
-			
+		// if decrypt string null then return error show
 
-		
+		return getMappingDataBaseThrough(pnRequestDecryptString, pnNetwinRequest);
+		 
+
 	}
 
 //Mapping method database Field
 	public String getMappingDataBaseThrough(String pnRequestDecryptString, PnNetwinRequest pnNetwinRequest1) {
-	    PnRequest pnRequest = new PnRequest();
-	    Map<String, Object> netwinFieldResults1 = getNetwinFieldResults();
-	    Map<String, String> pnRequestDecrypt = jsonStringToMap(pnRequestDecryptString);
+		PnRequest pnRequestObj = new PnRequest();
+		Map<String, Object> netwinFieldResults1 = getNetwinFieldResults();
+		Map<String, String> pnRequestDecrypt = jsonStringToMap(pnRequestDecryptString);
 
-	    try {
-	        mapFields(pnRequest, netwinFieldResults1, pnRequestDecrypt);
-	        // Call services to set related entities
-	        setRelatedEntities(pnRequest, pnNetwinRequest1);
+		try {
+			mapFields(pnRequestObj, netwinFieldResults1, pnRequestDecrypt);
+			// Call services to set related entities
+			setRelatedEntities(pnRequestObj, pnNetwinRequest1);
 
-	        return callVendorServiceAndGetResult(pnRequest,netwinFieldResults1,pnRequestDecrypt);
-	    } catch (Exception e) {
-	        errorApplicationService.storeError(504, e.getMessage());
-	        e.printStackTrace();
-	    }
-	    return null;
+			return callVendorServiceAndGetResult(pnRequestObj, netwinFieldResults1, pnRequestDecrypt);
+		} catch (Exception e) {
+			errorApplicationService.storeError(504, e.getMessage());
+			e.printStackTrace();
+		}
+		return null;
 	}
 
 	private Map<String, Object> getNetwinFieldResults() {
-	    Map<String, Object> netwinFieldResults1 = new HashMap<>();
-	    List<Map<String, Object>> netwinFieldResultsMap = jdbcTemplate.queryForList(queryUtil.NETWINFIELDQUERY, "P", "V");
-	    for (Map<String, Object> vendorField : netwinFieldResultsMap) {
-	        String key = (String) vendorField.get("NETWREQKEYNAME");
-	        for (Map.Entry<String, Object> vendorEntry : vendorField.entrySet()) {
-	            if (vendorEntry.getKey().startsWith("NETWREQKEYREQ")) {
-	                netwinFieldResults1.put(key, (String) vendorEntry.getValue());
-	            }
-	        }
-	    }
-	    return netwinFieldResults1;
+		Map<String, Object> netwinFieldResults1 = new HashMap<>();
+		List<Map<String, Object>> netwinFieldResultsMap = jdbcTemplate.queryForList(queryUtil.NETWINFIELDQUERY, "P",
+				"V");
+		for (Map<String, Object> vendorField : netwinFieldResultsMap) {
+			String key = (String) vendorField.get("NETWREQKEYNAME");
+			for (Map.Entry<String, Object> vendorEntry : vendorField.entrySet()) {
+				if (vendorEntry.getKey().startsWith("NETWREQKEYREQ")) {
+					netwinFieldResults1.put(key, (String) vendorEntry.getValue());
+				}
+			}
+		}
+		return netwinFieldResults1;
 	}
 
-	private void mapFields(PnRequest pnRequest, Map<String, Object> netwinFieldResults1, Map<String, String> pnRequestDecrypt) throws Exception {
-	    for (Field field : PnRequest.class.getDeclaredFields()) {
-	        if (netwinFieldResults1.containsKey(field.getName()) && pnRequestDecrypt.containsKey(field.getName())) {
-	            setFieldValue(pnRequest, field, pnRequestDecrypt.get(field.getName()));
-	        } else if (!"pnReqDetSrNo".equals(field.getName())) {
-	            setFieldValue(pnRequest, field, null);
-	        }
-	    }
+	private void mapFields(PnRequest pnRequest, Map<String, Object> netwinFieldResults1,
+			Map<String, String> pnRequestDecrypt) throws Exception {
+		for (Field field : PnRequest.class.getDeclaredFields()) {
+			if (netwinFieldResults1.containsKey(field.getName()) && pnRequestDecrypt.containsKey(field.getName())) {
+				setFieldValue(pnRequest, field, pnRequestDecrypt.get(field.getName()));
+			} else if (!"pnReqDetSrNo".equals(field.getName())) {
+				setFieldValue(pnRequest, field, null);
+			}
+		}
 	}
 
 	private void setFieldValue(PnRequest pnRequest, Field field, String value) throws Exception {
-	    String capitalizedFieldName = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
-	    String setterMethodName = "set" + capitalizedFieldName;
-	    Method setterMethod = PnRequest.class.getMethod(setterMethodName, field.getType());
-	    setterMethod.invoke(pnRequest, value);
+		String capitalizedFieldName = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+		String setterMethodName = "set" + capitalizedFieldName;
+		Method setterMethod = PnRequest.class.getMethod(setterMethodName, field.getType());
+		setterMethod.invoke(pnRequest, value);
 	}
 
 	private void setRelatedEntities(PnRequest pnRequest, PnNetwinRequest pnNetwinRequest1) {
-	    // Call Netwin Customer Details Service and set
+		// Call Netwin Customer Details Service and set
 		try {
-		NetwinCustomerDetails ntCustomerDetails = netwinCustomerDetailsService
-				.fetchNetwinCustomerDetails(pnRequest.getCustId());
-		if(ntCustomerDetails!=null){
-			pnRequest.setNetwinCustomerDetails(ntCustomerDetails);
-		}
-	    // Call Netwin Product Details Service and set
-		NetwinProductionDetails ntNetwinProductionDetails = netwinProductionDetailsService
-				.fetchNetwinProductionDetails(pnRequest.getProdId());
-		if(ntCustomerDetails!=null){
-		pnRequest.setNetwinProductionDetails(ntNetwinProductionDetails);
-		}
-		  // Call Vendor Details Service and set
-		PnVendorDetails pnVendorDetails = pnVendorDetailsservice
-				.fetchPnVendorDetails(ntNetwinProductionDetails.getNetwVndrs());
-		if(ntCustomerDetails!=null){
-		pnRequest.setPnVendorDetails(pnVendorDetails);
-		}
-		pnRequest.setPnNetwinRequest(pnNetwinRequest1);
-		pnRequest.setAppDate(date);
-		}catch(Exception ex) {
-			throw new ResourceNotFoundException("Data Not Found","",HttpStatus.BAD_REQUEST);
+			NetwinCustomerDetails ntCustomerDetails = netwinCustomerDetailsService
+					.fetchNetwinCustomerDetails(pnRequest.getCustId());
+			if (ntCustomerDetails != null) {
+				pnRequest.setNetwinCustomerDetails(ntCustomerDetails);
+			}
+			// Call Netwin Product Details Service and set
+			NetwinProductionDetails ntNetwinProductionDetails = netwinProductionDetailsService
+					.fetchNetwinProductionDetails(pnRequest.getProdId());
+			if (ntCustomerDetails != null) {
+				pnRequest.setNetwinProductionDetails(ntNetwinProductionDetails);
+			}
+			// Call Vendor Details Service and set
+			PnVendorDetails pnVendorDetails = pnVendorDetailsservice
+					.fetchPnVendorDetails(ntNetwinProductionDetails.getNetwVndrs());
+			if (ntCustomerDetails != null) {
+				pnRequest.setPnVendorDetails(pnVendorDetails);
+			}
+			pnRequest.setPnNetwinRequest(pnNetwinRequest1);
+			pnRequest.setAppDate(date);
+		} catch (Exception ex) {
+			throw new ResourceNotFoundException("Data Not Found", "", HttpStatus.BAD_REQUEST);
 		}
 
 	}
 
-	private String callVendorServiceAndGetResult(PnRequest pnRequest, Map<String, Object> netwinFieldResults1, Map<String, String> pnRequestDecrypt) {
-	    // Call Vendor Service Request
-	    // Validate netwin fields and values
-	    // Handle errors or return result
+	private String callVendorServiceAndGetResult(PnRequest pnRequest, Map<String, Object> netwinFieldResults1,
+			Map<String, String> pnRequestDecrypt) {
+		// Call Vendor Service Request
+		// Validate netwin fields and values
+		// Handle errors or return result
 		PnRequest pnRequest1 = pnRequestService.callVendorService(pnRequest);
 		for (Map.Entry<String, Object> netwinField : netwinFieldResults1.entrySet()) {
 			if (!pnRequestDecrypt.containsKey(netwinField.getKey()) && ((String) netwinField.getValue()).equals('Y')) {
@@ -210,13 +205,14 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 			}
 
 		}
-	    return null;
+		return null;
 	}
 
 	private Map<String, String> jsonStringToMap(String pnRequestDecrypt) {
-	    Gson gson = new Gson();
-	    Type type = new com.google.gson.reflect.TypeToken<Map<String, String>>() {}.getType();
-	    return gson.fromJson(pnRequestDecrypt, type);
+		Gson gson = new Gson();
+		Type type = new com.google.gson.reflect.TypeToken<Map<String, String>>() {
+		}.getType();
+		return gson.fromJson(pnRequestDecrypt, type);
 	}
 
 }

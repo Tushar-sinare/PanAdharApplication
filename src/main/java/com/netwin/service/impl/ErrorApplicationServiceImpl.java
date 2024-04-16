@@ -1,6 +1,5 @@
 package com.netwin.service.impl;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.netwin.entiry.ErrorApplication;
@@ -9,7 +8,7 @@ import com.netwin.service.ErrorApplicationService;
 
 @Service
 public class ErrorApplicationServiceImpl implements ErrorApplicationService {
-@Autowired
+
 private ErrorApplicationRepo errorApplicationRepo;
 	@Override
 	public void storeError(int errorCode, String errorDesc) {

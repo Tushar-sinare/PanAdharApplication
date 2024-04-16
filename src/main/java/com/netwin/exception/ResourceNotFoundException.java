@@ -2,15 +2,13 @@ package com.netwin.exception;
 
 
 import org.springframework.http.HttpStatus;
-import org.springframework.stereotype.Component;
 
-@Component
 public class ResourceNotFoundException extends RuntimeException {
 	
-	String resourceName;
-	String fieldName;
-	long fieldValue;
-	HttpStatus code;
+	private String resourceName;
+	private String fieldName;
+	private long fieldValue;
+	private HttpStatus code;
     private static final long serialVersionUID = 1L;
 
 	public ResourceNotFoundException(String resourceName,String fieldName,long fieldValue) {
