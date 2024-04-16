@@ -2,10 +2,10 @@ package com.netwin.entiry;
 import java.util.Map;
 
 public class Result<T> {
-   public T data;
-    public String errorMessage;
-    public Map<String, String> map;
-    public Result1<T> results;
+   private  T data;
+   private  String errorMessage;
+   private  Map<String, String> map;
+   private  Result1<T> results;
 
     public Result(T data) {
         this.data = data;
