@@ -36,7 +36,7 @@ public class PnRequestValidation {
 	}
 
 	private boolean isValidPanNumber(String panNo) {
-		if (panNo == null || panNo.isEmpty()) {
+		if (panNo == null) {
 			return false;
 		}
 		Pattern pattern = Pattern.compile(PAN_PATTERN);
@@ -52,7 +52,7 @@ public class PnRequestValidation {
 			if (netwinFieldResults.containsKey(field.getName()) &&(((String)netwinFieldResults.get(field.getName())).equals('Y')) && pnRequestDecrypt.containsKey(field.getName())) {
 				String fieldName = field.getName();
 				String fieldValue = pnRequestDecrypt.get(fieldName);
-				if (fieldValue == null && fieldValue.isEmpty() && fieldValue.isBlank()) {
+				if (fieldValue == null) {
 					errorApplicationService.storeError(108, "Please " + fieldName + " is Empty insert the Value");
 					return new Result<PnRequest>("Please " + fieldName + " is Empty insert the Value");
 				}

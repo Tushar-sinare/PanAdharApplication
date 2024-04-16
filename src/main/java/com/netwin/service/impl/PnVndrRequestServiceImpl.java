@@ -48,7 +48,7 @@ private static final Logger logger = LoggerFactory.getLogger(PnVndrRequestServic
 		
 		 Map<String,String> vendorValue=null;
 		 //Check Vendor Mapping
-		Result<PnRequest> result = pnVndrValidation.checkMappingVendor(pnRequestId,pnReqData,pnRequestDecrypt);
+		Result<PnRequest> result = pnVndrValidation.checkMappingVendor(pnReqData,pnRequestDecrypt);
 		if (result.isValid()) {
 			vendorValue =result.getMap();
 			//call Vendor Request Store method

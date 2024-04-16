@@ -32,7 +32,7 @@ public PnVndrValidation(JdbcTemplate jdbcTemplate,ErrorApplicationService errorA
 	this.jdbcTemplate=jdbcTemplate;
 	this.errorApplicationService=errorApplicationService;
 }
-	public Result<PnRequest> checkMappingVendor(PnNetwinRequest pnRequestId, PnRequest pnReq,
+	public Result<PnRequest> checkMappingVendor( PnRequest pnReq,
 			Map<String, String> pnRequestDecrypt) {
 		Map<String, String> validationNetVn = new HashMap<>();
 		Map<String, String> validationNetVn1 = new HashMap<>();
@@ -98,7 +98,8 @@ public PnVndrValidation(JdbcTemplate jdbcTemplate,ErrorApplicationService errorA
 	
 		for (Map.Entry<String, String> val : validationNetVn1.entrySet()) {
 			if(!vendorValue.containsKey(val.getValue())) {
-				 logger.error(ConstantVariable.RETURNSTR+val.getValue() +ConstantVariable.RETURNSTR1);
+				logger.error(String.format("%s%s%s", ConstantVariable.RETURNSTR, val.getValue(), ConstantVariable.RETURNSTR1));
+
 				errorApplicationService.storeError(401,ConstantVariable.RETURNSTR+val.getValue() +ConstantVariable.RETURNSTR1);
 				return new Result<> (ConstantVariable.RETURNSTR+val.getValue() +ConstantVariable.RETURNSTR1);
 		}
