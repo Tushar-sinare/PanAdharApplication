@@ -165,7 +165,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 			pnRequest.setPnNetwinRequest(pnNetwinRequest1);
 			pnRequest.setAppDate(date);
 		} catch (Exception ex) {
-			throw new ResourceNotFoundException("Data Not Found", "", HttpStatus.BAD_REQUEST);
+			throw new ResourceNotFoundException("Data Not Found", "",204l, HttpStatus.BAD_REQUEST);
 		}
 
 	}
