@@ -135,7 +135,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 		}
 	}
 
-	private void setFieldValue(PnRequest pnRequest, Field field, String value) throws NoSuchMethodException, SecurityException,Exception {
+	private void setFieldValue(PnRequest pnRequest, Field field, String value) throws SecurityException,Exception {
 		String capitalizedFieldName = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
 		String setterMethodName = "set" + capitalizedFieldName;
 		Method setterMethod = PnRequest.class.getMethod(setterMethodName, field.getType());

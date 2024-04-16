@@ -12,8 +12,12 @@ import com.netwin.service.NetwinProductionDetailsService;
 
 @Service
 public class NetwinProductionDetailsServiceImpl implements NetwinProductionDetailsService{
+
+private final NetwinProductionDetailsRepo netwinProductionDetailsRepo;
 @Autowired
-private NetwinProductionDetailsRepo netwinProductionDetailsRepo;
+public NetwinProductionDetailsServiceImpl(NetwinProductionDetailsRepo netwinProductionDetailsRepo) {
+	this.netwinProductionDetailsRepo=netwinProductionDetailsRepo;
+}
 
 ErrorApplicationService errorApplicationService;
 private static final Logger logger = LoggerFactory.getLogger(NetwinProductionDetailsServiceImpl.class);

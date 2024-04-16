@@ -4,6 +4,8 @@ package com.netwin.service.impl;
 
 import java.sql.Date;
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -21,28 +23,33 @@ import com.netwin.entiry.PnVndrRequest;
 import com.netwin.entiry.PnVndrResponse;
 import com.netwin.entiry.Result1;
 import com.netwin.repo.PnResponseRepo;
-import com.netwin.repo.PnVendorDetailsRepo;
 import com.netwin.repo.PnVndrResponseRepo;
 import com.netwin.service.ErrorApplicationService;
 import com.netwin.service.PnResponseService;
 import com.netwin.service.PnVndrResponseService;
+import com.netwin.util.ConstantVariable;
 import com.netwin.util.EncryptionData;
 import com.netwin.util.NtResponse;
 @Service
 public class PnVndrResponseServiceImpl implements PnVndrResponseService {
 
-PnVendorDetailsRepo pnVendorDetailsRepo;
-
-private PnVndrResponseRepo pnVndrResponseRepo;
+private final PnVndrResponseRepo pnVndrResponseRepo;
 
 private EncryptionData encryptionData;
 
 private PnResponseService pnResponseService;
 
-private PnResponseRepo pnResponseRepo;
+private final PnResponseRepo pnResponseRepo;
 
 private NtResponse ntResponse;
+@Autowired
+public PnVndrResponseServiceImpl(PnVndrResponseRepo pnVndrResponseRepo,PnResponseRepo pnResponseRepo) {
 
+	this.pnVndrResponseRepo = pnVndrResponseRepo;
+	this.pnResponseRepo = pnResponseRepo;
+	
+	
+}
 private ErrorApplicationService errorApplicationService;
 private Date date = new Date(System.currentTimeMillis());
 	@Override
@@ -110,7 +117,7 @@ PnResponse pnResponse = new PnResponse();
 				Map<String, Object> dataMap = mapper.readValue(response, Map.class);
 				Map<String, String> decryptMainResponse = null;
 				try {
-					Map<String, String> resultVOMap = (Map<String, String>) dataMap.get("resultVO");
+					Map<String, String> resultVOMap = (Map<String, String>) dataMap.get(ConstantVariable.RESULTVO);
 					String responseJson = encryptionData.getEncryptResponse(response);
 					//decryptMainResponse = encryptionData.getEncryptedData(dataMap, resultVOMap);
 					PnVndrResponse pnVndrResponse = new PnVndrResponse();
