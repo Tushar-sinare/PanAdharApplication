@@ -30,7 +30,6 @@ import com.netwin.service.PnNetwinRequestService;
 import com.netwin.service.PnRequestService;
 import com.netwin.service.PnVendorDetailsService;
 import com.netwin.service.PnVndrRequestService;
-import com.netwin.util.NtResponse;
 import com.netwin.util.PnNetwinDecrypt;
 import com.netwin.util.QueryUtil;
 import com.netwin.validation.PnRequestValidation;
@@ -63,8 +62,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 	private PnRequestService pnRequestService;
 	@Autowired
 	private PnVndrRequestService pnVndrRequestService;
-	@Autowired
-	private NtResponse ntResponse;
+	
 	@Autowired
 	private ErrorApplicationService errorApplicationService;
 	private Date date = new Date(System.currentTimeMillis());

@@ -4,7 +4,6 @@ package com.netwin.dto;
 
 import java.util.Date;
 
-import lombok.Data;
 
 public class PnNetwinRequestDto {
 	private long pnReMasSrNo;

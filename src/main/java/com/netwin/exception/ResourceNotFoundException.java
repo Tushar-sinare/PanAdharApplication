@@ -1,6 +1,6 @@
 package com.netwin.exception;
 
-import org.hibernate.annotations.Comment;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Component;
 
