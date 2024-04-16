@@ -24,31 +24,31 @@ public class NtResponse {
 	}
 
 	public Result1<Map<String, Object>> getNtResponse(int msgCode) {
-		List<String> netwinResFieldResults1 = jdbcTemplate.queryForList(queryUtil.NETWINRESFIELDQUERY, String.class,
+		List<String> netwinResFieldResults1 = jdbcTemplate.queryForList(queryUtil.netwnResFieldQuery, String.class,
 				"P", "Y", "V");
-		String error = jdbcTemplate.queryForObject(queryUtil.ERRORRES, String.class, msgCode);
+		String error = jdbcTemplate.queryForObject(queryUtil.errors, String.class, msgCode);
 
 		Map<String, Object> netResponse = new HashMap<>();
-		Map<String, Object> ResultVo = new HashMap<>();
+		Map<String, Object> resultVo = new HashMap<>();
 
 		for (String res : netwinResFieldResults1) {
 			if (res.equals("success")) {
-				ResultVo.put(res, "FALSE");
+				resultVo.put(res, "FALSE");
 			} else if (res.equals("procRefUuid")) {
-				ResultVo.put(res, "null");
+				resultVo.put(res, "null");
 			} else if (res.equals("error")) {
-				ResultVo.put(res, "TRUE");
+				resultVo.put(res, "TRUE");
 			} else if (res.equals("msgCode")) {
-				ResultVo.put(res, msgCode);
+				resultVo.put(res, msgCode);
 			} else if (res.equals("msgDescr")) {
-				ResultVo.put(res, error);
+				resultVo.put(res, error);
 			} else if (res.equals("ntmsgcode")) {
-				ResultVo.put(res, "null");
+				resultVo.put(res, "null");
 			} else {
 				netResponse.put(res, "null");
 			}
 		}
-		netResponse.put("ResultVO", ResultVo);
+		netResponse.put("ResultVO", resultVo);
 
 		return new Result1<Map<String, Object>>(netResponse);
 	}

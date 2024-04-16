@@ -49,7 +49,7 @@ public class PnResponseServiceImpl implements PnResponseService {
 		Map<String, Object> vendorValue = new HashMap<>();
 		Map<String,Object> pnResValue = new HashMap<>();
 		
-		List<Map<String, Object>> netwinFieldResults = jdbcTemplate.queryForList(QueryUtil.VNDRRESFIELDQUERY, vendorId,
+		List<Map<String, Object>> netwinFieldResults = jdbcTemplate.queryForList(QueryUtil.vndrRespFieldQuery, vendorId,
 				"P", "Y");
 	
 		for (Map<String, Object> vendorField : netwinFieldResults) {

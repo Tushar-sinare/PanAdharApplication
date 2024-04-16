@@ -49,9 +49,9 @@ public PnVndrValidation(JdbcTemplate jdbcTemplate,ErrorApplicationService errorA
 		List<Map<String, Object>> netwinFieldResults2 =null;
 		Map<String,Map<String, String>> validationNetVn11 = new HashMap<>();
 	if(pnVendorId!=0) {
-		pnVendorResults = jdbcTemplate.queryForList(QueryUtil.PNVNDRPARAMETER, pnVendorId,
+		pnVendorResults = jdbcTemplate.queryForList(QueryUtil.pnVndrField, pnVendorId,
 				"P", "Y");
-		netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWINFIELDQUERY2,pnVendorId, "P");
+		netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.netwnWithVndrFieldQuery,pnVendorId, "P");
 	}else {
 	
 		errorApplicationService.storeError(401, "Please Required Vendor Details ");
