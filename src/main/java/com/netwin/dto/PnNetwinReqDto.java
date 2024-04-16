@@ -1,12 +1,12 @@
 package com.netwin.dto;
 
-import lombok.Data;
+
 
 
 public class PnNetwinReqDto {
 	
 	private String pageId;
-	private String CustId;
+	private String custId;
 	private String userReqSrno;
 	private String panNo;
 	private String branchId;
@@ -18,10 +18,10 @@ public class PnNetwinReqDto {
 		this.pageId = pageId;
 	}
 	public String getCustId() {
-		return CustId;
+		return custId;
 	}
 	public void setCustId(String custId) {
-		CustId = custId;
+		this.custId = custId;
 	}
 	public String getUserReqSrno() {
 		return userReqSrno;
