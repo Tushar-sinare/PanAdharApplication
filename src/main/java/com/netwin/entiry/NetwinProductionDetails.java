@@ -17,7 +17,7 @@ public class NetwinProductionDetails {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "NETWPRODSRNO_SEQ")
 	@SequenceGenerator(name = "NETWPRODSRNO_SEQ", sequenceName = "NETWPRODSRNO_SEQ", allocationSize = 1)
 	@Column(name = "NETWPRODSRNO",length=10,nullable = false)
-	private int NETWPRODSRNO;
+	private int netwProdSrNo;
 	@Column(name = "NETWPRODID",length=50,nullable = true)
 	private String netwProdId;
 	@Column(name = "NETWPRODNAME",length=50,nullable = true)
@@ -28,11 +28,11 @@ public class NetwinProductionDetails {
 	private String adhrVrfyReq;
 		@Column(name = "NETWVNDRS",length=50,nullable = true)
 	private int netwVndrs;
-		public int getNETWPRODSRNO() {
-			return NETWPRODSRNO;
+		public int getNetwProdSrNo() {
+			return netwProdSrNo;
 		}
-		public void setNETWPRODSRNO(int nETWPRODSRNO) {
-			NETWPRODSRNO = nETWPRODSRNO;
+		public void setNetwProdSrNo(int netwProdSrNo) {
+			this.netwProdSrNo = netwProdSrNo;
 		}
 		public String getNetwProdId() {
 			return netwProdId;
