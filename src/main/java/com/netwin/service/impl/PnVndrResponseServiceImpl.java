@@ -12,10 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
-
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netwin.entiry.PnRequest;
 import com.netwin.entiry.PnResponse;
 import com.netwin.entiry.PnVendorDetails;
@@ -27,7 +24,6 @@ import com.netwin.repo.PnVndrResponseRepo;
 import com.netwin.service.ErrorApplicationService;
 import com.netwin.service.PnResponseService;
 import com.netwin.service.PnVndrResponseService;
-import com.netwin.util.ConstantVariable;
 import com.netwin.util.EncryptionData;
 import com.netwin.util.NtResponse;
 @Service
@@ -111,11 +107,9 @@ PnResponse pnResponse = new PnResponse();
 						String.class);
 				String response = responseEntity.getBody();
 			
-				ObjectMapper mapper = new ObjectMapper();
 				
 				try {
-					Map<String, Object> dataMap = mapper.readValue(response, Map.class);
-					Map<String, String> resultVOMap = (Map<String, String>) dataMap.get(ConstantVariable.RESULTVO);
+				
 					String responseJson = encryptionData.getEncryptResponse(response);
 					PnVndrResponse pnVndrResponse = new PnVndrResponse();
 					pnVndrResponse.setReqDecrypt(response);
