@@ -2,6 +2,7 @@ package com.netwin.validation;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
+import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -37,15 +38,13 @@ public class PnRequestValidation {
 		return matcher.matches();
 	}
 
-	public Result<PnRequest> checkNetwnValidation(Map<String, String> pnRequestDecrypt,
-			Map<String, Object> netwinFieldResults, PnRequest pnRequest) throws NoSuchMethodException,
-			SecurityException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	public Result<PnRequest> checkNetwnValidation(Map<String, String> pnRequestDecrypt, Map<String,Object> netwinFieldResults,
+			PnRequest pnRequest) throws NoSuchMethodException, SecurityException, IllegalAccessException,
+			IllegalArgumentException, InvocationTargetException {
 
 		for (Field field : PnRequest.class.getDeclaredFields()) {
 
-			if (netwinFieldResults.containsKey(field.getName())
-					&& (((String) netwinFieldResults.get(field.getName())).equals('Y'))
-					&& pnRequestDecrypt.containsKey(field.getName())) {
+			if (netwinFieldResults.containsKey(field.getName()) &&(((String)netwinFieldResults.get(field.getName())).equals('Y')) && pnRequestDecrypt.containsKey(field.getName())) {
 				String fieldName = field.getName();
 				String fieldValue = pnRequestDecrypt.get(fieldName);
 				if (fieldValue == null && fieldValue.isEmpty() && fieldValue.isBlank()) {

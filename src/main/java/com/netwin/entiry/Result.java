@@ -5,7 +5,7 @@ public class Result<T> {
     private T data;
     private String errorMessage;
     private Map<String, String> map;
-    private Result1<T> results;
+    private Result1<T> result;
 
     public Result(T data) {
         this.data = data;
@@ -21,9 +21,9 @@ public class Result<T> {
 
 
 
-    public Result(Result1<T> results) {
+    public Result(Result1<T> result) {
 		super();
-		this.results = results;
+		this.result = result;
 	}
 
 	public boolean isValid() {
@@ -43,7 +43,7 @@ public class Result<T> {
     }
 
 	public Result1<T> getResult() {
-		return results;
+		return result;
 	}
 
 	

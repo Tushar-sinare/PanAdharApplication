@@ -15,6 +15,7 @@ import com.netwin.entiry.PnRequest;
 import com.netwin.entiry.PnVendorDetails;
 import com.netwin.entiry.Result;
 import com.netwin.service.ErrorApplicationService;
+import com.netwin.service.impl.PnVndrRequestServiceImpl;
 import com.netwin.util.QueryUtil;
 
 @Component
@@ -65,7 +66,9 @@ ErrorApplicationService errorApplicationService;
 			}
 		}
 		
-			for (Map<String, Object> vendorField : pnVendorResults) {
+		System.out.println("netwinFieldResults2 -----"+netwinFieldResults2);
+		System.out.println("validationNetVn -----"+validationNetVn+"required -- "+validationNetVn11);
+		for (Map<String, Object> vendorField : pnVendorResults) {
 			for (Map.Entry<String, Object> vendorEntry : vendorField.entrySet()) {
 				String key1 = (String) vendorField.get("NETWREQKEYNAME");
 				if (vendorEntry.getKey().contains("VNDRREQKEYNAME")) {

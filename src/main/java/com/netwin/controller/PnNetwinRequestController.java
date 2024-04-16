@@ -1,40 +1,46 @@
 package com.netwin.controller;
 
+import java.util.Map;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.netwin.exception.ResourceNotFoundException;
 import com.netwin.service.PnNetwinRequestService;
-
+import com.netwin.util.AESExample;
+import com.netwin.util.ConstantVariable;
+import com.netwin.util.PnNetwinDecrypt;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.websocket.Encoder.Text;
 
 @RestController
 public class PnNetwinRequestController {
-	
+	@Autowired
+	PnNetwinDecrypt pnNetwinDecrypt;
+	@Autowired
+	PnNetwinRequestService pnNetwinRequestService;
+@PostMapping("/pnrequest")
+public ResponseEntity<String> callPanRequest(@RequestBody String panRequestJson,HttpServletRequest request) throws Exception{
+	long startTime = System.currentTimeMillis();
+	String clientIp = request.getRemoteAddr();
+ 	
+	  try { if(panRequestJson!=null && !panRequestJson.isEmpty()) { 
+		  String pnRequestStr = pnNetwinRequestService.callPanRequest(panRequestJson,clientIp); 
+		  long endTime = System.currentTimeMillis();
+		  
+		  long responseTime = endTime - startTime;
+		  System.err.println(responseTime);
+		  return new ResponseEntity<String>(pnRequestStr,HttpStatus.ACCEPTED); 
+		  }
+	  }catch(Exception ex) {
+		  ex.printStackTrace(); 
+		  }
+	 
+  return new ResponseEntity<String>("Json is Empty",HttpStatus.BAD_GATEWAY);
 
-	private PnNetwinRequestService pnNetwinRequestService;
-
-	@PostMapping("/pnrequest")
-	public ResponseEntity<String> callPanRequest(@RequestBody(required = false) String panRequestJson, HttpServletRequest request)
-			throws Exception {
-
-		String clientIp = request.getRemoteAddr();
-
-		try {
-			
-				String pnRequestStr = pnNetwinRequestService.callPanRequest(panRequestJson, clientIp);
-			return new ResponseEntity<String>(pnRequestStr, HttpStatus.ACCEPTED);
-			
-		} catch (Exception ex) {
-			throw new ResourceNotFoundException("Json is Empty","",HttpStatus.BAD_GATEWAY);
-		}
-
-		//return new ResponseEntity<String>("Json is Empty", HttpStatus.BAD_GATEWAY);
-
-	}
+}
 }

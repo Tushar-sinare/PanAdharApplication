@@ -1,6 +1,9 @@
 package com.netwin.entiry;
 
+
+
 import java.util.Date;
+
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -12,6 +15,8 @@ import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
+import lombok.Data;
+
 
 @Entity
 @Table(name = "VNDRPNRESMAS")
@@ -20,7 +25,7 @@ public class PnVndrResponse {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VNDRPNRESMAS_SEQ")
 	@SequenceGenerator(name = "VNDRPNRESMAS_SEQ", sequenceName = "VNDRPNRESMAS_SEQ", allocationSize = 1)
-	@Column(name = "VNDRPNRESMASSRNO", length = 50, nullable = false)
+	@Column(name = "VNDRPNRESMASSRNO",length=50,nullable = false)
 	private int vndrPnResMassNo;
 	@Lob
 	@Column(name = "REQSTR", columnDefinition = "TEXT")
@@ -28,12 +33,12 @@ public class PnVndrResponse {
 	@Lob
 	@Column(name = "ACTREQSTR", columnDefinition = "TEXT")
 	private String reqEncrypt;
-
-	@Temporal(TemporalType.TIMESTAMP)
+	
+@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "ENTRYDTTM")
 	private Date entryDate;
 
-	@Column(name = "PANNO", length = 10, nullable = true)
+	@Column(name = "PANNO",length=10,nullable = true)
 	private String panNo;
 
 	public int getVndrPnResMassNo() {
@@ -75,5 +80,7 @@ public class PnVndrResponse {
 	public void setPanNo(String panNo) {
 		this.panNo = panNo;
 	}
+	
 
 }
+
