@@ -15,7 +15,7 @@ import com.netwin.entiry.PnRequest;
 import com.netwin.entiry.PnVendorDetails;
 import com.netwin.entiry.Result;
 import com.netwin.service.ErrorApplicationService;
-
+import com.netwin.util.ConstantVariable;
 import com.netwin.util.QueryUtil;
 
 @Component
@@ -99,9 +99,9 @@ public PnVndrValidation(QueryUtil queryUtil,JdbcTemplate jdbcTemplate,ErrorAppli
 	
 		for (Map.Entry<String, String> val : validationNetVn1.entrySet()) {
 			if(!vendorValue.containsKey(val.getValue())) {
-				 logger.error("Please Required "+val.getValue() +" this field");
-				errorApplicationService.storeError(401,"Please Required "+val.getValue() +" this field");
-				return new Result<> ("Please Required "+val.getValue() +" this field");
+				 logger.error(ConstantVariable.RETURNSTR+val.getValue() +ConstantVariable.RETURNSTR1);
+				errorApplicationService.storeError(401,ConstantVariable.RETURNSTR+val.getValue() +ConstantVariable.RETURNSTR1);
+				return new Result<> (ConstantVariable.RETURNSTR+val.getValue() +ConstantVariable.RETURNSTR1);
 		}
 		}
 		return new Result<>(vendorValue);
