@@ -1,6 +1,6 @@
 package com.netwin.controller;
 
-import org.springframework.beans.factory.annotation.Autowired;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,10 +15,10 @@ import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class PnNetwinRequestController {
-	@Autowired
-	PnNetwinDecrypt pnNetwinDecrypt;
-	@Autowired
-	PnNetwinRequestService pnNetwinRequestService;
+	
+	private PnNetwinDecrypt pnNetwinDecrypt;
+
+	private PnNetwinRequestService pnNetwinRequestService;
 
 	@PostMapping("/pnrequest")
 	public ResponseEntity<String> callPanRequest(@RequestBody String panRequestJson, HttpServletRequest request)
