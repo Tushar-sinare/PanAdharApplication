@@ -24,7 +24,7 @@ public class PnRequest {
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "PNREQDETSRNO_SEQ")
 	@SequenceGenerator(name = "PNREQDETSRNO_SEQ", sequenceName = "PNREQDETSRNO_SEQ", allocationSize = 1)
 	@Column(name = "PNREQDETSRNO",length=10,nullable = false)
-	private long pnReqDetSrNo;
+	private long PnReqDetSrNo;
 	@OneToOne 
 	@JoinColumn(name = "PNREMASSRNO",nullable = true)
 	private PnNetwinRequest pnNetwinRequest;
