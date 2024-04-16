@@ -117,7 +117,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 			String key = (String) vendorField.get("NETWREQKEYNAME");
 			for (Map.Entry<String, Object> vendorEntry : vendorField.entrySet()) {
 				if (vendorEntry.getKey().startsWith("NETWREQKEYREQ")) {
-					netwinFieldResults1.put(key, (String) vendorEntry.getValue());
+					netwinFieldResults1.put(key, vendorEntry.getValue());
 				}
 			}
 		}
