@@ -28,11 +28,11 @@ public class NetwinProductionDetails {
 	private int netwVndrs;
 
 	public int getNETWPRODSRNO() {
-		return NETWPRODSRNO;
+		return netwProdSrNo;
 	}
 
-	public void setNETWPRODSRNO(int nETWPRODSRNO) {
-		NETWPRODSRNO = nETWPRODSRNO;
+	public void setNETWPRODSRNO(int netwProdSrNo) {
+		netwProdSrNo = netwProdSrNo;
 	}
 
 	public String getNetwProdId() {

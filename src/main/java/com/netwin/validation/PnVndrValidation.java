@@ -65,9 +65,7 @@ ErrorApplicationService errorApplicationService;
 			}
 		}
 		
-		System.out.println("netwinFieldResults2 -----"+netwinFieldResults2);
-		System.out.println("validationNetVn -----"+validationNetVn+"required -- "+validationNetVn11);
-		for (Map<String, Object> vendorField : pnVendorResults) {
+			for (Map<String, Object> vendorField : pnVendorResults) {
 			for (Map.Entry<String, Object> vendorEntry : vendorField.entrySet()) {
 				String key1 = (String) vendorField.get("NETWREQKEYNAME");
 				if (vendorEntry.getKey().contains("VNDRREQKEYNAME")) {

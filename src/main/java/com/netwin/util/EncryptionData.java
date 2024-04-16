@@ -43,13 +43,11 @@ public class EncryptionData {
 	 * return mainResultVOMap; }
 	 */
 
-	public String getEncryptResponse(String response) {
+	public String getEncryptResponse(String response) throws Exception {
 		String strEncrypt = null;
-		try {
+	
 			strEncrypt = AESExample.encrypt(response, ConstantVariable.SECRETKEY);
-		} catch (Exception ex) {
-			System.out.println(ex);
-		}
+		
 
 		return strEncrypt;
 	}

@@ -9,12 +9,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
+import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netwin.entiry.PnRequest;
 import com.netwin.entiry.PnResponse;
@@ -22,6 +27,7 @@ import com.netwin.entiry.PnVendorDetails;
 import com.netwin.entiry.PnVndrRequest;
 import com.netwin.entiry.PnVndrResponse;
 import com.netwin.entiry.Result1;
+import com.netwin.exception.ResourceNotFoundException;
 import com.netwin.repo.PnResponseRepo;
 import com.netwin.repo.PnVendorDetailsRepo;
 import com.netwin.repo.PnVndrResponseRepo;
@@ -58,7 +64,7 @@ private Date date = new Date(System.currentTimeMillis());
 			Result1<Map<String,Object>> result  = ntResponse.getNtResponse(2004);
 			return new Result1<>(result.toString());
 		}
-		try {
+	
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setBasicAuth(pnVendorDetails.getPnVnDrApiUser(), pnVendorDetails.getPnVndrApiPsw());
@@ -89,20 +95,21 @@ private Date date = new Date(System.currentTimeMillis());
 	        String jsonString = jsonStringBuilder.toString();
 	
 		HttpEntity<String> requestEntity = new HttpEntity<>(jsonString, headers);
-	
+	try {
 		return callPanVerifyApi(pnVendorDetails.getPnVrfyURL(), HttpMethod.POST, requestEntity, pnRequest2);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
+	}
+		catch(Exception ex) {
+			errorApplicationService.storeError(401, ex.getMessage());
+			throw new ResourceNotFoundException(ex.getMessage(),"",HttpStatus.BAD_GATEWAY); 
 		}
 	}
 	private Result1<PnResponse> callPanVerifyApi(String pnVrfyURL, HttpMethod post, HttpEntity<String> requestEntity,
-			PnRequest pnRequest2) {
+			PnRequest pnRequest2) throws JsonMappingException, JsonProcessingException {
 PnResponse pnResponse = new PnResponse();
 			
 			RestTemplate restTemplate = new RestTemplate();
 			
-			try {
+		
 				// Make the HTTP request using RestTemplate
 				ResponseEntity<String> responseEntity = restTemplate.exchange(pnVrfyURL, post, requestEntity,
 						String.class);
@@ -134,19 +141,11 @@ PnResponse pnResponse = new PnResponse();
 					return new Result1<PnResponse>(pnNetRes);
 				} catch (Exception e) {
 					errorApplicationService.storeError(203, e.getMessage());
+					throw new ResourceNotFoundException(e.getMessage(),"",HttpStatus.BAD_REQUEST);
 				} 
 			
-			} catch (HttpClientErrorException e) {
-				
-				errorApplicationService.storeError(401, e.getMessage());
-				//return new Result1<> ((String) ("HTTP Error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString()));
-				
-			} catch (Exception e) {
-				errorApplicationService.storeError(401, e.getMessage());
-				//return new Result1<> ((String)("Error: " + e.getMessage()));
-				
-			}
-		return null;
+			
+	
 			
 		}
 

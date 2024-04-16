@@ -43,7 +43,7 @@ public class Result<T> {
     }
 
 	public Result1<T> getResult() {
-		return result;
+		return results;
 	}
 
 	

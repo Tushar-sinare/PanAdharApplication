@@ -8,6 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
@@ -19,6 +20,7 @@ import com.netwin.entiry.PnNetwinRequest;
 import com.netwin.entiry.PnRequest;
 import com.netwin.entiry.PnVendorDetails;
 import com.netwin.entiry.Result;
+import com.netwin.exception.ResourceNotFoundException;
 import com.netwin.mapper.PnNetwinRequestMapper;
 import com.netwin.repo.PnNetwinRequestRepo;
 import com.netwin.service.ErrorApplicationService;
@@ -85,9 +87,12 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 
 //Call to mapping database field Name
 			// if decrypt string null then return error show
-
+			if(!pnRequestDecryptString.isBlank())	{
 			String pnRespons = getMappingDataBaseThrough(pnRequestDecryptString, pnNetwinRequest1);
 			return pnRespons;
+			}else {
+				throw new ResourceNotFoundException("Json is Empty","",HttpStatus.BAD_REQUEST);
+			}
 
 		} else {
 			errorApplicationService.storeError(1003, "Error: Unable to map PnNetwinRequest entity from DTO.");
