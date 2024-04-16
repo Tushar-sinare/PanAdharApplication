@@ -22,13 +22,12 @@ public class PnResponseServiceImpl implements PnResponseService {
 
 
 	private final JdbcTemplate jdbcTemplate;
-	
-	private final QueryUtil queryUtil;
+
 	@Autowired
-	public PnResponseServiceImpl(JdbcTemplate jdbcTemplate,QueryUtil queryUtil) {
+	public PnResponseServiceImpl(JdbcTemplate jdbcTemplate) {
 	
 		this.jdbcTemplate =jdbcTemplate;
-		this.queryUtil= queryUtil;
+
 	}
 	@Override
 	public  Map<String,Object> fetchNetwinResponse(PnVndrResponse pnVndrResponse, PnRequest pnRequest2) throws JsonProcessingException {
@@ -50,7 +49,7 @@ public class PnResponseServiceImpl implements PnResponseService {
 		Map<String, Object> vendorValue = new HashMap<>();
 		Map<String,Object> pnResValue = new HashMap<>();
 		
-		List<Map<String, Object>> netwinFieldResults = jdbcTemplate.queryForList(queryUtil.VNDRRESFIELDQUERY, vendorId,
+		List<Map<String, Object>> netwinFieldResults = jdbcTemplate.queryForList(QueryUtil.VNDRRESFIELDQUERY, vendorId,
 				"P", "Y");
 	
 		for (Map<String, Object> vendorField : netwinFieldResults) {

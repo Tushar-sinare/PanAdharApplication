@@ -22,14 +22,13 @@ import com.netwin.util.QueryUtil;
 public class PnVndrValidation {
 	private static final Logger logger = LoggerFactory.getLogger(PnVndrValidation.class);
 	
-	private final QueryUtil queryUtil;
 
 	private final JdbcTemplate jdbcTemplate;
 
 private final ErrorApplicationService errorApplicationService;
 @Autowired
-public PnVndrValidation(QueryUtil queryUtil,JdbcTemplate jdbcTemplate,ErrorApplicationService errorApplicationService) {
-	this.queryUtil=queryUtil;
+public PnVndrValidation(JdbcTemplate jdbcTemplate,ErrorApplicationService errorApplicationService) {
+
 	this.jdbcTemplate=jdbcTemplate;
 	this.errorApplicationService=errorApplicationService;
 }
@@ -50,9 +49,9 @@ public PnVndrValidation(QueryUtil queryUtil,JdbcTemplate jdbcTemplate,ErrorAppli
 		List<Map<String, Object>> netwinFieldResults2 =null;
 		Map<String,Map<String, String>> validationNetVn11 = new HashMap<>();
 	if(pnVendorId!=0) {
-		pnVendorResults = jdbcTemplate.queryForList(queryUtil.PNVNDRPARAMETER, pnVendorId,
+		pnVendorResults = jdbcTemplate.queryForList(QueryUtil.PNVNDRPARAMETER, pnVendorId,
 				"P", "Y");
-		netwinFieldResults2 = jdbcTemplate.queryForList(queryUtil.NETWINFIELDQUERY2,pnVendorId, "P");
+		netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWINFIELDQUERY2,pnVendorId, "P");
 	}else {
 	
 		errorApplicationService.storeError(401, "Please Required Vendor Details ");

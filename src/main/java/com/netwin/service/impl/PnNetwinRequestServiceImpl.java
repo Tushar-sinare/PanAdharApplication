@@ -45,8 +45,6 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 
 	private final PnNetwinRequestMapper mapper;
 
-	private final QueryUtil queryUtil;
-
 	private final JdbcTemplate jdbcTemplate;
 
 	private final PnRequestValidation pnRequestValidation;
@@ -66,7 +64,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 
 	@Autowired
 	public PnNetwinRequestServiceImpl(PnNetwinDecrypt pnNetwinDecrypt, PnNetwinRequestRepo pnNetwinRequestRepository,
-			PnNetwinRequestMapper mapper, QueryUtil queryUtil, JdbcTemplate jdbcTemplate,
+			PnNetwinRequestMapper mapper, JdbcTemplate jdbcTemplate,
 			PnVndrRequestService pnVndrRequestService, ErrorApplicationService errorApplicationService,
 			PnRequestValidation pnRequestValidation, NetwinCustomerDetailsService netwinCustomerDetailsService,
 			PnVendorDetailsService pnVendorDetailsservice,
@@ -74,7 +72,6 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 		this.pnNetwinDecrypt = pnNetwinDecrypt;
 		this.pnNetwinRequestRepository = pnNetwinRequestRepository;
 		this.mapper = mapper;
-		this.queryUtil = queryUtil;
 		this.jdbcTemplate = jdbcTemplate;
 		this.pnVndrRequestService = pnVndrRequestService;
 		this.errorApplicationService = errorApplicationService;
@@ -134,7 +131,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 
 	private Map<String, Object> getNetwinFieldResults() {
 		Map<String, Object> netwinFieldResults1 = new HashMap<>();
-		List<Map<String, Object>> netwinFieldResultsMap = jdbcTemplate.queryForList(queryUtil.NETWINFIELDQUERY, "P",
+		List<Map<String, Object>> netwinFieldResultsMap = jdbcTemplate.queryForList(QueryUtil.NETWINFIELDQUERY, "P",
 				"V");
 		for (Map<String, Object> vendorField : netwinFieldResultsMap) {
 			String key = (String) vendorField.get("NETWREQKEYNAME");
