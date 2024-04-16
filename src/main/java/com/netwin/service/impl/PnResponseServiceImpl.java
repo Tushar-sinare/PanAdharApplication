@@ -22,14 +22,16 @@ import com.netwin.util.QueryUtil;
 @Service
 public class PnResponseServiceImpl implements PnResponseService {
 
-	PnRequestRepo pnResponseRepo;
 
-	private JdbcTemplate jdbcTemplate;
+	private final JdbcTemplate jdbcTemplate;
+	
+	private final QueryUtil queryUtil;
 	@Autowired
-public PnResponseServiceImpl(PnRequestRepo pnResponseRepo) {
-	this.pnResponseRepo = pnResponseRepo;
-}
-	private QueryUtil queryUtil;
+	public PnResponseServiceImpl(JdbcTemplate jdbcTemplate,QueryUtil queryUtil) {
+	
+		this.jdbcTemplate =jdbcTemplate;
+		this.queryUtil= queryUtil;
+	}
 	@Override
 	public  Map<String,Object> fetchNetwinResponse(PnVndrResponse pnVndrResponse, PnRequest pnRequest2) throws JsonProcessingException {
 		PnResponse pnResponse = new PnResponse();
@@ -45,13 +47,14 @@ public PnResponseServiceImpl(PnRequestRepo pnResponseRepo) {
 	}
 	public Map<String,Object> fetchResMapping(PnVndrResponse pnVndrResponse, PnRequest pnRequest2) throws JsonProcessingException {
 		int vendorId = pnRequest2.getPnVendorDetails().getPnVnDrSrNo();
+		
 		Map<String, String> validationNetVn = new HashMap<>();
 		Map<String, Object> vendorValue = new HashMap<>();
 		Map<String,Object> pnResValue = new HashMap<>();
 		
 		List<Map<String, Object>> netwinFieldResults = jdbcTemplate.queryForList(queryUtil.VNDRRESFIELDQUERY, vendorId,
 				"P", "Y");
-		
+	
 		for (Map<String, Object> vendorField : netwinFieldResults) {
 			for (Map.Entry<String, Object> vendorEntry : vendorField.entrySet()) {
 				String key1 = (String) vendorField.get("NETWRESKEYNAME");
@@ -64,9 +67,13 @@ public PnResponseServiceImpl(PnRequestRepo pnResponseRepo) {
 			}
 		}
 		String response = pnVndrResponse.getReqDecrypt();
+	
+		
 				ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> dataMap = mapper.readValue(response, Map.class);
 		Map<String, String> resultVOMap = (Map<String, String>) dataMap.get(ConstantVariable.RESULTVO);
+		
+		
 		for (Map.Entry<String, String> vendorField : validationNetVn.entrySet()) {
 			if(dataMap.containsKey(vendorField.getValue())) {
 				vendorValue.put(vendorField.getKey(), dataMap.get(vendorField.getValue()));
@@ -79,6 +86,7 @@ public PnResponseServiceImpl(PnRequestRepo pnResponseRepo) {
 
 				
 			}
+		
 		return vendorValue;
 
 				

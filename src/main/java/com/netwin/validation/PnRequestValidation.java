@@ -16,10 +16,17 @@ import com.netwin.util.NtResponse;
 
 @Component
 public class PnRequestValidation {
+	
+	private final NtResponse ntResponse;
+	
+	private final ErrorApplicationService errorApplicationService;
+	
 	@Autowired
-	private NtResponse ntResponse;
-	@Autowired
-	ErrorApplicationService errorApplicationService;
+	public PnRequestValidation(NtResponse ntResponse,ErrorApplicationService errorApplicationService) {
+		this.ntResponse = ntResponse;
+		this.errorApplicationService = errorApplicationService;
+	}
+	
 	private static final String PAN_PATTERN = "[A-Z]{5}[0-9]{4}[A-Z]{1}";
 
 	public boolean checkValidation(PnRequest pnRequest) {
@@ -38,8 +45,7 @@ public class PnRequestValidation {
 	}
 
 	public Result<PnRequest> checkNetwnValidation(Map<String, String> pnRequestDecrypt, Map<String,Object> netwinFieldResults,
-			PnRequest pnRequest) throws NoSuchMethodException, SecurityException, IllegalAccessException,
-			IllegalArgumentException, InvocationTargetException {
+			PnRequest pnRequest) throws Exception {
 
 		for (Field field : PnRequest.class.getDeclaredFields()) {
 

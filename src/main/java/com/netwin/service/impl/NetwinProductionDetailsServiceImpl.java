@@ -14,12 +14,14 @@ import com.netwin.service.NetwinProductionDetailsService;
 public class NetwinProductionDetailsServiceImpl implements NetwinProductionDetailsService{
 
 private final NetwinProductionDetailsRepo netwinProductionDetailsRepo;
+private final ErrorApplicationService errorApplicationService;
 @Autowired
-public NetwinProductionDetailsServiceImpl(NetwinProductionDetailsRepo netwinProductionDetailsRepo) {
+public NetwinProductionDetailsServiceImpl(NetwinProductionDetailsRepo netwinProductionDetailsRepo,ErrorApplicationService errorApplicationService) {
 	this.netwinProductionDetailsRepo=netwinProductionDetailsRepo;
+	this.errorApplicationService=errorApplicationService;
 }
 
-ErrorApplicationService errorApplicationService;
+
 private static final Logger logger = LoggerFactory.getLogger(NetwinProductionDetailsServiceImpl.class);
 
 	@Override

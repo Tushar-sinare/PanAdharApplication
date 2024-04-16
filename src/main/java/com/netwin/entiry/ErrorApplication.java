@@ -21,6 +21,8 @@ public class ErrorApplication {
 	@Lob
 	@Column(name = "ErrorDescription",columnDefinition = "TEXT",nullable = false)
 	private String erroDesc;
+	
+	
 	public int getErrorId() {
 		return errorId;
 	}

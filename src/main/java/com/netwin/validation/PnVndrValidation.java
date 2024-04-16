@@ -21,12 +21,18 @@ import com.netwin.util.QueryUtil;
 @Component
 public class PnVndrValidation {
 	private static final Logger logger = LoggerFactory.getLogger(PnVndrValidation.class);
-	@Autowired
-	private QueryUtil queryUtil;
-	@Autowired
-	private JdbcTemplate jdbcTemplate;
+	
+	private final QueryUtil queryUtil;
+
+	private final JdbcTemplate jdbcTemplate;
+
+private final ErrorApplicationService errorApplicationService;
 @Autowired
-ErrorApplicationService errorApplicationService;
+public PnVndrValidation(QueryUtil queryUtil,JdbcTemplate jdbcTemplate,ErrorApplicationService errorApplicationService) {
+	this.queryUtil=queryUtil;
+	this.jdbcTemplate=jdbcTemplate;
+	this.errorApplicationService=errorApplicationService;
+}
 	public Result<PnRequest> checkMappingVendor(PnNetwinRequest pnRequestId, PnRequest pnReq,
 			Map<String, String> pnRequestDecrypt) {
 		Map<String, String> validationNetVn = new HashMap<>();
@@ -65,9 +71,7 @@ ErrorApplicationService errorApplicationService;
 				}
 			}
 		}
-		
-		System.out.println("netwinFieldResults2 -----"+netwinFieldResults2);
-		System.out.println("validationNetVn -----"+validationNetVn+"required -- "+validationNetVn11);
+	
 		for (Map<String, Object> vendorField : pnVendorResults) {
 			for (Map.Entry<String, Object> vendorEntry : vendorField.entrySet()) {
 				String key1 = (String) vendorField.get("NETWREQKEYNAME");

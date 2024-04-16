@@ -3,8 +3,8 @@ package com.netwin.entiry;
 import java.util.Map;
 
 public class Result1<T> {
-	private Map<String, Object> resMap;
-	  private String errorMessage;
+	public Map<String, Object> resMap;
+	  public String errorMessage;
     public Result1(Map<String, Object> resMap) {
         this.resMap = resMap;
     }
@@ -18,4 +18,5 @@ public class Result1<T> {
     public String getErrorMessage() {
         return errorMessage;
     }
+    
 }

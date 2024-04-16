@@ -12,6 +12,7 @@ import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 import com.netwin.entiry.PnRequest;
 import com.netwin.entiry.PnResponse;
@@ -31,22 +32,25 @@ public class PnVndrResponseServiceImpl implements PnVndrResponseService {
 
 private final PnVndrResponseRepo pnVndrResponseRepo;
 
-private EncryptionData encryptionData;
+private final EncryptionData encryptionData;
 
-private PnResponseService pnResponseService;
+private final PnResponseService pnResponseService;
 
 private final PnResponseRepo pnResponseRepo;
 
-private NtResponse ntResponse;
+private final NtResponse ntResponse;
+private final ErrorApplicationService errorApplicationService;
 @Autowired
-public PnVndrResponseServiceImpl(PnVndrResponseRepo pnVndrResponseRepo,PnResponseRepo pnResponseRepo) {
+public PnVndrResponseServiceImpl(PnVndrResponseRepo pnVndrResponseRepo,PnResponseService pnResponseService,PnResponseRepo pnResponseRepo,EncryptionData encryptionData,NtResponse ntResponse,ErrorApplicationService errorApplicationService) {
 
 	this.pnVndrResponseRepo = pnVndrResponseRepo;
 	this.pnResponseRepo = pnResponseRepo;
-	
-	
+	this.encryptionData=encryptionData;
+	this.pnResponseService =pnResponseService;
+	this.ntResponse =ntResponse;
+	this.errorApplicationService = errorApplicationService;
 }
-private ErrorApplicationService errorApplicationService;
+
 private Date date = new Date(System.currentTimeMillis());
 	@Override
 	public Result1<PnResponse> fetchPanApiResponse(PnVndrRequest pnVndrRequest2, PnRequest pnRequest2) {
@@ -57,7 +61,7 @@ private Date date = new Date(System.currentTimeMillis());
 		Result1<Map<String,Object>> result  = ntResponse.getNtResponse(2004);
 			return new Result1<>(result.toString());
 		}
-		try {
+	
 		HttpHeaders headers = new HttpHeaders();
 		headers.setContentType(MediaType.APPLICATION_JSON);
 		headers.setBasicAuth(pnVendorDetails.getPnVnDrApiUser(), pnVendorDetails.getPnVndrApiPsw());
@@ -88,29 +92,27 @@ private Date date = new Date(System.currentTimeMillis());
 	        String jsonString = jsonStringBuilder.toString();
 	
 		HttpEntity<String> requestEntity = new HttpEntity<>(jsonString, headers);
+	 Result1<PnResponse> pnResponse = callPanVerifyApi(pnVendorDetails.getPnVrfyURL(), HttpMethod.POST, requestEntity, pnRequest2);
 	
-		return callPanVerifyApi(pnVendorDetails.getPnVrfyURL(), HttpMethod.POST, requestEntity, pnRequest2);
-		} catch (Exception e) {
-			e.printStackTrace();
-			return null;
-		}
+	 return pnResponse;
 	}
 	private Result1<PnResponse> callPanVerifyApi(String pnVrfyURL, HttpMethod post, HttpEntity<String> requestEntity,
 			PnRequest pnRequest2) {
-PnResponse pnResponse = new PnResponse();
+			PnResponse pnResponse = new PnResponse();
 			
 			RestTemplate restTemplate = new RestTemplate();
 			
-	
+			try {
 				// Make the HTTP request using RestTemplate
 				ResponseEntity<String> responseEntity = restTemplate.exchange(pnVrfyURL, post, requestEntity,
 						String.class);
 				String response = responseEntity.getBody();
 			
-				
+			
 				try {
 				
 					String responseJson = encryptionData.getEncryptResponse(response);
+					//decryptMainResponse = encryptionData.getEncryptedData(dataMap, resultVOMap);
 					PnVndrResponse pnVndrResponse = new PnVndrResponse();
 					pnVndrResponse.setReqDecrypt(response);
 					pnVndrResponse.setReqEncrypt(responseJson);
@@ -127,16 +129,26 @@ PnResponse pnResponse = new PnResponse();
 					pnResponse.setPanNo(pnRequest2.getPanNo());
 					//store response
 					pnResponseRepo.save(pnResponse);
+					
+				
 					return new Result1<PnResponse>(pnNetRes);
 				} catch (Exception e) {
 					errorApplicationService.storeError(203, e.getMessage());
 				} 
 			
-			
+			} catch (HttpClientErrorException e) {
+				
+				errorApplicationService.storeError(401, e.getMessage());
+				//return new Result1<> ((String) ("HTTP Error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString()));
+				
+			} catch (Exception e) {
+				errorApplicationService.storeError(401, e.getMessage());
+				//return new Result1<> ((String)("Error: " + e.getMessage()));
+				
+			}
 		return null;
 			
 		}
 
 
 }
-

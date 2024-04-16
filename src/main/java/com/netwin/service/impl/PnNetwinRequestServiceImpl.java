@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Primary;
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -38,34 +40,55 @@ import com.netwin.validation.PnRequestValidation;
 @Service
 public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 
-	private PnNetwinRequestRepo pnNetwinRequestRepository;
+	private final PnNetwinRequestRepo pnNetwinRequestRepository;
 
-	private PnNetwinDecrypt pnNetwinDecrypt;
+	private final PnNetwinDecrypt pnNetwinDecrypt;
 
-	private PnNetwinRequestMapper mapper;
+	private final PnNetwinRequestMapper mapper;
 
-	private QueryUtil queryUtil;
+	private final QueryUtil queryUtil;
 
-	private JdbcTemplate jdbcTemplate;
+	private final JdbcTemplate jdbcTemplate;
 
-	private PnRequestValidation pnRequestValidation;
+	private final PnRequestValidation pnRequestValidation;
 
-	private NetwinCustomerDetailsService netwinCustomerDetailsService;
+	private final NetwinCustomerDetailsService netwinCustomerDetailsService;
 
-	private PnVendorDetailsService pnVendorDetailsservice;
+	private final PnVendorDetailsService pnVendorDetailsservice;
 
-	private NetwinProductionDetailsService netwinProductionDetailsService;
+	private final NetwinProductionDetailsService netwinProductionDetailsService;
 
-	private PnRequestService pnRequestService;
+	private final PnRequestService pnRequestService;
 
-	private PnVndrRequestService pnVndrRequestService;
+	private final PnVndrRequestService pnVndrRequestService;
 
-	private ErrorApplicationService errorApplicationService;
+	private final ErrorApplicationService errorApplicationService;
 	private Date date = new Date(System.currentTimeMillis());
-	
+
+	@Autowired
+	public PnNetwinRequestServiceImpl(PnNetwinDecrypt pnNetwinDecrypt, PnNetwinRequestRepo pnNetwinRequestRepository,
+			PnNetwinRequestMapper mapper, QueryUtil queryUtil, JdbcTemplate jdbcTemplate,
+			PnVndrRequestService pnVndrRequestService, ErrorApplicationService errorApplicationService,
+			PnRequestValidation pnRequestValidation, NetwinCustomerDetailsService netwinCustomerDetailsService,
+			PnVendorDetailsService pnVendorDetailsservice,
+			NetwinProductionDetailsService netwinProductionDetailsService, PnRequestService pnRequestService) {
+		this.pnNetwinDecrypt = pnNetwinDecrypt;
+		this.pnNetwinRequestRepository = pnNetwinRequestRepository;
+		this.mapper = mapper;
+		this.queryUtil = queryUtil;
+		this.jdbcTemplate = jdbcTemplate;
+		this.pnVndrRequestService = pnVndrRequestService;
+		this.errorApplicationService = errorApplicationService;
+		this.pnRequestValidation = pnRequestValidation;
+		this.netwinCustomerDetailsService = netwinCustomerDetailsService;
+		this.pnVendorDetailsservice = pnVendorDetailsservice;
+		this.netwinProductionDetailsService = netwinProductionDetailsService;
+		this.pnRequestService = pnRequestService;
+
+	}
 
 	@Override
-	public String callPanRequest(String panRequestJson, String clientIp) {
+	public String callPanRequest(String panRequestJson, String clientIp) throws Exception {
 		PnNetwinRequestDto panRequestDto = new PnNetwinRequestDto();
 		// Call to Decrypt Data
 
@@ -88,7 +111,6 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 		// if decrypt string null then return error show
 
 		return getMappingDataBaseThrough(pnRequestDecryptString, pnNetwinRequest);
-		 
 
 	}
 
@@ -137,7 +159,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 		}
 	}
 
-	private void setFieldValue(PnRequest pnRequest, Field field, String value) throws SecurityException,Exception {
+	private void setFieldValue(PnRequest pnRequest, Field field, String value) throws SecurityException, Exception {
 		String capitalizedFieldName = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
 		String setterMethodName = "set" + capitalizedFieldName;
 		Method setterMethod = PnRequest.class.getMethod(setterMethodName, field.getType());
@@ -167,7 +189,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 			pnRequest.setPnNetwinRequest(pnNetwinRequest1);
 			pnRequest.setAppDate(date);
 		} catch (Exception ex) {
-			throw new ResourceNotFoundException("Data Not Found", "",204l, HttpStatus.BAD_REQUEST);
+			throw new ResourceNotFoundException("Data Not Found", "", 204l, HttpStatus.BAD_REQUEST);
 		}
 
 	}
@@ -182,7 +204,8 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 			if (!pnRequestDecrypt.containsKey(netwinField.getKey()) && (netwinField.getValue()).equals('Y')) {
 				errorApplicationService.storeError(1007, "Please Required " + netwinField);
 				return "Please Required " + netwinField;
-			} else {
+			} 
+			}
 				try {
 //Check netwin field and Value Validation
 					Result<PnRequest> result = pnRequestValidation.checkNetwnValidation(pnRequestDecrypt,
@@ -195,18 +218,18 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 
 						return pnVndrRequest.getErrorMessage();
 					} else {
-					
+
 						// Handle the error message
-						return  result.getErrorMessage();
+						return result.getErrorMessage();
 					}
 
 				} catch (Exception e) {
 					errorApplicationService.storeError(504, e.getMessage());
 					e.printStackTrace();
 				}
-			}
+			
 
-		}
+		
 		return null;
 	}
 
