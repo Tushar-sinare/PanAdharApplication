@@ -7,6 +7,8 @@ import java.sql.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
@@ -157,10 +159,10 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 				pnRequest.setNetwinProductionDetails(ntNetwinProductionDetails);
 			}
 			// Call Vendor Details Service and set
-			PnVendorDetails pnVendorDetails = pnVendorDetailsservice
+			Optional<PnVendorDetails> pnVendorDetails = pnVendorDetailsservice
 					.fetchPnVendorDetails(ntNetwinProductionDetails.getNetwVndrs());
-			if (ntCustomerDetails != null) {
-				pnRequest.setPnVendorDetails(pnVendorDetails);
+			if (pnVendorDetails.isPresent()) {
+				pnRequest.setPnVendorDetails(pnVendorDetails.get());
 			}
 			pnRequest.setPnNetwinRequest(pnNetwinRequest1);
 			pnRequest.setAppDate(date);

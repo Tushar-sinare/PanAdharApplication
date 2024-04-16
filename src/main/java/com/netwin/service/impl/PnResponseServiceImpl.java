@@ -31,7 +31,7 @@ public PnResponseServiceImpl(PnRequestRepo pnResponseRepo) {
 }
 	private QueryUtil queryUtil;
 	@Override
-	public  Map<String,Object> fetchNetwinResponse(PnVndrResponse pnVndrResponse, PnRequest pnRequest2) throws JsonMappingException, JsonProcessingException {
+	public  Map<String,Object> fetchNetwinResponse(PnVndrResponse pnVndrResponse, PnRequest pnRequest2) throws JsonProcessingException {
 		PnResponse pnResponse = new PnResponse();
 		Date date = new Date(System.currentTimeMillis());
 		pnResponse.setAppDate(date);

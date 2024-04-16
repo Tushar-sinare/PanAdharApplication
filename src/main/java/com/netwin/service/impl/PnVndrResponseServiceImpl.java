@@ -57,10 +57,8 @@ private Date date = new Date(System.currentTimeMillis());
 		
 			//fetch vendor details 
 		PnVendorDetails pnVendorDetails = pnRequest2.getPnVendorDetails();
-		if(pnVendorDetails!=null) {
-	
-		}else {
-			Result1<Map<String,Object>> result  = ntResponse.getNtResponse(2004);
+		if(pnVendorDetails==null) {
+		Result1<Map<String,Object>> result  = ntResponse.getNtResponse(2004);
 			return new Result1<>(result.toString());
 		}
 		try {
@@ -107,19 +105,18 @@ PnResponse pnResponse = new PnResponse();
 			
 			RestTemplate restTemplate = new RestTemplate();
 			
-			try {
+	
 				// Make the HTTP request using RestTemplate
 				ResponseEntity<String> responseEntity = restTemplate.exchange(pnVrfyURL, post, requestEntity,
 						String.class);
 				String response = responseEntity.getBody();
 			
 				ObjectMapper mapper = new ObjectMapper();
-				Map<String, Object> dataMap = mapper.readValue(response, Map.class);
-				Map<String, String> decryptMainResponse = null;
+				
 				try {
+					Map<String, Object> dataMap = mapper.readValue(response, Map.class);
 					Map<String, String> resultVOMap = (Map<String, String>) dataMap.get(ConstantVariable.RESULTVO);
 					String responseJson = encryptionData.getEncryptResponse(response);
-					//decryptMainResponse = encryptionData.getEncryptedData(dataMap, resultVOMap);
 					PnVndrResponse pnVndrResponse = new PnVndrResponse();
 					pnVndrResponse.setReqDecrypt(response);
 					pnVndrResponse.setReqEncrypt(responseJson);
@@ -141,16 +138,7 @@ PnResponse pnResponse = new PnResponse();
 					errorApplicationService.storeError(203, e.getMessage());
 				} 
 			
-			} catch (HttpClientErrorException e) {
-				
-				errorApplicationService.storeError(401, e.getMessage());
-				//return new Result1<> ((String) ("HTTP Error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString()));
-				
-			} catch (Exception e) {
-				errorApplicationService.storeError(401, e.getMessage());
-				//return new Result1<> ((String)("Error: " + e.getMessage()));
-				
-			}
+			
 		return null;
 			
 		}

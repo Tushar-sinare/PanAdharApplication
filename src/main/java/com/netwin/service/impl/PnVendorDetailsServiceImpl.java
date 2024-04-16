@@ -1,5 +1,7 @@
 package com.netwin.service.impl;
 
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 import com.netwin.entiry.PnVendorDetails;
@@ -12,8 +14,8 @@ public class PnVendorDetailsServiceImpl implements PnVendorDetailsService {
 	PnVendorDetailsRepo pnVendorDetailsRepo;
 
 	@Override
-	public PnVendorDetails fetchPnVendorDetails(int pnVndrSrNo) {
-		return pnVendorDetailsRepo.findById(pnVndrSrNo).get();
+	public Optional<PnVendorDetails> fetchPnVendorDetails(int pnVndrSrNo) {
+		return pnVendorDetailsRepo.findById(pnVndrSrNo);
 
 	}
 
