@@ -4,7 +4,6 @@ import java.util.Map;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.netwin.entiry.PnNetwinRequest;
@@ -23,19 +22,14 @@ import com.netwin.validation.PnVndrValidation;
 @Service
 public class PnVndrRequestServiceImpl implements PnVndrRequestService {
 
-@Autowired
 private PnVndrValidation pnVndrValidation;
 
-@Autowired
 private PnVndrResponseService pnVndrResponseService;
 
-@Autowired
 private PnNetwinDecrypt pnNetwinDecrypt;
 
-@Autowired
 private PnVndrRequestRepo pnVndrRequestRepo;
 
-@Autowired
 private ErrorApplicationService errorApplicationService;
 private static final Logger logger = LoggerFactory.getLogger(PnVndrRequestServiceImpl.class);
 	@Override
@@ -69,8 +63,8 @@ private static final Logger logger = LoggerFactory.getLogger(PnVndrRequestServic
 		PnVndrRequest pnVndrRequest2 = pnVndrRequestRepo.save(pnVndrRequest);
 		//Call Vendor Api to fetch Response
 		 Result1<PnResponse> pnVndrApiResponse = pnVndrResponseService.fetchPanApiResponse(pnVndrRequest2,pnRequest2);
-				 String str = pnVndrApiResponse.getResMap().toString();
-		 return str;
+				 return pnVndrApiResponse.getResMap().toString();
+
 	}
 
 }

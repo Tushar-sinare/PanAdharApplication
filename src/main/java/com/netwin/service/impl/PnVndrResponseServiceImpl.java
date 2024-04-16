@@ -4,8 +4,6 @@ package com.netwin.service.impl;
 
 import java.sql.Date;
 import java.util.Map;
-
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -32,19 +30,19 @@ import com.netwin.util.EncryptionData;
 import com.netwin.util.NtResponse;
 @Service
 public class PnVndrResponseServiceImpl implements PnVndrResponseService {
-@Autowired
+
 PnVendorDetailsRepo pnVendorDetailsRepo;
-@Autowired
+
 private PnVndrResponseRepo pnVndrResponseRepo;
-@Autowired
+
 private EncryptionData encryptionData;
-@Autowired
+
 private PnResponseService pnResponseService;
-@Autowired
+
 private PnResponseRepo pnResponseRepo;
-@Autowired
+
 private NtResponse ntResponse;
-@Autowired
+
 private ErrorApplicationService errorApplicationService;
 private Date date = new Date(System.currentTimeMillis());
 	@Override

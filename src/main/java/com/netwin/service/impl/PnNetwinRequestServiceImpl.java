@@ -135,7 +135,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 		}
 	}
 
-	private void setFieldValue(PnRequest pnRequest, Field field, String value) throws Exception {
+	private void setFieldValue(PnRequest pnRequest, Field field, String value) throws NoSuchMethodException, SecurityException,Exception {
 		String capitalizedFieldName = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
 		String setterMethodName = "set" + capitalizedFieldName;
 		Method setterMethod = PnRequest.class.getMethod(setterMethodName, field.getType());
@@ -177,7 +177,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 		// Handle errors or return result
 		PnRequest pnRequest1 = pnRequestService.callVendorService(pnRequest);
 		for (Map.Entry<String, Object> netwinField : netwinFieldResults1.entrySet()) {
-			if (!pnRequestDecrypt.containsKey(netwinField.getKey()) && ((String) netwinField.getValue()).equals('Y')) {
+			if (!pnRequestDecrypt.containsKey(netwinField.getKey()) && (netwinField.getValue()).equals('Y')) {
 				errorApplicationService.storeError(1007, "Please Required " + netwinField);
 				return "Please Required " + netwinField;
 			} else {
@@ -193,9 +193,9 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 
 						return pnVndrRequest.getErrorMessage();
 					} else {
-						String errorMessage = result.getErrorMessage();
+					
 						// Handle the error message
-						return errorMessage;
+						return  result.getErrorMessage();
 					}
 
 				} catch (Exception e) {

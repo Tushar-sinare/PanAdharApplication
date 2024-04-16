@@ -20,12 +20,11 @@ import com.netwin.service.PnResponseService;
 import com.netwin.util.QueryUtil;
 @Service
 public class PnResponseServiceImpl implements PnResponseService {
-	@Autowired
+
 	PnRequestRepo pnResponseRepo;
-	@Autowired
+
 	private JdbcTemplate jdbcTemplate;
 
-	@Autowired
 	private QueryUtil queryUtil;
 	@Override
 	public  Map<String,Object> fetchNetwinResponse(PnVndrResponse pnVndrResponse, PnRequest pnRequest2) throws JsonMappingException, JsonProcessingException {
@@ -37,11 +36,8 @@ public class PnResponseServiceImpl implements PnResponseService {
         pnResponse.setPnVndrResponse(pnVndrResponse);
 		
 		
-		Map<String,Object> pnResNtw = fetchResMapping(pnVndrResponse,pnResponse,pnRequest2);
-		
-		
-		
-		return pnResNtw;
+        return fetchResMapping(pnVndrResponse,pnResponse,pnRequest2);
+	
 	}
 	public Map<String,Object> fetchResMapping(PnVndrResponse pnVndrResponse, PnResponse pnResponse, PnRequest pnRequest2) throws JsonMappingException, JsonProcessingException {
 		int vendorId = pnRequest2.getPnVendorDetails().getPnVnDrSrNo();
