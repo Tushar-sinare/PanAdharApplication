@@ -92,9 +92,9 @@ private Date date = new Date(System.currentTimeMillis());
 	        String jsonString = jsonStringBuilder.toString();
 	
 		HttpEntity<String> requestEntity = new HttpEntity<>(jsonString, headers);
-	 Result1<PnResponse> pnResponse = callPanVerifyApi(pnVendorDetails.getPnVrfyURL(), HttpMethod.POST, requestEntity, pnRequest2);
+		 return callPanVerifyApi(pnVendorDetails.getPnVrfyURL(), HttpMethod.POST, requestEntity, pnRequest2);
 	
-	 return pnResponse;
+	
 	}
 	private Result1<PnResponse> callPanVerifyApi(String pnVrfyURL, HttpMethod post, HttpEntity<String> requestEntity,
 			PnRequest pnRequest2) {
@@ -108,11 +108,8 @@ private Date date = new Date(System.currentTimeMillis());
 						String.class);
 				String response = responseEntity.getBody();
 			
-			
-				try {
 				
 					String responseJson = encryptionData.getEncryptResponse(response);
-					//decryptMainResponse = encryptionData.getEncryptedData(dataMap, resultVOMap);
 					PnVndrResponse pnVndrResponse = new PnVndrResponse();
 					pnVndrResponse.setReqDecrypt(response);
 					pnVndrResponse.setReqEncrypt(responseJson);
@@ -132,18 +129,14 @@ private Date date = new Date(System.currentTimeMillis());
 					
 				
 					return new Result1<PnResponse>(pnNetRes);
-				} catch (Exception e) {
-					errorApplicationService.storeError(203, e.getMessage());
-				} 
+				
 			
 			} catch (HttpClientErrorException e) {
 				
 				errorApplicationService.storeError(401, e.getMessage());
-				//return new Result1<> ((String) ("HTTP Error: " + e.getStatusCode() + " - " + e.getResponseBodyAsString()));
 				
 			} catch (Exception e) {
 				errorApplicationService.storeError(401, e.getMessage());
-				//return new Result1<> ((String)("Error: " + e.getMessage()));
 				
 			}
 		return null;

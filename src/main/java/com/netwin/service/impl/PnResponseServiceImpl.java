@@ -10,12 +10,10 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netwin.entiry.PnRequest;
 import com.netwin.entiry.PnResponse;
 import com.netwin.entiry.PnVndrResponse;
-import com.netwin.repo.PnRequestRepo;
 import com.netwin.service.PnResponseService;
 import com.netwin.util.ConstantVariable;
 import com.netwin.util.QueryUtil;

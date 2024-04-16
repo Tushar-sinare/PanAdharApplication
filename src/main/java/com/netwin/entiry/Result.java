@@ -42,9 +42,6 @@ public class Result<T> {
         return map;
     }
 
-	public Result1<T> getResult() {
-		return results;
-	}
 
 	public Result1<T> getResults() {
 		return results;
