@@ -58,9 +58,9 @@ private Map<String, String> getValidationNetVn(int pnVendorId) {
     List<Map<String, Object>> netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWNWITHVNDRFIELDQUERY, pnVendorId, "P");
     Map<String, String> validationNetVn = new HashMap<>();
     for (Map<String, Object> vendorField : netwinFieldResults2) {
-        String key1 = (String) vendorField.get("NETWREQKEYNAME");
-        if (vendorField.containsKey("VNDRREQKEYNAME")) {
-            String value1 = (String) vendorField.get("VNDRREQKEYNAME");
+        String key1 = (String) vendorField.get(ConstantVariable.NTWNFIELDCOLUMN);
+        if (vendorField.containsKey(ConstantVariable.VNDRFIELDCOLUMN)) {
+            String value1 = (String) vendorField.get(ConstantVariable.VNDRFIELDCOLUMN);
             validationNetVn.put(key1, value1);
         }
     }
@@ -71,9 +71,9 @@ private Map<String, String> getValidationNetVn1(int pnVendorId) {
     List<Map<String, Object>> pnVendorResults = jdbcTemplate.queryForList(QueryUtil.PNVNDRFIELD, pnVendorId, "P", "Y");
     Map<String, String> validationNetVn1 = new HashMap<>();
     for (Map<String, Object> vendorField : pnVendorResults) {
-        String key1 = (String) vendorField.get("NETWREQKEYNAME");
-        if (vendorField.containsKey("VNDRREQKEYNAME")) {
-            String value1 = (String) vendorField.get("VNDRREQKEYNAME");
+        String key1 = (String) vendorField.get(ConstantVariable.NTWNFIELDCOLUMN);
+        if (vendorField.containsKey(ConstantVariable.VNDRFIELDCOLUMN)) {
+            String value1 = (String) vendorField.get(ConstantVariable.VNDRFIELDCOLUMN);
             validationNetVn1.put(key1, value1);
         }
     }
