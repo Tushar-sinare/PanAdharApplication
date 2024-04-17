@@ -93,7 +93,7 @@ this.encryptionData=encryptionData;
 	public String callPanRequest(String panRequestJson, String clientIp) throws PnNetwinRequestException {
 	    try {
 	        PnNetwinRequestDto panRequestDto = new PnNetwinRequestDto();
-	   String pnRequestDecryptString = pnNetwinDecrypt.getPnRequestDecryptData(panRequestJson);
+	        String pnRequestDecryptString = pnNetwinDecrypt.getPnRequestDecryptData(panRequestJson);
 	        panRequestDto.setReqEncrypt(panRequestJson);
 	        panRequestDto.setReqDecrypt(pnRequestDecryptString);
 	        panRequestDto.setEntryDate(date);
@@ -239,12 +239,11 @@ this.encryptionData=encryptionData;
 
 				} catch (Exception e) {
 					errorApplicationService.storeError(504, e.getMessage());
-					e.printStackTrace();
+					return e.getMessage();
 				}
 			
 
 		
-		return null;
 	}
 
 	private Map<String, String> jsonStringToMap(String pnRequestDecrypt) {
