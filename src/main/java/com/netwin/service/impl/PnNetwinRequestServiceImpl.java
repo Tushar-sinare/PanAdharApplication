@@ -25,6 +25,7 @@ import com.netwin.entiry.PnVendorDetails;
 import com.netwin.entiry.Result;
 import com.netwin.exception.FieldMappingException;
 import com.netwin.exception.FieldValueSetterNotFoundException;
+import com.netwin.exception.PnNetwinRequestException;
 import com.netwin.exception.ResourceNotFoundException;
 import com.netwin.mapper.PnNetwinRequestMapper;
 import com.netwin.repo.PnNetwinRequestRepo;
@@ -87,31 +88,34 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 	}
 
 	@Override
-	public String callPanRequest(String panRequestJson, String clientIp) throws Exception {
-		PnNetwinRequestDto panRequestDto = new PnNetwinRequestDto();
-		// Call to Decrypt Data
+	public String callPanRequest(String panRequestJson, String clientIp) throws PnNetwinRequestException {
+	    try {
+	        PnNetwinRequestDto panRequestDto = new PnNetwinRequestDto();
+	        // Call to Decrypt Data
+	        String pnRequestDecryptString = pnNetwinDecrypt.getPnRequestDecryptData(panRequestJson);
 
-		String pnRequestDecryptString = pnNetwinDecrypt.getPnRequestDecryptData(panRequestJson);
-
-		panRequestDto.setReqEncrypt(panRequestJson);
-		panRequestDto.setReqDecrypt(pnRequestDecryptString);
-		panRequestDto.setEntryDate(date);
-		panRequestDto.setCallingIpAdr(clientIp);
-		// Mapping Dto to Entity
-		PnNetwinRequest pnNetwinRequest = mapper.toPnNetwinRequestEntity(panRequestDto);
-		if (pnNetwinRequest != null) {
-			// Save client request Data
-			pnNetwinRequest = pnNetwinRequestRepository.save(pnNetwinRequest);
-		} else {
-			errorApplicationService.storeError(1003, "Error: Unable to map PnNetwinRequest entity from DTO.");
-			return "Error: Unable to map PnNetwinRequest entity from DTO.";
-		}
-//Call to mapping database field Name
-		// if decrypt string null then return error show
-
-		return getMappingDataBaseThrough(pnRequestDecryptString, pnNetwinRequest);
-
+	        panRequestDto.setReqEncrypt(panRequestJson);
+	        panRequestDto.setReqDecrypt(pnRequestDecryptString);
+	        panRequestDto.setEntryDate(date);
+	        panRequestDto.setCallingIpAdr(clientIp);
+	        // Mapping Dto to Entity
+	        PnNetwinRequest pnNetwinRequest = mapper.toPnNetwinRequestEntity(panRequestDto);
+	        if (pnNetwinRequest != null) {
+	            // Save client request Data
+	            pnNetwinRequest = pnNetwinRequestRepository.save(pnNetwinRequest);
+	        } else {
+	            errorApplicationService.storeError(1003, "Error: Unable to map PnNetwinRequest entity from DTO.");
+	            return "Error: Unable to map PnNetwinRequest entity from DTO.";
+	        }
+	        // Call to mapping database field Name
+	        // if decrypt string null then return error show
+	        return getMappingDataBaseThrough(pnRequestDecryptString, pnNetwinRequest);
+	    } catch (Exception e) {
+	        // Wrap and throw the caught exception as PnNetwinRequestException
+	        throw new PnNetwinRequestException("Error while processing PAN request", e);
+	    }
 	}
+
 
 //Mapping method database Field
 	public String getMappingDataBaseThrough(String pnRequestDecryptString, PnNetwinRequest pnNetwinRequest1) {

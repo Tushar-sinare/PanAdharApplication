@@ -1,9 +1,10 @@
 package com.netwin.exception;
 
 public class AESOperationException extends Exception{
-	  // Custom Exception for AES operations
-   
-        public AESOperationException(String message) {
+	
+	private static final long serialVersionUID = 1L;
+
+		public AESOperationException(String message) {
             super(message);
         }
     }
