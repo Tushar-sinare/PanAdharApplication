@@ -19,7 +19,7 @@ public class AESExample {
         throw new IllegalStateException("Utility class");
     }
 
-  
+   
 
     // Encrypt function
     public static String encrypt(String plainText, String key) throws AESOperationException {
