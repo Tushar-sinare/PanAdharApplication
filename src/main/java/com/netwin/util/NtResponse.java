@@ -22,9 +22,9 @@ public class NtResponse {
 	}
 
 	public Result1<Map<String, Object>> getNtResponse(int msgCode) {
-		List<String> netwinResFieldResults1 = jdbcTemplate.queryForList(QueryUtil.netwnResFieldQuery, String.class,
+		List<String> netwinResFieldResults1 = jdbcTemplate.queryForList(QueryUtil.NETWRESPFIELDQUERY, String.class,
 				"P", "Y", "V");
-		String error = jdbcTemplate.queryForObject(QueryUtil.errors, String.class, msgCode);
+		String error = jdbcTemplate.queryForObject(QueryUtil.NETWRESPFIELDQUERY, String.class, msgCode);
 
 		Map<String, Object> netResponse = new HashMap<>();
 		Map<String, Object> resultVo = new HashMap<>();

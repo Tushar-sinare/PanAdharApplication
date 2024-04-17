@@ -23,7 +23,7 @@ public class PnNetwinDecrypt {
 		
 				// Your secret key
 				 // Replace this with your actual secret key
-				decryptedKey = AESExample.decrypt(pnrequestJson, ConstantVariable.secreteKey);
+				decryptedKey = AESExample.decrypt(pnrequestJson, ConstantVariable.SECRETEKEY);
 				
 
 			
@@ -41,8 +41,8 @@ public Map<String, String> getPnRequestEncryptData(Map<String, String> vendorVal
 		try {
 		
 			 // Replace this with your actual secret key
-			String decryptedKey = AESExample.encrypt(key1, ConstantVariable.secreteKey);
-			String decryptedValue = AESExample.encrypt(value, ConstantVariable.secreteKey);
+			String decryptedKey = AESExample.encrypt(key1, ConstantVariable.SECRETEKEY);
+			String decryptedValue = AESExample.encrypt(value, ConstantVariable.SECRETEKEY);
 			jsonRequest1.put(decryptedKey, decryptedValue);
 
 		} catch (Exception e) {

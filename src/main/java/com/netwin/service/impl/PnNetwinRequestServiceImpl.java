@@ -131,7 +131,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 
 	private Map<String, Object> getNetwinFieldResults() {
 		Map<String, Object> netwinFieldResults1 = new HashMap<>();
-		List<Map<String, Object>> netwinFieldResultsMap = jdbcTemplate.queryForList(QueryUtil.netwnFieldQuery, "P",
+		List<Map<String, Object>> netwinFieldResultsMap = jdbcTemplate.queryForList(QueryUtil.NETWNFIELDQUERY, "P",
 				"V");
 		for (Map<String, Object> vendorField : netwinFieldResultsMap) {
 			String key = (String) vendorField.get("NETWREQKEYNAME");

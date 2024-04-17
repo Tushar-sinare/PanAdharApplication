@@ -11,7 +11,7 @@ public class EncryptionData {
 public String getEncryptResponse(String response) throws Exception {
 String strEncrypt = null;
 
-		strEncrypt = AESExample.encrypt(response,ConstantVariable.secreteKey);
+		strEncrypt = AESExample.encrypt(response,ConstantVariable.SECRETEKEY);
 	
 	
 	return strEncrypt;

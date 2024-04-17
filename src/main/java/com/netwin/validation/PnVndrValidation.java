@@ -49,9 +49,9 @@ public PnVndrValidation(JdbcTemplate jdbcTemplate,ErrorApplicationService errorA
 		List<Map<String, Object>> netwinFieldResults2 =null;
 		Map<String,Map<String, String>> validationNetVn11 = new HashMap<>();
 	if(pnVendorId!=0) {
-		pnVendorResults = jdbcTemplate.queryForList(QueryUtil.pnVndrField, pnVendorId,
+		pnVendorResults = jdbcTemplate.queryForList(QueryUtil.PNVNDRFIELD, pnVendorId,
 				"P", "Y");
-		netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.netwnWithVndrFieldQuery,pnVendorId, "P");
+		netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWNWITHVNDRFIELDQUERY,pnVendorId, "P");
 	}else {
 	
 		errorApplicationService.storeError(401, "Please Required Vendor Details ");
@@ -98,10 +98,10 @@ public PnVndrValidation(JdbcTemplate jdbcTemplate,ErrorApplicationService errorA
 	
 		for (Map.Entry<String, String> val : validationNetVn1.entrySet()) {
 			if(!vendorValue.containsKey(val.getValue())) {
-				logger.error(String.format("%s%s%s", ConstantVariable.returnStr, val.getValue(), ConstantVariable.returnStr1));
+				logger.error(String.format("%s%s%s", ConstantVariable.RETURNSTR, val.getValue(), ConstantVariable.RETURNSTR1));
 
-				errorApplicationService.storeError(401,ConstantVariable.returnStr+val.getValue() +ConstantVariable.returnStr1);
-				return new Result<> (ConstantVariable.returnStr+val.getValue() +ConstantVariable.returnStr1);
+				errorApplicationService.storeError(401,ConstantVariable.RETURNSTR+val.getValue() +ConstantVariable.RETURNSTR1);
+				return new Result<> (ConstantVariable.RETURNSTR+val.getValue() +ConstantVariable.RETURNSTR1);
 		}
 		}
 		return new Result<>(vendorValue);
