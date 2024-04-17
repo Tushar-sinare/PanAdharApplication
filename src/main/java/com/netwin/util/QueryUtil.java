@@ -17,4 +17,8 @@ public static String errors = "SELECT REJRESDESC FROM rejectres WHERE REJRESCD =
 
 //final String CUSTDETAILS = "SELECT * FROM netwcustmas where NETWCUSTSRNO=?";
 //final String VENDORDETAILS = "SELECT * FROM pnvendormas where PNVNDRSRNO=?";
+private QueryUtil() {
+	
+}
+
 }

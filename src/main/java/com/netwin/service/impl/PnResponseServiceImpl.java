@@ -68,7 +68,7 @@ public class PnResponseServiceImpl implements PnResponseService {
 		
 				ObjectMapper mapper = new ObjectMapper();
 		Map<String, Object> dataMap = mapper.readValue(response, Map.class);
-		Map<String, String> resultVOMap = (Map<String, String>) dataMap.get(ConstantVariable.RESULTVO);
+		Map<String, String> resultVOMap = (Map<String, String>) dataMap.get(ConstantVariable.resultVo);
 		
 		
 		for (Map.Entry<String, String> vendorField : validationNetVn.entrySet()) {
@@ -77,8 +77,8 @@ public class PnResponseServiceImpl implements PnResponseService {
 			}else if(resultVOMap.containsKey(vendorField.getValue())) {
 					pnResValue.put(vendorField.getKey(),dataMap.get(vendorField.getValue()));
 			}
-				if(dataMap.containsKey(ConstantVariable.RESULTVO)) {
-					vendorValue.put(ConstantVariable.RESULTVO, pnResValue);
+				if(dataMap.containsKey(ConstantVariable.resultVo)) {
+					vendorValue.put(ConstantVariable.resultVo, pnResValue);
 				}
 
 				

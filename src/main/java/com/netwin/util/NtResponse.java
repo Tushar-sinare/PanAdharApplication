@@ -15,18 +15,16 @@ public class NtResponse {
 
 	private final JdbcTemplate jdbcTemplate;
 
-	private final QueryUtil queryUtil;
 
 	@Autowired
-	public NtResponse(JdbcTemplate jdbcTemplate, QueryUtil queryUtil) {
+	public NtResponse(JdbcTemplate jdbcTemplate) {
 		this.jdbcTemplate = jdbcTemplate;
-		this.queryUtil = queryUtil;
 	}
 
 	public Result1<Map<String, Object>> getNtResponse(int msgCode) {
-		List<String> netwinResFieldResults1 = jdbcTemplate.queryForList(queryUtil.netwnResFieldQuery, String.class,
+		List<String> netwinResFieldResults1 = jdbcTemplate.queryForList(QueryUtil.netwnResFieldQuery, String.class,
 				"P", "Y", "V");
-		String error = jdbcTemplate.queryForObject(queryUtil.errors, String.class, msgCode);
+		String error = jdbcTemplate.queryForObject(QueryUtil.errors, String.class, msgCode);
 
 		Map<String, Object> netResponse = new HashMap<>();
 		Map<String, Object> resultVo = new HashMap<>();
