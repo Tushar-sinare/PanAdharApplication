@@ -95,14 +95,25 @@ private Map<String, String> getVendorValue(Map<String, String> validationNetVn, 
 }
 
 private Result<PnRequest> validateVendorValues(Map<String, String> validationNetVn1, Map<String, String> vendorValue) {
+    boolean errorLogged = false;
     for (Map.Entry<String, String> val : validationNetVn1.entrySet()) {
         if (!vendorValue.containsKey(val.getValue())) {
-            logger.error(String.format("%s%s%s", ConstantVariable.RETURNSTR, val.getValue(), ConstantVariable.RETURNSTR1));
-            errorApplicationService.storeError(401, ConstantVariable.RETURNSTR + val.getValue() + ConstantVariable.RETURNSTR1);
-            return new Result<>(ConstantVariable.RETURNSTR + val.getValue() + ConstantVariable.RETURNSTR1);
+            errorLogged = true;
+            String errorMessage = formatErrorMessage(val.getValue());
+            logger.error(errorMessage);
+            errorApplicationService.storeError(401, errorMessage);
         }
     }
-    return new Result<>(vendorValue);
+    if (errorLogged) {
+        return new Result<>(ConstantVariable.RETURNSTR + "Some errors occurred" + ConstantVariable.RETURNSTR1);
+    } else {
+        return new Result<>(vendorValue);
+    }
 }
+
+private String formatErrorMessage(String value) {
+    return ConstantVariable.RETURNSTR + value + ConstantVariable.RETURNSTR1;
+}
+
 
 }
