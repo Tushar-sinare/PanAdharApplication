@@ -7,6 +7,6 @@ import com.netwin.entiry.Result1;
 
 public interface PnVndrResponseService {
 
-	Result1<PnResponse> fetchPanApiResponse(PnVndrRequest pnVndrRequest2, PnRequest pnRequest2);
+	Result1 fetchPanApiResponse(PnVndrRequest pnVndrRequest2, PnRequest pnRequest2);
 
 }

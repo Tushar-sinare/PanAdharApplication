@@ -222,12 +222,12 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 			}
 				try {
 //Check netwin field and Value Validation
-					Result<PnRequest> result = pnRequestValidation.checkNetwnValidation(pnRequestDecrypt,
+					Result result = pnRequestValidation.checkNetwnValidation(pnRequestDecrypt,
 							netwinFieldResults1, pnRequest1);
 					if (result.isValid()) {
-						pnRequest = result.getData();
+						pnRequest = (PnRequest) result.getData();
 //Call Vendor Service Requst 
-						Result<String> pnVndrRequest = pnVndrRequestService.fetchPnVndrRequest(pnRequest,
+						Result pnVndrRequest = pnVndrRequestService.fetchPnVndrRequest(pnRequest,
 								pnRequestDecrypt);
 
 						return pnVndrRequest.getErrorMessage();

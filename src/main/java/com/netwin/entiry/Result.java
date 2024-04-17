@@ -1,13 +1,14 @@
 package com.netwin.entiry;
+
 import java.util.Map;
 
-public class Result<T> {
-   private  T data;
-   private  String errorMessage;
-   private  Map<String, String> map;
-   private  Result1<T> results;
+public class Result {
+    private Object data;
+    private String errorMessage;
+    private Map<String, String> map;
+    private Result1 results;
 
-    public Result(T data) {
+    public Result(Object data) {
         this.data = data;
     }
 
@@ -19,18 +20,15 @@ public class Result<T> {
         this.map = map;
     }
 
+    public Result(Result1 results) {
+        this.results = results;
+    }
 
-
-    public Result(Result1<T> results) {
-		super();
-		this.results = results;
-	}
-
-	public boolean isValid() {
+    public boolean isValid() {
         return errorMessage == null;
     }
 
-    public T getData() {
+    public Object getData() {
         return data;
     }
 
@@ -42,27 +40,23 @@ public class Result<T> {
         return map;
     }
 
+    public Result1 getResults() {
+        return results;
+    }
 
-	public Result1<T> getResults() {
-		return results;
-	}
+    public void setResults(Result1 results) {
+        this.results = results;
+    }
 
-	public void setResults(Result1<T> results) {
-		this.results = results;
-	}
+    public void setData(Object data) {
+        this.data = data;
+    }
 
-	public void setData(T data) {
-		this.data = data;
-	}
+    public void setErrorMessage(String errorMessage) {
+        this.errorMessage = errorMessage;
+    }
 
-	public void setErrorMessage(String errorMessage) {
-		this.errorMessage = errorMessage;
-	}
-
-	public void setMap(Map<String, String> map) {
-		this.map = map;
-	}
-
-	
- 
+    public void setMap(Map<String, String> map) {
+        this.map = map;
+    }
 }

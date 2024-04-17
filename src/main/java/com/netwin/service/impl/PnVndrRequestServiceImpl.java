@@ -47,23 +47,23 @@ public class PnVndrRequestServiceImpl implements PnVndrRequestService {
 	private static final Logger logger = LoggerFactory.getLogger(PnVndrRequestServiceImpl.class);
 
 	@Override
-	public Result<String> fetchPnVndrRequest(PnRequest pnReqData, Map<String, String> pnRequestDecrypt) {
+	public Result fetchPnVndrRequest(PnRequest pnReqData, Map<String, String> pnRequestDecrypt) {
 
 		Map<String, String> vendorValue = null;
 		// Check Vendor Mapping
-		Result<PnRequest> result = pnVndrValidation.checkMappingVendor(pnReqData, pnRequestDecrypt);
+		Result result = pnVndrValidation.checkMappingVendor(pnReqData, pnRequestDecrypt);
 		if (result.isValid()) {
 			vendorValue = result.getMap();
 			// call Vendor Request Store method
 
 			String pnVndrResponse = callVendorMethod(vendorValue, pnReqData);
-			return new Result<>(pnVndrResponse);
+			return new Result(pnVndrResponse);
 		} else {
 			String errorMessage = result.getErrorMessage();
 			// Handle the error message
 			logger.error(errorMessage);
 			errorApplicationService.storeError(109, errorMessage);
-			return new Result<>(errorMessage);
+			return new Result(errorMessage);
 		}
 
 	}
@@ -79,7 +79,7 @@ public class PnVndrRequestServiceImpl implements PnVndrRequestService {
 		PnVndrRequest pnVndrRequest2 = pnVndrRequestRepo.save(pnVndrRequest);
 		// Call Vendor Api to fetch Response
 
-		Result1<PnResponse> pnVndrApiResponse = pnVndrResponseService.fetchPanApiResponse(pnVndrRequest2, pnRequest2);
+		Result1 pnVndrApiResponse = pnVndrResponseService.fetchPanApiResponse(pnVndrRequest2, pnRequest2);
 
 		return pnVndrApiResponse.getResMap().toString();
 

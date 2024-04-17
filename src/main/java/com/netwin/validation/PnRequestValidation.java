@@ -45,7 +45,7 @@ public class PnRequestValidation {
 		return matcher.matches();
 	}
 
-	public Result<PnRequest> checkNetwnValidation(Map<String, String> pnRequestDecrypt, Map<String,Object> netwinFieldResults,
+	public Result checkNetwnValidation(Map<String, String> pnRequestDecrypt, Map<String,Object> netwinFieldResults,
 			PnRequest pnRequest){
 
 		for (Field field : PnRequest.class.getDeclaredFields()) {
@@ -55,19 +55,19 @@ public class PnRequestValidation {
 				String fieldValue = pnRequestDecrypt.get(fieldName);
 				if (fieldValue == null) {
 					errorApplicationService.storeError(108, "Please " + fieldName + " is Empty insert the Value");
-					return new Result<PnRequest>("Please " + fieldName + " is Empty insert the Value");
+					return new Result("Please " + fieldName + " is Empty insert the Value");
 				}
 			}
 
 		}
 
 		if (!checkValidation(pnRequest)) {
-			Result1<Map<String, Object>> result = ntResponse.getNtResponse(2003);
+			Result1 result = ntResponse.getNtResponse(2003);
 			String resultPan = result.getResMap().toString();
-			return new Result<>(resultPan);
+			return new Result(resultPan);
 
 		} else {
-			return new Result<PnRequest>(pnRequest);
+			return new Result(pnRequest);
 		}
 
 	}

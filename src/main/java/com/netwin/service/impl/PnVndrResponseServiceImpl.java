@@ -53,13 +53,13 @@ public PnVndrResponseServiceImpl(PnVndrResponseRepo pnVndrResponseRepo,PnRespons
 
 private Date date = new Date(System.currentTimeMillis());
 	@Override
-	public Result1<PnResponse> fetchPanApiResponse(PnVndrRequest pnVndrRequest2, PnRequest pnRequest2) {
+	public Result1 fetchPanApiResponse(PnVndrRequest pnVndrRequest2, PnRequest pnRequest2) {
 		
 			//fetch vendor details 
 		PnVendorDetails pnVendorDetails = pnRequest2.getPnVendorDetails();
 		if(pnVendorDetails==null) {
-		Result1<Map<String,Object>> result  = ntResponse.getNtResponse(2004);
-			return new Result1<>(result.toString());
+		Result1 result  = ntResponse.getNtResponse(2004);
+			return new Result1(result.toString());
 		}
 	
 		HttpHeaders headers = new HttpHeaders();
@@ -96,7 +96,7 @@ private Date date = new Date(System.currentTimeMillis());
 	
 	
 	}
-	private Result1<PnResponse> callPanVerifyApi(String pnVrfyURL, HttpMethod post, HttpEntity<String> requestEntity,
+	private Result1 callPanVerifyApi(String pnVrfyURL, HttpMethod post, HttpEntity<String> requestEntity,
 			PnRequest pnRequest2) {
 			PnResponse pnResponse = new PnResponse();
 			
@@ -128,7 +128,7 @@ private Date date = new Date(System.currentTimeMillis());
 					pnResponseRepo.save(pnResponse);
 					
 				
-					return new Result1<PnResponse>(pnNetRes);
+					return new Result1(pnNetRes);
 				
 			
 			} catch (HttpClientErrorException e) {

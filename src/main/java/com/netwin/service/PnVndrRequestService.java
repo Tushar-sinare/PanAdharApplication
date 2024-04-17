@@ -7,7 +7,7 @@ import com.netwin.entiry.Result;
 
 public interface PnVndrRequestService {
 
-	Result<String> fetchPnVndrRequest(PnRequest pnRequest2,Map<String, String> pnRequestDecrypt);
+	Result fetchPnVndrRequest(PnRequest pnRequest2,Map<String, String> pnRequestDecrypt);
 
 
 }

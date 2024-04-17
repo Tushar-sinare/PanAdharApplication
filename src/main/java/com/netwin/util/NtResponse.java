@@ -21,7 +21,7 @@ public class NtResponse {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	public Result1<Map<String, Object>> getNtResponse(int msgCode) {
+	public Result1 getNtResponse(int msgCode) {
 		List<String> netwinResFieldResults1 = jdbcTemplate.queryForList(QueryUtil.NETWRESPFIELDQUERY, String.class,
 				"P", "Y", "V");
 		String error = jdbcTemplate.queryForObject(QueryUtil.NETWRESPFIELDQUERY, String.class, msgCode);
@@ -48,7 +48,7 @@ public class NtResponse {
 		}
 		netResponse.put("ResultVO", resultVo);
 
-		return new Result1<Map<String, Object>>(netResponse);
+		return new Result1 (netResponse);
 	}
 
 }

@@ -30,11 +30,11 @@ public PnVndrValidation(JdbcTemplate jdbcTemplate,ErrorApplicationService errorA
 	this.jdbcTemplate=jdbcTemplate;
 	this.errorApplicationService=errorApplicationService;
 }
-public Result<PnRequest> checkMappingVendor(PnRequest pnReq, Map<String, String> pnRequestDecrypt) {
+public Result checkMappingVendor(PnRequest pnReq, Map<String, String> pnRequestDecrypt) {
     int pnVendorId = getPnVendorId(pnReq);
     if (pnVendorId == 0) {
         errorApplicationService.storeError(401, "Please Required Vendor Details ");
-        return new Result<>("Please Required Vendor Details ");
+        return new Result("Please Required Vendor Details ");
     }
 
     Map<String, String> validationNetVn = getValidationNetVn(pnVendorId);
@@ -94,7 +94,7 @@ private Map<String, String> getVendorValue(Map<String, String> validationNetVn, 
     return vendorValue;
 }
 
-private Result<PnRequest> validateVendorValues(Map<String, String> validationNetVn1, Map<String, String> vendorValue) {
+private Result validateVendorValues(Map<String, String> validationNetVn1, Map<String, String> vendorValue) {
     boolean errorLogged = false;
     for (Map.Entry<String, String> val : validationNetVn1.entrySet()) {
         if (!vendorValue.containsKey(val.getValue())) {
@@ -105,9 +105,9 @@ private Result<PnRequest> validateVendorValues(Map<String, String> validationNet
         }
     }
     if (errorLogged) {
-        return new Result<>(ConstantVariable.RETURNSTR + "Some errors occurred" + ConstantVariable.RETURNSTR1);
+        return new Result(ConstantVariable.RETURNSTR + "Some errors occurred" + ConstantVariable.RETURNSTR1);
     } else {
-        return new Result<>(vendorValue);
+        return new Result(vendorValue);
     }
 }
 
