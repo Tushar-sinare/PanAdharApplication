@@ -27,14 +27,13 @@ private final ErrorApplicationService errorApplicationService;
 	@PostMapping("/pnrequest")
 	public ResponseEntity<String> callPanRequest(@RequestBody String panRequestJson, HttpServletRequest request) {
 		String clientIp = request.getRemoteAddr();
-
 		try {
 			if (panRequestJson != null && !panRequestJson.isEmpty()) {
 				String pnRequestStr = pnNetwinRequestService.callPanRequest(panRequestJson, clientIp);
 				return new ResponseEntity<String>(pnRequestStr, HttpStatus.ACCEPTED);
 			}
 		} catch (Exception ex) {
-			 errorApplicationService.storeError(401,ex.getMessage());
+			 errorApplicationService.storeError(502,ex.getMessage());
 			 return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_GATEWAY);
 			 
 		}

@@ -36,6 +36,7 @@ import com.netwin.service.PnNetwinRequestService;
 import com.netwin.service.PnRequestService;
 import com.netwin.service.PnVendorDetailsService;
 import com.netwin.service.PnVndrRequestService;
+import com.netwin.util.EncryptionData;
 import com.netwin.util.PnNetwinDecrypt;
 import com.netwin.util.QueryUtil;
 import com.netwin.validation.PnRequestValidation;
@@ -46,6 +47,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 	private final PnNetwinRequestRepo pnNetwinRequestRepository;
 
 	private final PnNetwinDecrypt pnNetwinDecrypt;
+private final EncryptionData encryptionData;
 
 	private final PnNetwinRequestMapper mapper;
 
@@ -72,7 +74,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 			PnVndrRequestService pnVndrRequestService, ErrorApplicationService errorApplicationService,
 			PnRequestValidation pnRequestValidation, NetwinCustomerDetailsService netwinCustomerDetailsService,
 			PnVendorDetailsService pnVendorDetailsservice,
-			NetwinProductionDetailsService netwinProductionDetailsService, PnRequestService pnRequestService) {
+			NetwinProductionDetailsService netwinProductionDetailsService, PnRequestService pnRequestService,EncryptionData encryptionData) {
 		this.pnNetwinDecrypt = pnNetwinDecrypt;
 		this.pnNetwinRequestRepository = pnNetwinRequestRepository;
 		this.mapper = mapper;
@@ -84,16 +86,14 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 		this.pnVendorDetailsservice = pnVendorDetailsservice;
 		this.netwinProductionDetailsService = netwinProductionDetailsService;
 		this.pnRequestService = pnRequestService;
-
+this.encryptionData=encryptionData;
 	}
 
 	@Override
 	public String callPanRequest(String panRequestJson, String clientIp) throws PnNetwinRequestException {
 	    try {
 	        PnNetwinRequestDto panRequestDto = new PnNetwinRequestDto();
-	        // Call to Decrypt Data
-	        String pnRequestDecryptString = pnNetwinDecrypt.getPnRequestDecryptData(panRequestJson);
-
+	   String pnRequestDecryptString = pnNetwinDecrypt.getPnRequestDecryptData(panRequestJson);
 	        panRequestDto.setReqEncrypt(panRequestJson);
 	        panRequestDto.setReqDecrypt(pnRequestDecryptString);
 	        panRequestDto.setEntryDate(date);

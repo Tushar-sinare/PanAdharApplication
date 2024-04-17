@@ -2,9 +2,8 @@ package com.netwin.util;
 
 import javax.crypto.Cipher;
 import javax.crypto.SecretKey;
-import javax.crypto.spec.GCMParameterSpec;
+import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
-
 import com.netwin.exception.AESOperationException;
 
 import java.security.SecureRandom;
@@ -12,14 +11,11 @@ import java.util.Base64;
 
 public class AESExample {
 
-    private static final int GCM_TAG_LENGTH = 128;
-    private static final int GCM_IV_LENGTH = 12;
+    private static final int CBC_IV_LENGTH = 16;
 
     private AESExample() {
         throw new IllegalStateException("Utility class");
     }
-
-   
 
     // Encrypt function
     public static String encrypt(String plainText, String key) throws AESOperationException {
@@ -27,9 +23,8 @@ public class AESExample {
             byte[] iv = generateRandomIV();
             SecretKey secretKey = new SecretKeySpec(key.getBytes(), "AES");
 
-            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
-            cipher.init(Cipher.ENCRYPT_MODE, secretKey, gcmParameterSpec);
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.ENCRYPT_MODE, secretKey, new IvParameterSpec(iv));
 
             byte[] encryptedBytes = cipher.doFinal(plainText.getBytes());
 
@@ -47,17 +42,16 @@ public class AESExample {
     public static String decrypt(String encryptedText, String key) throws AESOperationException {
         try {
             byte[] combined = Base64.getDecoder().decode(encryptedText);
-            byte[] iv = new byte[GCM_IV_LENGTH];
-            byte[] encryptedBytes = new byte[combined.length - GCM_IV_LENGTH];
+            byte[] iv = new byte[CBC_IV_LENGTH];
+            byte[] encryptedBytes = new byte[combined.length - CBC_IV_LENGTH];
 
-            System.arraycopy(combined, 0, iv, 0, GCM_IV_LENGTH);
-            System.arraycopy(combined, GCM_IV_LENGTH, encryptedBytes, 0, encryptedBytes.length);
+            System.arraycopy(combined, 0, iv, 0, CBC_IV_LENGTH);
+            System.arraycopy(combined, CBC_IV_LENGTH, encryptedBytes, 0, encryptedBytes.length);
 
             SecretKey secretKey = new SecretKeySpec(key.getBytes(), "AES");
 
-            Cipher cipher = Cipher.getInstance("AES/GCM/NoPadding");
-            GCMParameterSpec gcmParameterSpec = new GCMParameterSpec(GCM_TAG_LENGTH, iv);
-            cipher.init(Cipher.DECRYPT_MODE, secretKey, gcmParameterSpec);
+            Cipher cipher = Cipher.getInstance("AES/CBC/PKCS5Padding");
+            cipher.init(Cipher.DECRYPT_MODE, secretKey, new IvParameterSpec(iv));
 
             byte[] decryptedBytes = cipher.doFinal(encryptedBytes);
 
@@ -68,7 +62,7 @@ public class AESExample {
     }
 
     private static byte[] generateRandomIV() {
-        byte[] iv = new byte[GCM_IV_LENGTH];
+        byte[] iv = new byte[CBC_IV_LENGTH];
         new SecureRandom().nextBytes(iv);
         return iv;
     }
