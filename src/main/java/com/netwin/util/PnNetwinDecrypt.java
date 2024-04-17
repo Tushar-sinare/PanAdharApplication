@@ -6,6 +6,7 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.netwin.exception.PnNetwinDecryptException;
 import com.netwin.service.ErrorApplicationService;
 
 @Component
@@ -50,9 +51,3 @@ public class PnNetwinDecrypt {
     }
 }
 
-// Custom exception class for decryption errors
-class PnNetwinDecryptException extends Exception {
-    public PnNetwinDecryptException(String message, Throwable cause) {
-        super(message, cause);
-    }
-}
