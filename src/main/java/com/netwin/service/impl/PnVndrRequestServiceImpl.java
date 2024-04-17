@@ -44,7 +44,7 @@ private static final Logger logger = LoggerFactory.getLogger(PnVndrRequestServic
 	@Override
 	public Result<String> fetchPnVndrRequest(PnRequest pnReqData,Map<String, String> pnRequestDecrypt) {
 	
-		PnNetwinRequest pnRequestId = pnReqData.getPnNetwinRequest();
+		
 		
 		 Map<String,String> vendorValue=null;
 		 //Check Vendor Mapping
