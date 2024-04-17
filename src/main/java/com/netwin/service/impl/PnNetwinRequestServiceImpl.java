@@ -23,6 +23,7 @@ import com.netwin.entiry.PnNetwinRequest;
 import com.netwin.entiry.PnRequest;
 import com.netwin.entiry.PnVendorDetails;
 import com.netwin.entiry.Result;
+import com.netwin.exception.FieldMappingException;
 import com.netwin.exception.FieldValueSetterNotFoundException;
 import com.netwin.exception.ResourceNotFoundException;
 import com.netwin.mapper.PnNetwinRequestMapper;
@@ -147,14 +148,19 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 	}
 
 	private void mapFields(PnRequest pnRequest, Map<String, Object> netwinFieldResults1,
-			Map<String, String> pnRequestDecrypt) throws Exception {
-		for (Field field : PnRequest.class.getDeclaredFields()) {
-			if (netwinFieldResults1.containsKey(field.getName()) && pnRequestDecrypt.containsKey(field.getName())) {
-				setFieldValue(pnRequest, field, pnRequestDecrypt.get(field.getName()));
-			} else if (!"pnReqDetSrNo".equals(field.getName())) {
-				setFieldValue(pnRequest, field, null);
-			}
-		}
+	        Map<String, String> pnRequestDecrypt) throws FieldMappingException {
+	    try {
+	        for (Field field : PnRequest.class.getDeclaredFields()) {
+	            if (netwinFieldResults1.containsKey(field.getName()) && pnRequestDecrypt.containsKey(field.getName())) {
+	                setFieldValue(pnRequest, field, pnRequestDecrypt.get(field.getName()));
+	            } else if (!"pnReqDetSrNo".equals(field.getName())) {
+	                setFieldValue(pnRequest, field, null);
+	            }
+	        }
+	    } catch (FieldValueSetterNotFoundException e) {
+	        // If there is an issue setting the field value, wrap and throw a dedicated exception
+	        throw new FieldMappingException("Error while mapping fields in PnRequest", e);
+	    }
 	}
 
 
