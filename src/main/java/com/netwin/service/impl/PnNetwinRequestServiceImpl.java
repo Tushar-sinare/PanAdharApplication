@@ -131,9 +131,9 @@ this.encryptionData=encryptionData;
 			return callVendorServiceAndGetResult(pnRequestObj, netwinFieldResults1, pnRequestDecrypt);
 		} catch (Exception e) {
 			errorApplicationService.storeError(504, e.getMessage());
-			e.printStackTrace();
+			return e.getMessage();
 		}
-		return null;
+		
 	}
 
 	private Map<String, Object> getNetwinFieldResults() {
