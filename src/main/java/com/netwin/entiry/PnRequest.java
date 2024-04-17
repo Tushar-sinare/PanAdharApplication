@@ -17,7 +17,6 @@ import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
 
 @Entity
-
 @Table(name="pnreqdetails")
 public class PnRequest {
 	@Id

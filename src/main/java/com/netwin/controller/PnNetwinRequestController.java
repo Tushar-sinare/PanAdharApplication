@@ -27,17 +27,23 @@ private final ErrorApplicationService errorApplicationService;
 	@PostMapping("/pnrequest")
 	public ResponseEntity<String> callPanRequest(@RequestBody String panRequestJson, HttpServletRequest request) {
 		String clientIp = request.getRemoteAddr();
+		String retrnStr = "Json is Empty";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
 		try {
 			if (panRequestJson != null && !panRequestJson.isEmpty()) {
 				String pnRequestStr = pnNetwinRequestService.callPanRequest(panRequestJson, clientIp);
-				return new ResponseEntity<String>(pnRequestStr, HttpStatus.ACCEPTED);
+				retrnStr = pnRequestStr;
+				status = HttpStatus.BAD_REQUEST;
 			}
 		} catch (Exception ex) {
 			 errorApplicationService.storeError(502,ex.getMessage());
-			 return new ResponseEntity<String>(ex.getMessage(), HttpStatus.BAD_GATEWAY);
+			 retrnStr = ex.getMessage();
+				status = HttpStatus.BAD_REQUEST;
 			 
 		}
 
-		return new ResponseEntity<String>("Json is Empty", HttpStatus.BAD_REQUEST);
+		return new ResponseEntity<String>(retrnStr, status);
 	}
+	
+	
 }
