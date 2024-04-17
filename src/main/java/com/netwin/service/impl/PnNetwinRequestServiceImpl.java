@@ -1,6 +1,7 @@
 package com.netwin.service.impl;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.lang.reflect.Type;
 import java.sql.Date;
@@ -22,6 +23,7 @@ import com.netwin.entiry.PnNetwinRequest;
 import com.netwin.entiry.PnRequest;
 import com.netwin.entiry.PnVendorDetails;
 import com.netwin.entiry.Result;
+import com.netwin.exception.FieldValueSetterNotFoundException;
 import com.netwin.exception.ResourceNotFoundException;
 import com.netwin.mapper.PnNetwinRequestMapper;
 import com.netwin.repo.PnNetwinRequestRepo;
@@ -155,11 +157,17 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 		}
 	}
 
-	private void setFieldValue(PnRequest pnRequest, Field field, String value) throws SecurityException, Exception {
-		String capitalizedFieldName = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
-		String setterMethodName = "set" + capitalizedFieldName;
-		Method setterMethod = PnRequest.class.getMethod(setterMethodName, field.getType());
-		setterMethod.invoke(pnRequest, value);
+
+	private void setFieldValue(PnRequest pnRequest, Field field, String value) throws FieldValueSetterNotFoundException {
+	    try {
+	        String capitalizedFieldName = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
+	        String setterMethodName = "set" + capitalizedFieldName;
+	        Method setterMethod = PnRequest.class.getMethod(setterMethodName, field.getType());
+	        setterMethod.invoke(pnRequest, value);
+	    } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+	        // If the setter method is not found or cannot be accessed, throw a dedicated exception
+	        throw new FieldValueSetterNotFoundException("Setter method not found or cannot be accessed for field: " + field.getName(), e);
+	    }
 	}
 
 	private void setRelatedEntities(PnRequest pnRequest, PnNetwinRequest pnNetwinRequest1) {
