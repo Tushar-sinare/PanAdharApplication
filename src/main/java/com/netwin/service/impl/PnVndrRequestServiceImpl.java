@@ -9,7 +9,6 @@ import org.springframework.stereotype.Service;
 
 import com.netwin.entiry.PnNetwinRequest;
 import com.netwin.entiry.PnRequest;
-import com.netwin.entiry.PnResponse;
 import com.netwin.entiry.PnVndrRequest;
 import com.netwin.entiry.Result;
 import com.netwin.entiry.Result1;
