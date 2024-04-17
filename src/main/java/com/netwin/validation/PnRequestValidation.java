@@ -27,7 +27,8 @@ public class PnRequestValidation {
 		this.errorApplicationService = errorApplicationService;
 	}
 	
-	private static final String PAN_PATTERN = "[A-Z]{5}[0-9]{4}[A-Z]{1}";
+	
+	private static final String PAN_PATTERN = "[A-Z]{5}\\d{4}[A-Z]{1}";
 
 	public boolean checkValidation(PnRequest pnRequest) {
 
@@ -45,7 +46,7 @@ public class PnRequestValidation {
 	}
 
 	public Result<PnRequest> checkNetwnValidation(Map<String, String> pnRequestDecrypt, Map<String,Object> netwinFieldResults,
-			PnRequest pnRequest) throws Exception {
+			PnRequest pnRequest){
 
 		for (Field field : PnRequest.class.getDeclaredFields()) {
 
