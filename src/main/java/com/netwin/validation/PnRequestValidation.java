@@ -28,7 +28,7 @@ public class PnRequestValidation {
 	}
 	
 	
-	private static final String PAN_PATTERN = "[A-Z]{5}\\d{4}[A-Z]{1}";
+	private static final String PAN_PATTERN = "[A-Z]{5}\\d{4}[A-Z]";
 
 	public boolean checkValidation(PnRequest pnRequest) {
 
