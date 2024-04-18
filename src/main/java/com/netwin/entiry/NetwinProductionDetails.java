@@ -57,12 +57,6 @@ public class NetwinProductionDetails {
 		public void setAdhrVrfyReq(String adhrVrfyReq) {
 			this.adhrVrfyReq = adhrVrfyReq;
 		}
-		@Override
-		public String toString() {
-			return "NetwinProductionDetails [netwProdSrNo=" + netwProdSrNo + ", netwProdId=" + netwProdId
-					+ ", netwProdName=" + netwProdName + ", pnVrfyReq=" + pnVrfyReq + ", adhrVrfyReq=" + adhrVrfyReq
-					+ "]";
-		}
 		
 
 }

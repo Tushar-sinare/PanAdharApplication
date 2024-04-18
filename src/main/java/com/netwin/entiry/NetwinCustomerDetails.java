@@ -49,11 +49,6 @@ public class NetwinCustomerDetails {
 	public void setNetwVndrs(int netwVndrs) {
 		this.netwVndrs = netwVndrs;
 	}
-	@Override
-	public String toString() {
-		return "NetwinCustomerDetails [netwCustSrNo=" + netwCustSrNo + ", netwCustId=" + netwCustId + ", netwCustName="
-				+ netwCustName + ", netwVndrs=" + netwVndrs + "]";
-	}
 
 
 }

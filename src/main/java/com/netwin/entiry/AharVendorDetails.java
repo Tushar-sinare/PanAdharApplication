@@ -96,13 +96,6 @@ public class AharVendorDetails {
 	public void setReqPerHr(int reqPerHr) {
 		this.reqPerHr = reqPerHr;
 	}
-	@Override
-	public String toString() {
-		return "AharVendorDetails [aharVnDrSrNo=" + aharVnDrSrNo + ", aharVdrName=" + aharVdrName + ", aharVdrApiPsw="
-				+ aharVdrApiPsw + ", aharVdrApiUser=" + aharVdrApiUser + ", aharVrfyURL=" + aharVrfyURL
-				+ ", aharVrfyOtpURL=" + aharVrfyOtpURL + ", aharVdrOptId=" + aharVdrOptId + ", encReqStr=" + encReqStr
-				+ ", reqPerDay=" + reqPerDay + ", reqPerHr=" + reqPerHr + "]";
-	}
 	
 	
 }

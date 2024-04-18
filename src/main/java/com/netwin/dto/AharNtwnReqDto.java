@@ -3,7 +3,7 @@ package com.netwin.dto;
 import java.util.Date;
 
 public class AharNtwnReqDto {
-	private long AharReMasSrNo;
+	private long aharReMasSrNo;
 	private String reqEncrypt;
 	private String reqDecrypt;
 	private Date entryDate;
@@ -11,10 +11,10 @@ public class AharNtwnReqDto {
 	
 
 	public long getAharReMasSrNo() {
-		return AharReMasSrNo;
+		return aharReMasSrNo;
 	}
 	public void setAharReMasSrNo(long aharReMasSrNo) {
-		AharReMasSrNo = aharReMasSrNo;
+		this.aharReMasSrNo = aharReMasSrNo;
 	}
 	public String getReqEncrypt() {
 		return reqEncrypt;
