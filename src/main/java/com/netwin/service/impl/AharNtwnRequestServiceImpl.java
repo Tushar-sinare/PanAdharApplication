@@ -82,12 +82,13 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 			resultStr = getMappingDataBaseThrough(aharRequestDecryptString, aharNtwnRequest);
 
 		} else {
-			errorApplicationService.storeError(1003, "Error: Unable to map PnNetwinRequest entity from DTO.");
-			logger.error("Error: Unable to map PnNetwinRequest entity from DTO.");
 			resultStr = "Error: Unable to map PnNetwinRequest entity from DTO.";
+			errorApplicationService.storeError(1003, resultStr);
+			logger.error(resultStr);
+			
 		}
 
-		logger.info(aharNtwnRequest.toString());
+	
 
 		return resultStr;
 	}
