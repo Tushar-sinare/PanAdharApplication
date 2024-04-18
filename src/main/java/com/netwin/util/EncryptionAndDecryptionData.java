@@ -6,30 +6,41 @@ import java.util.Map;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import com.netwin.exception.PnNetwinDecryptException;
+import com.netwin.exception.AESOperationException;
+import com.netwin.exception.EncryptionDataException;
 import com.netwin.service.ErrorApplicationService;
 
 @Component
-public class PnNetwinDecrypt {
-    
-    private final ErrorApplicationService errorApplicationService;
+public class EncryptionAndDecryptionData {
+	
+	 private ErrorApplicationService errorApplicationService;
 
-    @Autowired
-    public PnNetwinDecrypt(ErrorApplicationService errorApplicationService) {
-        this.errorApplicationService = errorApplicationService;
+	    @Autowired
+	    public EncryptionAndDecryptionData(ErrorApplicationService errorApplicationService) {
+	        this.errorApplicationService = errorApplicationService;
+	    }
+
+    public String getEncryptResponse(String response) throws EncryptionDataException {
+        String strEncrypt = null;
+        try {
+            strEncrypt = AESExample.encrypt(response, ConstantVariable.SECRETEKEY);
+        } catch (Exception e) {
+            // Wrap the caught exception into a custom exception and throw it
+            throw new EncryptionDataException("Error while encrypting response", e);
+        }
+        return strEncrypt;
     }
-
-    public String getPnRequestDecryptData(String pnrequestJson) throws PnNetwinDecryptException {
+ public String getPnRequestDecryptData(String pnrequestJson) {
     	
         String decryptedKey = null;
-        try {
+       
             // Your secret key
             // Replace this with your actual secret key
             decryptedKey = AESExample.decrypt(pnrequestJson, ConstantVariable.SECRETEKEY);
-        } catch (Exception e) {
+       
             // Wrap the caught exception into a custom exception and throw it
-            throw new PnNetwinDecryptException("Error while decrypting PN request", e);
-        }
+            //throw new PnNetwinDecryptException("Error while decrypting PN request", e);
+        
         return decryptedKey;
     }
 
@@ -51,4 +62,5 @@ public class PnNetwinDecrypt {
         return jsonRequest1;
     }
 }
+
 

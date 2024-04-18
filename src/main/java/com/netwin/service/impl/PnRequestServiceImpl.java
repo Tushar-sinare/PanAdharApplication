@@ -12,7 +12,7 @@ import com.netwin.service.PnRequestService;
 @Service
 public class PnRequestServiceImpl implements PnRequestService {
 
-	private final PnRequestRepo pnRequestRepo;
+	private PnRequestRepo pnRequestRepo;
 @Autowired
 public PnRequestServiceImpl(PnRequestRepo pnRequestRepo) {
 	this.pnRequestRepo=pnRequestRepo;

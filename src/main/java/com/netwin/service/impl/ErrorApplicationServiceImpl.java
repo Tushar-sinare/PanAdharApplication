@@ -10,7 +10,7 @@ import com.netwin.service.ErrorApplicationService;
 @Service
 public class ErrorApplicationServiceImpl implements ErrorApplicationService {
 
-private final ErrorApplicationRepo errorApplicationRepo;
+private ErrorApplicationRepo errorApplicationRepo;
 @Autowired
 public ErrorApplicationServiceImpl(ErrorApplicationRepo errorApplicationRepo) {
 	this.errorApplicationRepo = errorApplicationRepo;

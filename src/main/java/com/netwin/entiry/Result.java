@@ -2,7 +2,7 @@ package com.netwin.entiry;
 
 import java.util.Map;
 
-public class Result {
+public class Result{
     private Object data;
     private String errorMessage;
     private Map<String, String> map;

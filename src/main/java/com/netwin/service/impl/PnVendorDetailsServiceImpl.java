@@ -12,7 +12,7 @@ import com.netwin.service.PnVendorDetailsService;
 @Service
 public class PnVendorDetailsServiceImpl implements PnVendorDetailsService {
 
-	private final PnVendorDetailsRepo pnVendorDetailsRepo;
+	private PnVendorDetailsRepo pnVendorDetailsRepo;
 	@Autowired
 public PnVendorDetailsServiceImpl(PnVendorDetailsRepo pnVendorDetailsRepo) {
 	this.pnVendorDetailsRepo = pnVendorDetailsRepo;

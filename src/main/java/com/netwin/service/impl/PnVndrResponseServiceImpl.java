@@ -25,23 +25,23 @@ import com.netwin.repo.PnVndrResponseRepo;
 import com.netwin.service.ErrorApplicationService;
 import com.netwin.service.PnResponseService;
 import com.netwin.service.PnVndrResponseService;
-import com.netwin.util.EncryptionData;
+import com.netwin.util.EncryptionAndDecryptionData;
 import com.netwin.util.NtResponse;
 @Service
 public class PnVndrResponseServiceImpl implements PnVndrResponseService {
 
-private final PnVndrResponseRepo pnVndrResponseRepo;
+private PnVndrResponseRepo pnVndrResponseRepo;
 
-private final EncryptionData encryptionData;
+private EncryptionAndDecryptionData encryptionData;
 
-private final PnResponseService pnResponseService;
+private PnResponseService pnResponseService;
 
-private final PnResponseRepo pnResponseRepo;
+private PnResponseRepo pnResponseRepo;
 
-private final NtResponse ntResponse;
-private final ErrorApplicationService errorApplicationService;
+private NtResponse ntResponse;
+private ErrorApplicationService errorApplicationService;
 @Autowired
-public PnVndrResponseServiceImpl(PnVndrResponseRepo pnVndrResponseRepo,PnResponseService pnResponseService,PnResponseRepo pnResponseRepo,EncryptionData encryptionData,NtResponse ntResponse,ErrorApplicationService errorApplicationService) {
+public PnVndrResponseServiceImpl(PnVndrResponseRepo pnVndrResponseRepo,PnResponseService pnResponseService,PnResponseRepo pnResponseRepo,EncryptionAndDecryptionData encryptionData,NtResponse ntResponse,ErrorApplicationService errorApplicationService) {
 
 	this.pnVndrResponseRepo = pnVndrResponseRepo;
 	this.pnResponseRepo = pnResponseRepo;

@@ -13,8 +13,8 @@ import com.netwin.service.NetwinProductionDetailsService;
 @Service
 public class NetwinProductionDetailsServiceImpl implements NetwinProductionDetailsService{
 
-private final NetwinProductionDetailsRepo netwinProductionDetailsRepo;
-private final ErrorApplicationService errorApplicationService;
+private NetwinProductionDetailsRepo netwinProductionDetailsRepo;
+private ErrorApplicationService errorApplicationService;
 @Autowired
 public NetwinProductionDetailsServiceImpl(NetwinProductionDetailsRepo netwinProductionDetailsRepo,ErrorApplicationService errorApplicationService) {
 	this.netwinProductionDetailsRepo=netwinProductionDetailsRepo;

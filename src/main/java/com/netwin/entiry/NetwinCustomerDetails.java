@@ -22,6 +22,9 @@ public class NetwinCustomerDetails {
 	private String netwCustId;
 	@Column(name = "NETWCUSTNAME",length=50,nullable = true)
 	private String netwCustName;
+	
+	@Column(name = "NETWVNDRS",length=50,nullable = true)
+	private int netwVndrs;
 	public int getNetwCustSrNo() {
 		return netwCustSrNo;
 	}
@@ -39,6 +42,17 @@ public class NetwinCustomerDetails {
 	}
 	public void setNetwCustName(String netwCustName) {
 		this.netwCustName = netwCustName;
+	}
+	public int getNetwVndrs() {
+		return netwVndrs;
+	}
+	public void setNetwVndrs(int netwVndrs) {
+		this.netwVndrs = netwVndrs;
+	}
+	@Override
+	public String toString() {
+		return "NetwinCustomerDetails [netwCustSrNo=" + netwCustSrNo + ", netwCustId=" + netwCustId + ", netwCustName="
+				+ netwCustName + ", netwVndrs=" + netwVndrs + "]";
 	}
 
 

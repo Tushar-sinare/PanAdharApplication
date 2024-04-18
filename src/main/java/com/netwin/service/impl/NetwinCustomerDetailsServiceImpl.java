@@ -10,7 +10,7 @@ import com.netwin.service.NetwinCustomerDetailsService;
 @Service
 public class NetwinCustomerDetailsServiceImpl implements NetwinCustomerDetailsService{
 
-private final NetwinCustomerDetailsRepo netwinCustomerDetailsRepo;
+private NetwinCustomerDetailsRepo netwinCustomerDetailsRepo;
 @Autowired
 public NetwinCustomerDetailsServiceImpl(NetwinCustomerDetailsRepo netwinCustomerDetailsRep) {
 	this.netwinCustomerDetailsRepo = netwinCustomerDetailsRep;

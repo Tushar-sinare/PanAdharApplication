@@ -36,46 +36,45 @@ import com.netwin.service.PnNetwinRequestService;
 import com.netwin.service.PnRequestService;
 import com.netwin.service.PnVendorDetailsService;
 import com.netwin.service.PnVndrRequestService;
-import com.netwin.util.EncryptionData;
-import com.netwin.util.PnNetwinDecrypt;
+import com.netwin.util.EncryptionAndDecryptionData;
 import com.netwin.util.QueryUtil;
 import com.netwin.validation.PnRequestValidation;
 
 @Service
 public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 
-	private final PnNetwinRequestRepo pnNetwinRequestRepository;
+	private PnNetwinRequestRepo pnNetwinRequestRepository;
 
-	private final PnNetwinDecrypt pnNetwinDecrypt;
-private final EncryptionData encryptionData;
 
-	private final PnNetwinRequestMapper mapper;
+private EncryptionAndDecryptionData encryptionAndDecryptionData;
 
-	private final JdbcTemplate jdbcTemplate;
+	private PnNetwinRequestMapper mapper;
 
-	private final PnRequestValidation pnRequestValidation;
+	private JdbcTemplate jdbcTemplate;
 
-	private final NetwinCustomerDetailsService netwinCustomerDetailsService;
+	private PnRequestValidation pnRequestValidation;
 
-	private final PnVendorDetailsService pnVendorDetailsservice;
+	private NetwinCustomerDetailsService netwinCustomerDetailsService;
 
-	private final NetwinProductionDetailsService netwinProductionDetailsService;
+	private PnVendorDetailsService pnVendorDetailsservice;
 
-	private final PnRequestService pnRequestService;
+	private NetwinProductionDetailsService netwinProductionDetailsService;
 
-	private final PnVndrRequestService pnVndrRequestService;
+	private PnRequestService pnRequestService;
 
-	private final ErrorApplicationService errorApplicationService;
+	private PnVndrRequestService pnVndrRequestService;
+
+	private ErrorApplicationService errorApplicationService;
 	private Date date = new Date(System.currentTimeMillis());
 
 	@Autowired
-	public PnNetwinRequestServiceImpl(PnNetwinDecrypt pnNetwinDecrypt, PnNetwinRequestRepo pnNetwinRequestRepository,
+	public PnNetwinRequestServiceImpl( PnNetwinRequestRepo pnNetwinRequestRepository,
 			PnNetwinRequestMapper mapper, JdbcTemplate jdbcTemplate,
 			PnVndrRequestService pnVndrRequestService, ErrorApplicationService errorApplicationService,
 			PnRequestValidation pnRequestValidation, NetwinCustomerDetailsService netwinCustomerDetailsService,
 			PnVendorDetailsService pnVendorDetailsservice,
-			NetwinProductionDetailsService netwinProductionDetailsService, PnRequestService pnRequestService,EncryptionData encryptionData) {
-		this.pnNetwinDecrypt = pnNetwinDecrypt;
+			NetwinProductionDetailsService netwinProductionDetailsService, PnRequestService pnRequestService,EncryptionAndDecryptionData encryptionAndDecryptionData) {
+		
 		this.pnNetwinRequestRepository = pnNetwinRequestRepository;
 		this.mapper = mapper;
 		this.jdbcTemplate = jdbcTemplate;
@@ -86,14 +85,14 @@ private final EncryptionData encryptionData;
 		this.pnVendorDetailsservice = pnVendorDetailsservice;
 		this.netwinProductionDetailsService = netwinProductionDetailsService;
 		this.pnRequestService = pnRequestService;
-this.encryptionData=encryptionData;
+this.encryptionAndDecryptionData=encryptionAndDecryptionData;
 	}
 
 	@Override
 	public String callPanRequest(String panRequestJson, String clientIp) throws PnNetwinRequestException {
 	    try {
 	        PnNetwinRequestDto panRequestDto = new PnNetwinRequestDto();
-	        String pnRequestDecryptString = pnNetwinDecrypt.getPnRequestDecryptData(panRequestJson);
+	        String pnRequestDecryptString = encryptionAndDecryptionData.getPnRequestDecryptData(panRequestJson);
 	        panRequestDto.setReqEncrypt(panRequestJson);
 	        panRequestDto.setReqDecrypt(pnRequestDecryptString);
 	        panRequestDto.setEntryDate(date);
@@ -116,6 +115,38 @@ this.encryptionData=encryptionData;
 	    }
 	}
 
+	/**public String callPanRequest(String panRequestJson, String clientIp) throws PnNetwinRequestException {
+	    try {
+	        //1.Decrypt request string
+	        String pnRequestDecryptString = pnNetwinDecrypt.getPnRequestDecryptData(panRequestJson);
+	        PnNetwinRequestDto panRequestDto = new PnNetwinRequestDto();
+	        panRequestDto.setReqEncrypt(panRequestJson);
+	        panRequestDto.setReqDecrypt(pnRequestDecryptString);
+	        panRequestDto.setEntryDate(date);
+	        panRequestDto.setCallingIpAdr(clientIp);
+	        //2. Mapping Dto to Entity
+	        PnNetwinRequest pnNetwinRequest = mapper.toPnNetwinRequestEntity(panRequestDto);
+	       
+	        // 3.Save client request Data
+	         pnNetwinRequest = pnNetwinRequestRepository.save(pnNetwinRequest);
+	         
+	         setRelatedEntities
+	        
+			PnRequest pnRequestObj = new PnRequest(); 
+			Map<String, Object> netwinFieldResults1 = getNetwinFieldResults();
+			Map<String, String> pnRequestDecrypt = jsonStringToMap(pnRequestDecryptString);
+
+			mapFields(pnRequestObj, netwinFieldResults1, pnRequestDecrypt);
+			// Call services to set related entities
+			setRelatedEntities(pnRequestObj, pnNetwinRequest1);
+	       // 
+	        return callVendorServiceAndGetResult(pnRequestObj, netwinFieldResults1, pnRequestDecrypt);
+	        
+	    } catch (Exception e) {
+	        // Wrap and throw the caught exception as PnNetwinRequestException
+	        throw new PnNetwinRequestException("Error while processing PAN request", e);
+	    }
+	}**/
 
 //Mapping method database Field
 	public String getMappingDataBaseThrough(String pnRequestDecryptString, PnNetwinRequest pnNetwinRequest1) {
@@ -196,7 +227,7 @@ this.encryptionData=encryptionData;
 			}
 			// Call Vendor Details Service and set
 			Optional<PnVendorDetails> pnVendorDetails = pnVendorDetailsservice
-					.fetchPnVendorDetails(ntNetwinProductionDetails.getNetwVndrs());
+					.fetchPnVendorDetails(ntCustomerDetails.getNetwVndrs());
 			if (pnVendorDetails.isPresent()) {
 				pnRequest.setPnVendorDetails(pnVendorDetails.get());
 			}

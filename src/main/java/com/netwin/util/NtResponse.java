@@ -13,7 +13,7 @@ import com.netwin.entiry.Result1;
 @Component
 public class NtResponse {
 
-	private final JdbcTemplate jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
 
 	@Autowired

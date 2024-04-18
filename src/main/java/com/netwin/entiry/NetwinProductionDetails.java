@@ -26,8 +26,7 @@ public class NetwinProductionDetails {
 	private String pnVrfyReq;
 	@Column(name = "ADHRVRFYREQ",length=50,nullable = true)
 	private String adhrVrfyReq;
-		@Column(name = "NETWVNDRS",length=50,nullable = true)
-	private int netwVndrs;
+		
 		public int getNetwProdSrNo() {
 			return netwProdSrNo;
 		}
@@ -58,11 +57,12 @@ public class NetwinProductionDetails {
 		public void setAdhrVrfyReq(String adhrVrfyReq) {
 			this.adhrVrfyReq = adhrVrfyReq;
 		}
-		public int getNetwVndrs() {
-			return netwVndrs;
+		@Override
+		public String toString() {
+			return "NetwinProductionDetails [netwProdSrNo=" + netwProdSrNo + ", netwProdId=" + netwProdId
+					+ ", netwProdName=" + netwProdName + ", pnVrfyReq=" + pnVrfyReq + ", adhrVrfyReq=" + adhrVrfyReq
+					+ "]";
 		}
-		public void setNetwVndrs(int netwVndrs) {
-			this.netwVndrs = netwVndrs;
-		}
+		
 
 }

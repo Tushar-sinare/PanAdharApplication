@@ -16,29 +16,29 @@ import com.netwin.repo.PnVndrRequestRepo;
 import com.netwin.service.ErrorApplicationService;
 import com.netwin.service.PnVndrRequestService;
 import com.netwin.service.PnVndrResponseService;
-import com.netwin.util.PnNetwinDecrypt;
+import com.netwin.util.EncryptionAndDecryptionData;
 import com.netwin.validation.PnVndrValidation;
 
 @Service
 public class PnVndrRequestServiceImpl implements PnVndrRequestService {
 
-	private final PnVndrValidation pnVndrValidation;
+	private PnVndrValidation pnVndrValidation;
 
-	private final PnVndrResponseService pnVndrResponseService;
+	private PnVndrResponseService pnVndrResponseService;
 
-	private final PnNetwinDecrypt pnNetwinDecrypt;
+	private EncryptionAndDecryptionData encryptionAndDecryptionData;
 
-	private final PnVndrRequestRepo pnVndrRequestRepo;
+	private PnVndrRequestRepo pnVndrRequestRepo;
 
-	private final ErrorApplicationService errorApplicationService;
+	private ErrorApplicationService errorApplicationService;
 
 	@Autowired
 	public PnVndrRequestServiceImpl(PnVndrValidation pnVndrValidation, PnVndrResponseService pnVndrResponseService,
-			PnNetwinDecrypt pnNetwinDecrypt, PnVndrRequestRepo pnVndrRequestRepo,
+			EncryptionAndDecryptionData encryptionAndDecryptionData, PnVndrRequestRepo pnVndrRequestRepo,
 			ErrorApplicationService errorApplicationService) {
 		this.pnVndrValidation = pnVndrValidation;
 		this.pnVndrResponseService = pnVndrResponseService;
-		this.pnNetwinDecrypt = pnNetwinDecrypt;
+		this.encryptionAndDecryptionData = encryptionAndDecryptionData;
 		this.pnVndrRequestRepo = pnVndrRequestRepo;
 		this.errorApplicationService = errorApplicationService;
 	}
@@ -74,7 +74,7 @@ public class PnVndrRequestServiceImpl implements PnVndrRequestService {
 		pnVndrRequest.setCallingIpAdr(pnNetwinRequest.getCallingIpAdr());
 		pnVndrRequest.setEntryDate(pnRequest2.getAppDate());
 		pnVndrRequest.setReqDecrypt(vendorValue.toString());
-		pnVndrRequest.setReqEncrypt(pnNetwinDecrypt.getPnRequestEncryptData(vendorValue).toString());
+		pnVndrRequest.setReqEncrypt(encryptionAndDecryptionData.getPnRequestEncryptData(vendorValue).toString());
 		PnVndrRequest pnVndrRequest2 = pnVndrRequestRepo.save(pnVndrRequest);
 		// Call Vendor Api to fetch Response
 

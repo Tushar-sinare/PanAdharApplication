@@ -21,7 +21,7 @@ import com.netwin.util.QueryUtil;
 public class PnResponseServiceImpl implements PnResponseService {
 
 
-	private final JdbcTemplate jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
 	@Autowired
 	public PnResponseServiceImpl(JdbcTemplate jdbcTemplate) {
