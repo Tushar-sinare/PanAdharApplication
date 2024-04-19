@@ -119,13 +119,19 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 
 	private void setRelatedEntities(AharRequest aharRequestObj, AharNtwnRequest aharNtwnRequest) {
 		//Fetch Customer Details and Validate 
+		Optional<AharVendorDetails> aharVendorDetails = java.util.Optional.empty();
 			NetwinCustomerDetails ntCustomerDetails = ntwnCustomerDetailsService
 					.fetchNetwinCustomerDetails(aharRequestObj.getCustId());
 			if (ntCustomerDetails != null) {
 				aharRequestObj.setNtwnCustomerDetails(ntCustomerDetails);
+				aharVendorDetails =aharVendorDetailsService
+						.fetchPnVendorDetails(ntCustomerDetails.getNetwVndrs());
 			
 			}
 			
+			if (aharVendorDetails.isPresent()) {
+				aharRequestObj.setAharVndrDetails(aharVendorDetails.get());
+			}
 			// Call Netwin Product Details Service and set
 			NetwinProductionDetails ntNetwinProductionDetails = ntwnProductionDetailsService
 					.fetchNetwinProductionDetails(aharRequestObj.getProdId());
@@ -134,11 +140,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 			}
 		
 			// Call Vendor Details Service and set
-			Optional<AharVendorDetails> aharVendorDetails = aharVendorDetailsService
-					.fetchPnVendorDetails(ntCustomerDetails.getNetwVndrs());
-			if (aharVendorDetails.isPresent()) {
-				aharRequestObj.setAharVndrDetails(aharVendorDetails.get());
-			}
+			
 			
 			aharRequestObj.setAharNtwnRequest(aharNtwnRequest);
 			aharRequestObj.setAppDate(date);
