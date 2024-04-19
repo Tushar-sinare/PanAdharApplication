@@ -16,8 +16,8 @@ import jakarta.servlet.http.HttpServletRequest;
 public class PnNetwinRequestController {
 
 	// Add this annotation to inject the service
-	private final PnNetwinRequestService pnNetwinRequestService;
-private final ErrorApplicationService errorApplicationService;
+	private PnNetwinRequestService pnNetwinRequestService;
+private ErrorApplicationService errorApplicationService;
 	@Autowired
 	public PnNetwinRequestController(PnNetwinRequestService pnNetwinRequestService,ErrorApplicationService errorApplicationService) {
 		this.pnNetwinRequestService = pnNetwinRequestService;
