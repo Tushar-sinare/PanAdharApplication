@@ -107,10 +107,10 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 		// Call services to set related entities Mapping Id
 		setRelatedEntities(aharRequestDetObj, aharNtwnRequest);
 		
-		return callVendorServiceAndGetResult(aharRequestDetObj, aharRequestJsonMap);
+		return callVendorServiceAndGetResult(aharRequestDetObj);
 	}
 
-	private String callVendorServiceAndGetResult(AharRequest aharRequestObj,Map<String, String> aharRequestJsonMap) {
+	private String callVendorServiceAndGetResult(AharRequest aharRequestObj) {
 		//Store Vendor Request Details 
 		
 		 AharRequest aharRequest1 = aharRequestService.callVendorService(aharRequestObj);
@@ -129,7 +129,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 			// Call Netwin Product Details Service and set
 			NetwinProductionDetails ntNetwinProductionDetails = ntwnProductionDetailsService
 					.fetchNetwinProductionDetails(aharRequestObj.getProdId());
-			if (ntCustomerDetails != null) {
+			if (ntNetwinProductionDetails != null) {
 				aharRequestObj.setNetwinProductionDetails(ntNetwinProductionDetails);
 			}
 		
