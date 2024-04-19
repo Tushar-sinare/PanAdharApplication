@@ -36,8 +36,6 @@ public class EncryptionAndDecryptionData {
             // Replace this with your actual secret key
             decryptedKey = AESExample.decrypt(pnrequestJson, ConstantVariable.SECRETEKEY);
        
-            // Wrap the caught exception into a custom exception and throw it
-            //throw new PnNetwinDecryptException("Error while decrypting PN request", e);
         
         return decryptedKey;
     }

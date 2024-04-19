@@ -21,6 +21,7 @@ import com.netwin.entiry.AharRequest;
 import com.netwin.entiry.AharVendorDetails;
 import com.netwin.entiry.NetwinCustomerDetails;
 import com.netwin.entiry.NetwinProductionDetails;
+import com.netwin.exception.EncryptionDataException;
 import com.netwin.logger.LoggerProvider;
 import com.netwin.logger.MyLogger;
 import com.netwin.mapper.AharNtwnRequestMapper;
@@ -93,21 +94,21 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 		return resultStr;
 	}
 
-	private String getMappingDataBaseThrough(String aharRequestDecryptString, AharNtwnRequest aharNtwnRequest) {
+	private String getMappingDataBaseThrough(String aharRequestDecryptString, AharNtwnRequest aharNtwnRequest){
 		// Json String to Map Convert
-		Map<String, String> AharRequestJsonMap = jsonStringToMap(aharRequestDecryptString);
+		Map<String, String> aharRequestJsonMap = jsonStringToMap(aharRequestDecryptString);
 		AharRequest aharRequestDetObj = new AharRequest();
 		//details object
 		//Database field Name Fetch
 		Map<String, Object> netwinFieldResults1 = getNetwinFieldResults();
 		
 		//set field value from jsonStringtoMap
-		mapFields(aharRequestDetObj, netwinFieldResults1, AharRequestJsonMap);
+		mapFields(aharRequestDetObj, netwinFieldResults1, aharRequestJsonMap);
 		
 		// Call services to set related entities Mapping Id
 		setRelatedEntities(aharRequestDetObj, aharNtwnRequest);
 		
-		return callVendorServiceAndGetResult(aharRequestDetObj, netwinFieldResults1, AharRequestJsonMap);
+		return callVendorServiceAndGetResult(aharRequestDetObj, netwinFieldResults1, aharRequestJsonMap);
 	}
 
 	private String callVendorServiceAndGetResult(AharRequest aharRequestObj, Map<String, Object> netwinFieldResults1,
@@ -148,7 +149,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 	}
 //Mapping through field  database and Json 
 	private void mapFields(AharRequest aharRequestObj, Map<String, Object> netwinFieldResults1,
-			Map<String, String> aharRequestJsonMap) {
+			Map<String, String> aharRequestJsonMap){
 		  for (Field field : AharRequest.class.getDeclaredFields()) {
 			 
 	            if (netwinFieldResults1.containsKey(field.getName()) && aharRequestJsonMap.containsKey(field.getName())) {
@@ -161,7 +162,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 		
 	}
 //SetField Entity Value Method
-	private void setFieldValue(AharRequest aharRequestObj, Field field, String value)  {
+	private void setFieldValue(AharRequest aharRequestObj, Field field, String value) {
 		String capitalizedFieldName = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
         String setterMethodName = "set" + capitalizedFieldName;
         Method setterMethod = null;
@@ -173,6 +174,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 	        int errorCode = 5000;
 	        if (e instanceof NoSuchMethodException) {
 	            errorCode = 5004;
+	            
 	        } else if (e instanceof IllegalAccessException) {
 	            errorCode = 5001;
 	        } else if (e instanceof IllegalArgumentException) {
@@ -181,6 +183,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 	            errorCode = 5003;
 	        }
 	        errorApplicationService.storeError(errorCode, e.getMessage());
+	       
 	        //use throw exception
 	    }
 		
