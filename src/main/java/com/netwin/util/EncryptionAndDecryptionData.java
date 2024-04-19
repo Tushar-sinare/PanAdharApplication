@@ -5,7 +5,7 @@ import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-import com.netwin.exception.EncryptionDataException;
+
 import com.netwin.service.ErrorApplicationService;
 
 @Component
@@ -18,20 +18,17 @@ public class EncryptionAndDecryptionData {
 	        this.errorApplicationService = errorApplicationService;
 	    }
 
-    public String getEncryptResponse(String response) throws EncryptionDataException {
+    public String getEncryptResponse(String response) {
         String strEncrypt = null;
-        try {
+
             strEncrypt = AESExample.encrypt(response, ConstantVariable.SECRETEKEY);
-        } catch (Exception e) {
-            // Wrap the caught exception into a custom exception and throw it
-            throw new EncryptionDataException("Error while encrypting response", e);
-        }
+       
         return strEncrypt;
     }
  public String getPnRequestDecryptData(String pnrequestJson) {
     	
         String decryptedKey = null;
-       
+    
             // Your secret key
             // Replace this with your actual secret key
             decryptedKey = AESExample.decrypt(pnrequestJson, ConstantVariable.SECRETEKEY);

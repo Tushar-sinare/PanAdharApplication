@@ -14,7 +14,7 @@ public class Slf4jLogger implements MyLogger {
 
     @Override
     public void info(String message) {
-        logger.info("SLF4J : "+message);
+        logger.info(message);
     }
 
     @Override
