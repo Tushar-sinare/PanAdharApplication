@@ -120,21 +120,22 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 	private void setRelatedEntities(AharRequest aharRequestObj, AharNtwnRequest aharNtwnRequest) {
 		//Fetch Customer Details and Validate 
 		Optional<AharVendorDetails> aharVendorDetails = java.util.Optional.empty();
+		NetwinProductionDetails ntNetwinProductionDetails = null;
 			NetwinCustomerDetails ntCustomerDetails = ntwnCustomerDetailsService
 					.fetchNetwinCustomerDetails(aharRequestObj.getCustId());
 			if (ntCustomerDetails != null) {
 				aharRequestObj.setNtwnCustomerDetails(ntCustomerDetails);
 				aharVendorDetails =aharVendorDetailsService
 						.fetchPnVendorDetails(ntCustomerDetails.getNetwVndrs());
-			
 			}
 			
 			if (aharVendorDetails.isPresent()) {
 				aharRequestObj.setAharVndrDetails(aharVendorDetails.get());
+				ntNetwinProductionDetails = ntwnProductionDetailsService
+						.fetchNetwinProductionDetails(aharRequestObj.getProdId());
 			}
 			// Call Netwin Product Details Service and set
-			NetwinProductionDetails ntNetwinProductionDetails = ntwnProductionDetailsService
-					.fetchNetwinProductionDetails(aharRequestObj.getProdId());
+			
 			if (ntNetwinProductionDetails != null) {
 				aharRequestObj.setNetwinProductionDetails(ntNetwinProductionDetails);
 			}
