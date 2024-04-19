@@ -95,6 +95,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 
 	private String getMappingDataBaseThrough(String aharRequestDecryptString, AharNtwnRequest aharNtwnRequest){
 		// Json String to Map Convert
+		String result;
 		Map<String, String> aharRequestJsonMap = jsonStringToMap(aharRequestDecryptString);
 		AharRequest aharRequestDetObj = new AharRequest();
 		//details object
@@ -102,12 +103,29 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 		Map<String, Object> netwinFieldResults1 = getNetwinFieldResults();
 		
 		//set field value from jsonStringtoMap
+		try {
 		mapFields(aharRequestDetObj, netwinFieldResults1, aharRequestJsonMap);
-		
+		}catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
+	        logger.info(e.getMessage());
+	       int  errorCode = 5000;
+	        if (e instanceof NoSuchMethodException) {
+	            errorCode = 5004;
+	        } else if (e instanceof IllegalAccessException) {
+	            errorCode = 5001;
+	        } else if (e instanceof IllegalArgumentException) {
+	            errorCode = 5002;
+	        } else if (e instanceof InvocationTargetException) {
+	            errorCode = 5003;
+	        }
+	        errorApplicationService.storeError(errorCode, e.getMessage());
+	        result = e.getMessage();
+		}
 		// Call services to set related entities Mapping Id
 		setRelatedEntities(aharRequestDetObj, aharNtwnRequest);
 		
-		return callVendorServiceAndGetResult(aharRequestDetObj);
+		result =  callVendorServiceAndGetResult(aharRequestDetObj);
+		
+		return result;
 	}
 
 	private String callVendorServiceAndGetResult(AharRequest aharRequestObj) {
@@ -149,7 +167,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 	}
 //Mapping through field  database and Json 
 	private void mapFields(AharRequest aharRequestObj, Map<String, Object> netwinFieldResults1,
-			Map<String, String> aharRequestJsonMap){
+			Map<String, String> aharRequestJsonMap) throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
 		  for (Field field : AharRequest.class.getDeclaredFields()) {
 			 
 	            if (netwinFieldResults1.containsKey(field.getName()) && aharRequestJsonMap.containsKey(field.getName())) {
@@ -162,30 +180,15 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 		
 	}
 //SetField Entity Value Method
-	private void setFieldValue(AharRequest aharRequestObj, Field field, String value) {
+	private void setFieldValue(AharRequest aharRequestObj, Field field, String value) throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String capitalizedFieldName = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
         String setterMethodName = "set" + capitalizedFieldName;
         Method setterMethod = null;
-		try {
+	
 			setterMethod = AharRequest.class.getMethod(setterMethodName, field.getType());
 			setterMethod.invoke(aharRequestObj, value);
-		} catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-	        logger.info(e.getMessage());
-	        int errorCode = 5000;
-	        if (e instanceof NoSuchMethodException) {
-	            errorCode = 5004;
-	            
-	        } else if (e instanceof IllegalAccessException) {
-	            errorCode = 5001;
-	        } else if (e instanceof IllegalArgumentException) {
-	            errorCode = 5002;
-	        } else if (e instanceof InvocationTargetException) {
-	            errorCode = 5003;
-	        }
-	        errorApplicationService.storeError(errorCode, e.getMessage());
-	       
-	        //use throw exception
-	    }
+		
+	    
 		
 	}
 //Netwin Database Field Fetch
