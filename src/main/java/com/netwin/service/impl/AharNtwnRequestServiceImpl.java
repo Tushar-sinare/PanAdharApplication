@@ -125,8 +125,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 					.fetchNetwinCustomerDetails(aharRequestObj.getCustId());
 			if (ntCustomerDetails != null) {
 				aharRequestObj.setNtwnCustomerDetails(ntCustomerDetails);
-				aharVendorDetails =aharVendorDetailsService
-						.fetchPnVendorDetails(ntCustomerDetails.getNetwVndrs());
+				aharVendorDetails =aharVendorDetailsService.fetchPnVendorDetails(ntCustomerDetails.getNetwVndrs());
 			}
 			
 			if (aharVendorDetails.isPresent()) {
