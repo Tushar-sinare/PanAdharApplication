@@ -9,6 +9,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -47,10 +48,14 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 	private NetwinProductionDetailsService ntwnProductionDetailsService;
 	private AharVendorDetailsService aharVendorDetailsService;
 	private AharRequestService aharRequestService;
+
 	@Autowired
 	public AharNtwnRequestServiceImpl(EncryptionAndDecryptionData encryptionAndDecryptionData,
 			AharNtwnRequestRepo aharNtwnRequestRepo, ErrorApplicationService errorApplicationService,
-			AharNtwnRequestMapper mapper,JdbcTemplate jdbcTemplate,NetwinCustomerDetailsService ntwnCustomerDetailsService,NetwinProductionDetailsService ntwnProductionDetailsService,AharVendorDetailsService aharVendorDetailsService,AharRequestService aharRequestService) {
+			AharNtwnRequestMapper mapper, JdbcTemplate jdbcTemplate,
+			NetwinCustomerDetailsService ntwnCustomerDetailsService,
+			NetwinProductionDetailsService ntwnProductionDetailsService,
+			AharVendorDetailsService aharVendorDetailsService, AharRequestService aharRequestService) {
 
 		this.encryptionAndDecryptionData = encryptionAndDecryptionData;
 		this.errorApplicationService = errorApplicationService;
@@ -58,7 +63,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 		this.aharNtwnRequestRepo = aharNtwnRequestRepo;
 		this.jdbcTemplate = jdbcTemplate;
 		this.ntwnCustomerDetailsService = ntwnCustomerDetailsService;
-		this.ntwnProductionDetailsService=ntwnProductionDetailsService;
+		this.ntwnProductionDetailsService = ntwnProductionDetailsService;
 		this.aharVendorDetailsService = aharVendorDetailsService;
 		this.aharRequestService = aharRequestService;
 	}
@@ -74,140 +79,130 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 		aharNtwnReqDto.setReqEncrypt(aharJson);
 		aharNtwnReqDto.setEntryDate(date);
 		AharNtwnRequest aharNtwnRequest = mapper.toAharNtwnRequestEntity(aharNtwnReqDto);
-		//remove if else
+		// remove if else
 		if (aharNtwnRequest != null) {
 			// Save client request Data
 			aharNtwnRequest = aharNtwnRequestRepo.save(aharNtwnRequest);
-			
+
 			resultStr = getMappingDataBaseThrough(aharRequestDecryptString, aharNtwnRequest);
 
 		} else {
 			resultStr = "Error: Unable to map PnNetwinRequest entity from DTO.";
 			errorApplicationService.storeError(1003, resultStr);
 			logger.error(resultStr);
-			
-		}
 
-	
+		}
 
 		return resultStr;
 	}
 
-	private String getMappingDataBaseThrough(String aharRequestDecryptString, AharNtwnRequest aharNtwnRequest){
+	private String getMappingDataBaseThrough(String aharRequestDecryptString, AharNtwnRequest aharNtwnRequest) {
 		// Json String to Map Convert
 		String result;
 		Map<String, String> aharRequestJsonMap = jsonStringToMap(aharRequestDecryptString);
 		AharRequest aharRequestDetObj = new AharRequest();
-		//details object
-		//Database field Name Fetch
+		// details object
+		// Database field Name Fetch
 		Map<String, Object> netwinFieldResults1 = getNetwinFieldResults();
-		
-		//set field value from jsonStringtoMap
+
+		// set field value from jsonStringtoMap
 		try {
-		mapFields(aharRequestDetObj, netwinFieldResults1, aharRequestJsonMap);
-		}catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException | InvocationTargetException e) {
-	        logger.info(e.getMessage());
-	       int  errorCode = 5000;
-	        if (e instanceof NoSuchMethodException) {
-	            errorCode = 5004;
-	        } else if (e instanceof IllegalAccessException) {
-	            errorCode = 5001;
-	        } else if (e instanceof IllegalArgumentException) {
-	            errorCode = 5002;
-	        } else if (e instanceof InvocationTargetException) {
-	            errorCode = 5003;
-	        }
-	        errorApplicationService.storeError(errorCode, e.getMessage());
-	        result = e.getMessage();
+			mapFields(aharRequestDetObj, netwinFieldResults1, aharRequestJsonMap);
+		} catch (NoSuchMethodException | IllegalAccessException | IllegalArgumentException
+				| InvocationTargetException e) {
+			logger.info(e.getMessage());
+			int errorCode = 5000;
+			if (e instanceof NoSuchMethodException) {
+				errorCode = 5004;
+			} else if (e instanceof IllegalAccessException) {
+				errorCode = 5001;
+			} else if (e instanceof IllegalArgumentException) {
+				errorCode = 5002;
+			} else if (e instanceof InvocationTargetException) {
+				errorCode = 5003;
+			}
+			errorApplicationService.storeError(errorCode, e.getMessage());
+			result = e.getMessage();
 		}
 		// Call services to set related entities Mapping Id
 		setRelatedEntities(aharRequestDetObj, aharNtwnRequest);
-		
-		result =  callVendorServiceAndGetResult(aharRequestDetObj);
-		
+
+		result = callVendorServiceAndGetResult(aharRequestDetObj);
+
 		return result;
 	}
 
 	private String callVendorServiceAndGetResult(AharRequest aharRequestObj) {
-		//Store Vendor Request Details 
-		
-		 AharRequest aharRequest1 = aharRequestService.callVendorService(aharRequestObj);
-		 return aharRequest1.toString();
+		// Store Vendor Request Details
+
+		AharRequest aharRequest1 = aharRequestService.callVendorService(aharRequestObj);
+		return aharRequest1.toString();
 	}
 
 	private void setRelatedEntities(AharRequest aharRequestObj, AharNtwnRequest aharNtwnRequest) {
-		//Fetch Customer Details and Validate 
-		Optional<AharVendorDetails> aharVendorDetails = java.util.Optional.empty();
-		NetwinProductionDetails ntNetwinProductionDetails = null;
-			NetwinCustomerDetails ntCustomerDetails = ntwnCustomerDetailsService
-					.fetchNetwinCustomerDetails(aharRequestObj.getCustId());
-			if (ntCustomerDetails != null) {
-				aharRequestObj.setNtwnCustomerDetails(ntCustomerDetails);
-				aharVendorDetails =aharVendorDetailsService.fetchPnVendorDetails(ntCustomerDetails.getNetwVndrs());
-			}
-			
-			if (aharVendorDetails.isPresent()) {
-				aharRequestObj.setAharVndrDetails(aharVendorDetails.get());
-				ntNetwinProductionDetails = ntwnProductionDetailsService
-						.fetchNetwinProductionDetails(aharRequestObj.getProdId());
-			}
-			// Call Netwin Product Details Service and set
-			
-			if (ntNetwinProductionDetails != null) {
-				aharRequestObj.setNetwinProductionDetails(ntNetwinProductionDetails);
-			}
-		
-			// Call Vendor Details Service and set
-			
-			
-			aharRequestObj.setAharNtwnRequest(aharNtwnRequest);
-			aharRequestObj.setAppDate(date);
-		
-		
-	}
-//Mapping through field  database and Json 
-	private void mapFields(AharRequest aharRequestObj, Map<String, Object> netwinFieldResults1,
-			Map<String, String> aharRequestJsonMap) throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException{
-		  for (Field field : AharRequest.class.getDeclaredFields()) {
-			 
-	            if (netwinFieldResults1.containsKey(field.getName()) && aharRequestJsonMap.containsKey(field.getName())) {
-	                setFieldValue(aharRequestObj, field, aharRequestJsonMap.get(field.getName()));
-	            } else if (!"adhReqDetSrNo".equals(field.getName())) {
-	                setFieldValue(aharRequestObj, field, null);
-	            }
-			 
+	    // Fetch Customer Details and Validate
+	    NetwinCustomerDetails ntCustomerDetails = ntwnCustomerDetailsService.fetchNetwinCustomerDetails(aharRequestObj.getCustId());
+	    if (ntCustomerDetails == null) {
+	        return;
+	    }
+	    aharRequestObj.setNtwnCustomerDetails(ntCustomerDetails);
+
+	    // Fetch Vendor Details if Customer Details present
+	    Optional<AharVendorDetails> aharVendorDetails = aharVendorDetailsService.fetchPnVendorDetails(ntCustomerDetails.getNetwVndrs());
+	    aharVendorDetails.ifPresent(vendorDetails -> {
+	        aharRequestObj.setAharVndrDetails(vendorDetails);
+	        
+	        // Fetch Netwin Production Details if Vendor Details present
+	        NetwinProductionDetails ntNetwinProductionDetails = ntwnProductionDetailsService.fetchNetwinProductionDetails(aharRequestObj.getProdId());
+	        if (ntNetwinProductionDetails != null) {
+	            aharRequestObj.setNetwinProductionDetails(ntNetwinProductionDetails);
 	        }
-		
+	    });
+
+	    // Set other related entities
+	    aharRequestObj.setAharNtwnRequest(aharNtwnRequest);
+	    aharRequestObj.setAppDate(date);
 	}
+
+	private void mapFields(AharRequest aharRequestObj, Map<String, Object> netwinFieldResults1,
+			Map<String, String> aharRequestJsonMap)
+			throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+		for (Field field : AharRequest.class.getDeclaredFields()) {
+			if (netwinFieldResults1.containsKey(field.getName()) && aharRequestJsonMap.containsKey(field.getName())) {
+				setFieldValue(aharRequestObj, field, aharRequestJsonMap.get(field.getName()));
+			} else if (!"adhReqDetSrNo".equals(field.getName())) {
+				setFieldValue(aharRequestObj, field, null);
+			}
+
+		}
+
+	}
+
 //SetField Entity Value Method
-	private void setFieldValue(AharRequest aharRequestObj, Field field, String value) throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
+	private void setFieldValue(AharRequest aharRequestObj, Field field, String value)
+			throws NoSuchMethodException, IllegalAccessException, IllegalArgumentException, InvocationTargetException {
 		String capitalizedFieldName = field.getName().substring(0, 1).toUpperCase() + field.getName().substring(1);
-        String setterMethodName = "set" + capitalizedFieldName;
-        Method setterMethod = null;
-	
-			setterMethod = AharRequest.class.getMethod(setterMethodName, field.getType());
-			setterMethod.invoke(aharRequestObj, value);
-		
-	    
-		
+		String setterMethodName = "set" + capitalizedFieldName;
+		Method setterMethod = null;
+
+		setterMethod = AharRequest.class.getMethod(setterMethodName, field.getType());
+		setterMethod.invoke(aharRequestObj, value);
+
 	}
+
 //Netwin Database Field Fetch
 	private Map<String, Object> getNetwinFieldResults() {
-		Map<String, Object> netwinFieldResults1 = new HashMap<>();
-		//Without two loop solve this problem
+		// Execute the query and retrieve results
 		List<Map<String, Object>> netwinFieldResultsMap = jdbcTemplate.queryForList(QueryUtil.NETWNFIELDQUERY, "A",
 				"V");
-		for (Map<String, Object> vendorField : netwinFieldResultsMap) {
-			String key = (String) vendorField.get("NETWREQKEYNAME");
-			for (Map.Entry<String, Object> vendorEntry : vendorField.entrySet()) {
-				if (vendorEntry.getKey().startsWith("NETWREQKEYREQ")) {
-					netwinFieldResults1.put(key, vendorEntry.getValue());
-				}
-			}
-		}
-		return netwinFieldResults1;
+		// Process the results using Java Streams
+		return netwinFieldResultsMap.stream()
+				.collect(Collectors.toMap(vendorField -> (String) vendorField.get("NETWREQKEYNAME"),
+						vendorField -> vendorField.entrySet().stream()
+								.filter(entry -> entry.getKey().startsWith("NETWREQKEYREQ"))
+								.collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue))));
 	}
-	
+
 //JsonString to Map Convert Method
 	private Map<String, String> jsonStringToMap(String aharRequestDecryptString) {
 		Gson gson = new Gson();
@@ -215,6 +210,5 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 		}.getType();
 		return gson.fromJson(aharRequestDecryptString, type);
 	}
-
 
 }
