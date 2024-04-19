@@ -213,11 +213,18 @@ this.encryptionAndDecryptionData=encryptionAndDecryptionData;
 
 	private void setRelatedEntities(PnRequest pnRequest, PnNetwinRequest pnNetwinRequest1) {
 		// Call Netwin Customer Details Service and set
+		Optional<PnVendorDetails> pnVendorDetails = java.util.Optional.empty();
 		try {
 			NetwinCustomerDetails ntCustomerDetails = netwinCustomerDetailsService
 					.fetchNetwinCustomerDetails(pnRequest.getCustId());
 			if (ntCustomerDetails != null) {
 				pnRequest.setNetwinCustomerDetails(ntCustomerDetails);
+				 pnVendorDetails = pnVendorDetailsservice
+						.fetchPnVendorDetails(ntCustomerDetails.getNetwVndrs());
+			}
+			// Call Vendor Details Service and set
+			if (pnVendorDetails.isPresent()) {
+				pnRequest.setPnVendorDetails(pnVendorDetails.get());
 			}
 			// Call Netwin Product Details Service and set
 			NetwinProductionDetails ntNetwinProductionDetails = netwinProductionDetailsService
@@ -225,12 +232,9 @@ this.encryptionAndDecryptionData=encryptionAndDecryptionData;
 			if (ntCustomerDetails != null) {
 				pnRequest.setNetwinProductionDetails(ntNetwinProductionDetails);
 			}
-			// Call Vendor Details Service and set
-			Optional<PnVendorDetails> pnVendorDetails = pnVendorDetailsservice
-					.fetchPnVendorDetails(ntCustomerDetails.getNetwVndrs());
-			if (pnVendorDetails.isPresent()) {
-				pnRequest.setPnVendorDetails(pnVendorDetails.get());
-			}
+			
+			
+			
 			pnRequest.setPnNetwinRequest(pnNetwinRequest1);
 			pnRequest.setAppDate(date);
 		} catch (Exception ex) {
