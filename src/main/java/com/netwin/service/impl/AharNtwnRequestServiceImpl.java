@@ -21,7 +21,6 @@ import com.netwin.entiry.AharRequest;
 import com.netwin.entiry.AharVendorDetails;
 import com.netwin.entiry.NetwinCustomerDetails;
 import com.netwin.entiry.NetwinProductionDetails;
-import com.netwin.exception.EncryptionDataException;
 import com.netwin.logger.LoggerProvider;
 import com.netwin.logger.MyLogger;
 import com.netwin.mapper.AharNtwnRequestMapper;
@@ -108,11 +107,10 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 		// Call services to set related entities Mapping Id
 		setRelatedEntities(aharRequestDetObj, aharNtwnRequest);
 		
-		return callVendorServiceAndGetResult(aharRequestDetObj, netwinFieldResults1, aharRequestJsonMap);
+		return callVendorServiceAndGetResult(aharRequestDetObj, aharRequestJsonMap);
 	}
 
-	private String callVendorServiceAndGetResult(AharRequest aharRequestObj, Map<String, Object> netwinFieldResults1,
-			Map<String, String> aharRequestJsonMap) {
+	private String callVendorServiceAndGetResult(AharRequest aharRequestObj,Map<String, String> aharRequestJsonMap) {
 		//Store Vendor Request Details 
 		
 		 AharRequest aharRequest1 = aharRequestService.callVendorService(aharRequestObj);
@@ -125,7 +123,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 					.fetchNetwinCustomerDetails(aharRequestObj.getCustId());
 			if (ntCustomerDetails != null) {
 				aharRequestObj.setNtwnCustomerDetails(ntCustomerDetails);
-				System.out.println(ntCustomerDetails.toString());
+			
 			}
 			
 			// Call Netwin Product Details Service and set
@@ -134,14 +132,14 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 			if (ntCustomerDetails != null) {
 				aharRequestObj.setNetwinProductionDetails(ntNetwinProductionDetails);
 			}
-			System.out.println(ntNetwinProductionDetails.toString());
+		
 			// Call Vendor Details Service and set
 			Optional<AharVendorDetails> aharVendorDetails = aharVendorDetailsService
 					.fetchPnVendorDetails(ntCustomerDetails.getNetwVndrs());
 			if (aharVendorDetails.isPresent()) {
 				aharRequestObj.setAharVndrDetails(aharVendorDetails.get());
 			}
-			System.out.println(aharVendorDetails.toString());
+			
 			aharRequestObj.setAharNtwnRequest(aharNtwnRequest);
 			aharRequestObj.setAppDate(date);
 		
