@@ -15,8 +15,11 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.dozer.Mapper;
+import org.dozer.MappingException;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
@@ -84,9 +87,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 	}
 
 	@Override
-	public String callAharRequest(String aharJson, String reqStatus) throws InvalidKeyException,
-			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
-			IllegalBlockSizeException, BadPaddingException, JsonMappingException, JsonProcessingException {
+	public String callAharRequest(String aharJson, String reqStatus) throws  JsonProcessingException, DataAccessException, InvalidKeyException, MappingException, JSONException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 		String resultStr = null;
 		String vendorRequestJson =null;
 		AharNtwnReqDto aharNtwnReqDto = new AharNtwnReqDto();
@@ -206,8 +207,8 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 		return resultStr;
 	}
 
-	private String validateRequest(AharNtwnReqDto aharNtwnReqDto, String reqStatus)
-			throws JsonMappingException, JsonProcessingException {
+	private String validateRequest(AharNtwnReqDto aharNtwnReqDto, String reqStatus) throws JsonMappingException, JsonProcessingException
+			{
 		String result = null;
 //adhar check validation 
 		if (reqStatus.equals("V")) {

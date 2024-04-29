@@ -41,11 +41,11 @@ public class AharVndrRequest {
 	private long aharReqMasSrNo;
 	@Column(name="REQESTFOR",length=1)
 	private String reqFor;
-	public int getVndrPnReqMasSrNo() {
+	public int getVndrAharReqMasSrNo() {
 		return vndrAharReqMasSrNo;
 	}
-	public void setVndrPnReqMasSrNo(int vndrPnReqMasSrNo) {
-		this.vndrAharReqMasSrNo = vndrPnReqMasSrNo;
+	public void setVndrAharReqMasSrNo(int vndrAharReqMasSrNo) {
+		this.vndrAharReqMasSrNo = vndrAharReqMasSrNo;
 	}
 	public String getReqEncrypt() {
 		return reqEncrypt;
@@ -71,13 +71,6 @@ public class AharVndrRequest {
 	public void setCallingIpAdr(String callingIpAdr) {
 		this.callingIpAdr = callingIpAdr;
 	}
-	public int getVndrAharReqMasSrNo() {
-		return vndrAharReqMasSrNo;
-	}
-	public void setVndrAharReqMasSrNo(int vndrAharReqMasSrNo) {
-		this.vndrAharReqMasSrNo = vndrAharReqMasSrNo;
-	}
-	
 	public long getAharReqMasSrNo() {
 		return aharReqMasSrNo;
 	}
