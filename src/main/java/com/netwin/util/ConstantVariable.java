@@ -9,6 +9,7 @@ public static final String NTWNFIELDCOLUMN = "NETWREQKEYNAME";
 public static final String VNDRFIELDCOLUMN = "VNDRREQKEYNAME";
 public static final String NTWNRESCOLUMN = "NETWRESKEYNAME";
 public static final String VNDRRESCOLUMN = "VNDRRESKEYNAME";
+public static final String ADHARNO = "adharNo";
 private ConstantVariable() {
 	
 }

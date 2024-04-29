@@ -165,8 +165,8 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 		JsonNode jsonNode = objectMapper.readTree(panRequestDto.getReqDecrypt());
 		String panNo = jsonNode.get("panNo").asText();
 
-		final String PAN_PATTERN = "[A-Z]{5}\\d{4}[A-Z]";
-		Pattern pattern = Pattern.compile(PAN_PATTERN);
+		final String panPattern = "[A-Z]{5}\\d{4}[A-Z]";
+		Pattern pattern = Pattern.compile(panPattern);
 		Matcher matcher = pattern.matcher(panNo);
 
 		boolean flag = matcher.matches();

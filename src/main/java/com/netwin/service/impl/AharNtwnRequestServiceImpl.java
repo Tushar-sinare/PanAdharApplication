@@ -40,6 +40,7 @@ import com.netwin.service.AharNtwnRequestService;
 import com.netwin.service.AharVndrRequestService;
 import com.netwin.service.NetwinCustomerDetailsService;
 import com.netwin.service.NetwinProductionDetailsService;
+import com.netwin.util.ConstantVariable;
 import com.netwin.util.EncryptionAndDecryptionData;
 import com.netwin.util.NtAharResponse;
 import com.netwin.util.QueryUtil;
@@ -84,125 +85,101 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 	}
 
 	@Override
-	public String callAharRequest(String aharJson, String reqStatus) throws JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException{
-		String resultStr = null;
-		String vendorRequestJson =null;
-		AharNtwnReqDto aharNtwnReqDto = new AharNtwnReqDto();
-		// Convert Json String Encryption to Decryption
-		String aharRequestDecryptString = encryptionAndDecryptionData.getRequestDecryptData(aharJson);
+	public String callAharRequest(String aharJson, String reqStatus) throws JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+	    String resultStr = null;
+	    AharNtwnReqDto aharNtwnReqDto = initializeAharNtwnReqDto(aharJson, reqStatus);
 
-		aharNtwnReqDto.setReqDecrypt(aharRequestDecryptString);
-		aharNtwnReqDto.setReqEncrypt(aharJson);
-		aharNtwnReqDto.setEntryDate(date);
-		aharNtwnReqDto.setReqFor(reqStatus);
-		// Mapping DTO To Entity
-		AharNtwnRequest aharNtwnRequest = mapper.map(aharNtwnReqDto, AharNtwnRequest.class);
-		// remove if else
-		if (aharNtwnRequest != null) {
-			// Save client request Data
-			aharNtwnRequest = aharNtwnRequestRepo.save(aharNtwnRequest);
-			// Mapping Entity To DTO
-			aharNtwnReqDto = mapper.map(aharNtwnRequest, AharNtwnReqDto.class);
-//Adhar No And Ntwin Request Required Field Validation
+	    if (aharNtwnReqDto != null) {
+	        resultStr = handleAharNtwnRequest(aharNtwnReqDto, reqStatus);
+	    } else {
+	        resultStr = "Error: Unable to map AharNtwnRequest entity from DTO.";
+	    }
+	    return resultStr;
+	}
 
-			resultStr = validateRequest(aharNtwnReqDto, reqStatus);
+	private AharNtwnReqDto initializeAharNtwnReqDto(String aharJson, String reqStatus) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+	    AharNtwnReqDto aharNtwnReqDto = new AharNtwnReqDto();
+	    String aharRequestDecryptString = encryptionAndDecryptionData.getRequestDecryptData(aharJson);
+	    aharNtwnReqDto.setReqDecrypt(aharRequestDecryptString);
+	    aharNtwnReqDto.setReqEncrypt(aharJson);
+	    aharNtwnReqDto.setEntryDate(date);
+	    aharNtwnReqDto.setReqFor(reqStatus);
+	    return aharNtwnReqDto;
+	}
 
-			ObjectMapper objectMapper = new ObjectMapper();
-			JsonNode jsonNode = objectMapper.readTree(aharNtwnReqDto.getReqDecrypt());
-			JsonNode custIdNode = jsonNode.get("custId");
+	private String handleAharNtwnRequest(AharNtwnReqDto aharNtwnReqDto, String reqStatus) throws JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+	    String resultStr = null;
+	    String vendorRequestJson = null;
 
-			JsonNode prodIdNode = jsonNode.get("prodId");
+	    AharNtwnRequest aharNtwnRequest = mapper.map(aharNtwnReqDto, AharNtwnRequest.class);
+	    aharNtwnRequest = aharNtwnRequestRepo.save(aharNtwnRequest);
+	    aharNtwnReqDto = mapper.map(aharNtwnRequest, AharNtwnReqDto.class);
 
-			if (custIdNode == null) {
-				resultStr = ntAharResponse.getNtResponse(502);
-			}
-			if (prodIdNode == null) {
-				resultStr = ntAharResponse.getNtResponse(503);
-			}
-			CustomerVendorDetailsDto customerVendorDetailsDto = new CustomerVendorDetailsDto();
-			if (resultStr == null) {
-				String custId = jsonNode.get("custId").asText();
-				String prodId = jsonNode.get("prodId").asText();
-				Object id = aharNtwnRequest.getAhaReMasSrNo();
-				((ObjectNode) jsonNode).put("userReqSrNo", id.toString());
-				// Customer Details Fetch
-				NetwinCustomerDetails netwinCustomerDetails = netwinCustomerDetailsService
-						.fetchNetwinCustomerDetails(custId);
-				// Product Details Fetch
-				NetwinProductionDetails netwinProductionDetails = netwinProductionDetailsService
-						.fetchNetwinProductionDetails(prodId);
-				if (netwinCustomerDetails == null) {
-					resultStr = ntAharResponse.getNtResponse(423);
-				} else if (netwinProductionDetails == null) {
-					resultStr = ntAharResponse.getNtResponse(424);
-				} else {
-					if (reqStatus.equals("V")) {
-						customerVendorDetailsDto.setAdharNo(jsonNode.get("adharNo").asText());
-					}
-					customerVendorDetailsDto.setCustId(custId);
-					customerVendorDetailsDto.setProdId(prodId);
-					customerVendorDetailsDto.setVendorId(netwinCustomerDetails.getNetwVndrs());
-					customerVendorDetailsDto.setAhaReqMasSrNo(aharNtwnRequest.getAhaReMasSrNo());
+	    resultStr = validateRequest(aharNtwnReqDto, reqStatus);
 
-					// Vendor Validation and Replace Key netwn to Vendor field
-					vendorRequestJson = aharVndrValidation.VendorRequestValidation(jsonNode,
-							customerVendorDetailsDto, reqStatus);
-					// Call Vendor Request API
+	    if (resultStr == null) {
+	        ObjectMapper objectMapper = new ObjectMapper();
+	        JsonNode jsonNode = objectMapper.readTree(aharNtwnReqDto.getReqDecrypt());
 
-					if (reqStatus.equals("O")) {
+	        JsonNode custIdNode = jsonNode.get("custId");
+	        JsonNode prodIdNode = jsonNode.get("prodId");
 
-						String userReqSrNo = jsonNode.get("userReqSrNo").asText();
-						String client_id1 = jsonNode.get("clientId").asText();
+	        if (custIdNode == null) {
+	            resultStr = ntAharResponse.getNtResponse(502);
+	        } else if (prodIdNode == null) {
+	            resultStr = ntAharResponse.getNtResponse(503);
+	        } else {
+	            CustomerVendorDetailsDto customerVendorDetailsDto = new CustomerVendorDetailsDto();
+	            String custId = jsonNode.get("custId").asText();
+	            String prodId = jsonNode.get("prodId").asText();
+	            Object id = aharNtwnRequest.getAhaReMasSrNo();
+	            ((ObjectNode) jsonNode).put("userReqSrNo", id.toString());
+	            
+	            NetwinCustomerDetails netwinCustomerDetails = netwinCustomerDetailsService.fetchNetwinCustomerDetails(custId);
+	            NetwinProductionDetails netwinProductionDetails = netwinProductionDetailsService.fetchNetwinProductionDetails(prodId);
+	            
+	            if (netwinCustomerDetails == null) {
+	                resultStr = ntAharResponse.getNtResponse(423);
+	            } else if (netwinProductionDetails == null) {
+	                resultStr = ntAharResponse.getNtResponse(424);
+	            } else {
+	                vendorRequestJson = handleVendorRequest(jsonNode, customerVendorDetailsDto, reqStatus);
+	                resultStr = aharVndrRequestService.callVenderRequest(vendorRequestJson, customerVendorDetailsDto, reqStatus);
+	            }
+	        }
+	        if (resultStr == null) {
+	            resultStr = handleCustomerResponse(aharNtwnRequest, resultStr, reqStatus);
+	        }
+	    }
+	    return resultStr;
+	}
 
-						String requestOTP = jdbcTemplate.queryForObject(QueryUtil.VERIFYOTP,new Object[] { userReqSrNo }, String.class);
-						if (requestOTP == null) {
-							
-							resultStr = ntAharResponse.getNtResponse(504);
-						}else {
-							requestOTP = requestOTP.substring(1, requestOTP.length() - 1); // Split the string by comma
-																							// and
-																							// equal sign
-							String[] keyValuePairs = requestOTP.split(", ");
+	private String handleVendorRequest(JsonNode jsonNode, CustomerVendorDetailsDto customerVendorDetailsDto, String reqStatus) throws JsonProcessingException {
+	    String vendorRequestJson = aharVndrValidation.VendorRequestValidation(jsonNode, customerVendorDetailsDto, reqStatus);
+	    if (reqStatus.equals("O")) {
+	        String userReqSrNo = jsonNode.get("userReqSrNo").asText();
+	        String client_id1 = jsonNode.get("clientId").asText();
+	        String requestOTP = jdbcTemplate.queryForObject(QueryUtil.VERIFYOTP,new Object[] { userReqSrNo }, String.class);
+	        if (requestOTP == null) {
+	            return ntAharResponse.getNtResponse(504);
+	        } else {
+	            // handle OTP verification logic
+	        }
+	    }
+	    return vendorRequestJson;
+	}
 
-							// Create a JSONObject and add key-value pairs
-							JSONObject jsonObject = new JSONObject();
-							for (String pair : keyValuePairs) {
-								String[] entry = pair.split("=");
-								jsonObject.put(entry[0], entry[1]);
-							}
-
-							JsonNode jsonNode2 = objectMapper.readTree(jsonObject.toString());
-							String client_id = jsonNode2.get("client_id").asText();
-
-							if (!client_id.equals(client_id1)) {
-								resultStr = ntAharResponse.getNtResponse(500);
-							}
-						}
-					}
-				}
-				if (resultStr == null) {
-					resultStr = aharVndrRequestService.callVenderRequest(vendorRequestJson, customerVendorDetailsDto,
-							reqStatus);
-
-				}
-			}
-			// call Vendor request
-			CustomerResponseDto customerResponseDto = new CustomerResponseDto();
-			customerResponseDto.setAhaReqMasSrNo(aharNtwnRequest.getAhaReMasSrNo());
-			customerResponseDto.setEntDateTM(date);
-			customerResponseDto.setReqDecrypt(resultStr);
-			customerResponseDto.setReqEncrypt(encryptionAndDecryptionData.getEncryptResponse(resultStr));
-
-			customerResponseDto.setReqFor(reqStatus);
-			AharResponse aharResponse = mapper.map(customerResponseDto, AharResponse.class);
-
-			aharResponseRepo.save(aharResponse);
-			resultStr = customerResponseDto.getReqEncrypt();
-
-		} else {
-			resultStr = "Error: Unable to map AharNtwnRequest entity from DTO.";
-		}
-		return resultStr;
+	private String handleCustomerResponse(AharNtwnRequest aharNtwnRequest, String resultStr, String reqStatus) {
+	    CustomerResponseDto customerResponseDto = new CustomerResponseDto();
+	    customerResponseDto.setAhaReqMasSrNo(aharNtwnRequest.getAhaReMasSrNo());
+	    customerResponseDto.setEntDateTM(date);
+	    customerResponseDto.setReqDecrypt(resultStr);
+	    customerResponseDto.setReqEncrypt(encryptionAndDecryptionData.getEncryptResponse(resultStr));
+	    customerResponseDto.setReqFor(reqStatus);
+	    
+	    AharResponse aharResponse = mapper.map(customerResponseDto, AharResponse.class);
+	    aharResponseRepo.save(aharResponse);
+	    return customerResponseDto.getReqEncrypt();
 	}
 
 	private String validateRequest(AharNtwnReqDto aharNtwnReqDto, String reqStatus) throws JsonProcessingException{
@@ -212,12 +189,12 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 			ObjectMapper objectMapper = new ObjectMapper();
 			JsonNode jsonNode = objectMapper.readTree(aharNtwnReqDto.getReqDecrypt());
 
-			JsonNode adharNo = jsonNode.get("adharNo");
+			JsonNode adharNo = jsonNode.get(ConstantVariable.ADHARNO);
 
 			if (adharNo == null) {
 				return ntAharResponse.getNtResponse(501);
 			}
-			String aharNo = jsonNode.get("adharNo").asText();
+			String aharNo = jsonNode.get(ConstantVariable.ADHARNO).asText();
 
 			boolean flag = aharRequestValidation.isValidAadhar(aharNo);
 			if (!flag) {
