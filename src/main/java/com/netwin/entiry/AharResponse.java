@@ -37,49 +37,62 @@ public class AharResponse {
 	
 	@Column(name="REQESTFOR",length=1)
 	private String reqFor;
+
 	public long getAdhResMasSrNo() {
-		return ahaReqMasSrNo;
+		return adhResMasSrNo;
 	}
+
 	public void setAdhResMasSrNo(long adhResMasSrNo) {
 		this.adhResMasSrNo = adhResMasSrNo;
 	}
+
 	public Date getEntDateTM() {
 		return entDateTM;
 	}
+
 	public void setEntDateTM(Date entDateTM) {
 		this.entDateTM = entDateTM;
 	}
-	public String getReqFor() {
-		return reqFor;
-	}
-	public void setReqFor(String reqFor) {
-		this.reqFor = reqFor;
-	}
+
 	public String getCallingIpAdr() {
 		return callingIpAdr;
 	}
+
 	public void setCallingIpAdr(String callingIpAdr) {
 		this.callingIpAdr = callingIpAdr;
 	}
+
 	public String getReqEncrypt() {
 		return reqEncrypt;
 	}
+
 	public void setReqEncrypt(String reqEncrypt) {
 		this.reqEncrypt = reqEncrypt;
 	}
+
 	public String getReqDecrypt() {
 		return reqDecrypt;
 	}
+
 	public void setReqDecrypt(String reqDecrypt) {
 		this.reqDecrypt = reqDecrypt;
 	}
+
 	public long getAhaReqMasSrNo() {
 		return ahaReqMasSrNo;
 	}
+
 	public void setAhaReqMasSrNo(long ahaReqMasSrNo) {
 		this.ahaReqMasSrNo = ahaReqMasSrNo;
 	}
 
+	public String getReqFor() {
+		return reqFor;
+	}
 
+	public void setReqFor(String reqFor) {
+		this.reqFor = reqFor;
+	}
+	
 	
 }

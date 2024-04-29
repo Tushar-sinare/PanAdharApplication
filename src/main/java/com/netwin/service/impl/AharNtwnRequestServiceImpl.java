@@ -84,8 +84,9 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 	}
 
 	@Override
-	public String callAharRequest(String aharJson, String reqStatus) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, JsonMappingException, JsonProcessingException
-			 {
+	public String callAharRequest(String aharJson, String reqStatus) throws InvalidKeyException,
+			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
+			IllegalBlockSizeException, BadPaddingException, JsonMappingException, JsonProcessingException {
 		String resultStr = null;
 		AharNtwnReqDto aharNtwnReqDto = new AharNtwnReqDto();
 		// Convert Json String Encryption to Decryption
@@ -104,22 +105,22 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 			// Mapping Entity To DTO
 			aharNtwnReqDto = mapper.map(aharNtwnRequest, AharNtwnReqDto.class);
 //Adhar No And Ntwin Request Required Field Validation
-		
+
 			resultStr = validateRequest(aharNtwnReqDto, reqStatus);
-	
+
 			ObjectMapper objectMapper = new ObjectMapper();
 			JsonNode jsonNode = objectMapper.readTree(aharNtwnReqDto.getReqDecrypt());
-			JsonNode custIdNode  =jsonNode.get("custId");
-			
-			JsonNode  prodIdNode = jsonNode.get("prodId");
-		
-if (custIdNode == null) {
-    resultStr = ntAharResponse.getNtResponse(502);
-}
-if (prodIdNode == null ) {
-    resultStr = ntAharResponse.getNtResponse(503);    
-}
-		CustomerVendorDetailsDto customerVendorDetailsDto = new CustomerVendorDetailsDto();
+			JsonNode custIdNode = jsonNode.get("custId");
+
+			JsonNode prodIdNode = jsonNode.get("prodId");
+
+			if (custIdNode == null) {
+				resultStr = ntAharResponse.getNtResponse(502);
+			}
+			if (prodIdNode == null) {
+				resultStr = ntAharResponse.getNtResponse(503);
+			}
+			CustomerVendorDetailsDto customerVendorDetailsDto = new CustomerVendorDetailsDto();
 			if (resultStr == null) {
 				String custId = jsonNode.get("custId").asText();
 				String prodId = jsonNode.get("prodId").asText();
@@ -135,7 +136,7 @@ if (prodIdNode == null ) {
 				if (netwinProductionDetails == null) {
 					resultStr = ntAharResponse.getNtResponse(424);
 				}
-				if (reqStatus == "V") {
+				if (reqStatus.equals("V")) {
 					customerVendorDetailsDto.setAdharNo(jsonNode.get("adharNo").asText());
 				}
 				customerVendorDetailsDto.setCustId(custId);
@@ -147,14 +148,14 @@ if (prodIdNode == null ) {
 				String vendorRequestJson = aharVndrValidation.VendorRequestValidation(jsonNode,
 						customerVendorDetailsDto, reqStatus);
 				// Call Vendor Request API
-				
 
 				if (reqStatus.equals("O")) {
 
 					String userReqSrNo = jsonNode.get("userReqSrNo").asText();
 					String client_id1 = jsonNode.get("clientId").asText();
 
-					String requestOTP = jdbcTemplate.queryForObject(QueryUtil.VERIFYOTP, new Object[] { userReqSrNo },String.class);
+					String requestOTP = jdbcTemplate.queryForObject(QueryUtil.VERIFYOTP, new Object[] { userReqSrNo },
+							String.class);
 
 					requestOTP = requestOTP.substring(1, requestOTP.length() - 1); // Split the string by comma and
 																					// equal sign
@@ -171,14 +172,14 @@ if (prodIdNode == null ) {
 					String client_id = jsonNode2.get("client_id").asText();
 
 					if (!client_id.equals(client_id1)) {
-						resultStr= ntAharResponse.getNtResponse(500);
+						resultStr = ntAharResponse.getNtResponse(500);
 					}
 				}
-					if(resultStr==null) {
-				resultStr = aharVndrRequestService.callVenderRequest(vendorRequestJson, customerVendorDetailsDto,
-						reqStatus);
-					}
-				
+				if (resultStr == null) {
+					resultStr = aharVndrRequestService.callVenderRequest(vendorRequestJson, customerVendorDetailsDto,
+							reqStatus);
+				}
+
 			}
 			// call Vendor request
 			CustomerResponseDto customerResponseDto = new CustomerResponseDto();
@@ -186,13 +187,13 @@ if (prodIdNode == null ) {
 			customerResponseDto.setEntDateTM(date);
 			customerResponseDto.setReqDecrypt(resultStr);
 			customerResponseDto.setReqEncrypt(encryptionAndDecryptionData.getEncryptResponse(resultStr));
-			
+
 			customerResponseDto.setReqFor(reqStatus);
 			AharResponse aharResponse = mapper.map(customerResponseDto, AharResponse.class);
 
 			aharResponseRepo.save(aharResponse);
 			resultStr = customerResponseDto.getReqEncrypt();
-		
+
 		} else {
 			resultStr = "Error: Unable to map AharNtwnRequest entity from DTO.";
 		}
@@ -203,17 +204,17 @@ if (prodIdNode == null ) {
 			throws JsonMappingException, JsonProcessingException {
 		String result = null;
 //adhar check validation 
-		if (reqStatus == "V") {
+		if (reqStatus.equals("V")) {
 			ObjectMapper objectMapper = new ObjectMapper();
 			JsonNode jsonNode = objectMapper.readTree(aharNtwnReqDto.getReqDecrypt());
-	
-			JsonNode adharNo  = jsonNode.get("adharNo");
-		
+
+			JsonNode adharNo = jsonNode.get("adharNo");
+
 			if (adharNo == null) {
-			    return ntAharResponse.getNtResponse(501);
+				return ntAharResponse.getNtResponse(501);
 			}
 			String aharNo = jsonNode.get("adharNo").asText();
-			
+
 			boolean flag = aharRequestValidation.isValidAadhar(aharNo);
 			if (!flag) {
 				result = ntAharResponse.getNtResponse(422);
@@ -224,7 +225,7 @@ if (prodIdNode == null ) {
 		// details object
 		// Database field Name Fetch.
 		Map<String, Object> netwinRequestpara = getNetwinRequestParas(reqStatus);
-		
+
 		for (Map.Entry<String, Object> netwinField : netwinRequestpara.entrySet()) {
 			if (!aharRequestJsonMap.containsKey(netwinField.getKey())
 					&& (netwinField.getValue().toString()).equals("Y")) {
@@ -242,7 +243,7 @@ if (prodIdNode == null ) {
 	private Map<String, Object> getNetwinRequestParas(String reqStatus) {
 		// Execute the query and retrieve results
 		List<Map<String, Object>> netwinFieldResultsMap = null;
-		if (reqStatus == "V") {
+		if (reqStatus.equals("V")) {
 			netwinFieldResultsMap = jdbcTemplate.queryForList(QueryUtil.NETWNFIELDQUERY, "A", "V");
 		} else {
 			netwinFieldResultsMap = jdbcTemplate.queryForList(QueryUtil.NETWNFIELDQUERY, "A", "O");

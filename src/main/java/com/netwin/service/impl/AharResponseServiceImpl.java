@@ -35,7 +35,7 @@ public AharResponseServiceImpl(JdbcTemplate jdbcTemplate,VendorFieldMapping vend
 		Object id = customerVendorDetailsDto.getAhaReqMasSrNo();
 		((ObjectNode) jsonNode).put("userUuid", id.toString());
 		List<Map<String, Object>> netwinFieldResults2=null;
-		if(reqStatus=="V") {
+		if (reqStatus.equals("V")) {
 			netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWNWITHVNDRRESPQUERY, customerVendorDetailsDto.getVendorId(), "AV");
 		}else {
 			netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWNWITHVNDRRESPQUERY, customerVendorDetailsDto.getVendorId(), "AO");

@@ -122,8 +122,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 			NetwinCustomerDetails netwinCustomerDetails = netwinCustomerDetailsService
 					.fetchNetwinCustomerDetails(custId);
 			// Fetch Product Details and check Available or Not
-			NetwinProductionDetails netwinProductionDetails = netwinProductionDetailsService
-					.fetchNetwinProductionDetails(prodId);
+			NetwinProductionDetails netwinProductionDetails = netwinProductionDetailsService.fetchNetwinProductionDetails(prodId);
 			if (netwinCustomerDetails == null) {
 				resultStr = ntResponse.getNtResponse(423);
 			}

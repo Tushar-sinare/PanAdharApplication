@@ -81,7 +81,7 @@ public class AharVndrRequestServiceImpl implements AharVndrRequestService {
 		if (aharVndrDetails == null) {
 			return ntAharResponse.getNtResponse(425);
 		}
-		if (reqStatus == "V") {
+		if (reqStatus.equals("V")) {
 			apiUrl = aharVndrDetails.getAharVrfyOtpURL();
 		} else {
 			apiUrl = aharVndrDetails.getAharVrfyURL();
@@ -127,9 +127,7 @@ public class AharVndrRequestServiceImpl implements AharVndrRequestService {
 		for (Map.Entry<String, Object> netwinField : netwinRequestpara.entrySet()) {
 			if (!aharRequestJsonMap.containsKey(netwinField.getKey())
 					&& (netwinField.getValue().toString()).equals("Y")) {
-System.out.println(aharRequestJsonMap);
 
-System.out.println(netwinRequestpara);
 				return ntAharResponse.getNtResponse(500);
 
 			}
@@ -179,7 +177,7 @@ System.out.println(netwinRequestpara);
 		// Execute the query and retrieve results
 		List<Map<String, Object>> netwinFieldResultsMap = null;
 
-		if (reqStatus == "V") {
+		if (reqStatus.equals("V")) {
 			netwinFieldResultsMap = jdbcTemplate.queryForList(QueryUtil.NETWNFIELDQUERY1, "A", "O");
 		} else {
 			netwinFieldResultsMap = jdbcTemplate.queryForList(QueryUtil.NETWNFIELDQUERY1, "A", "V");
