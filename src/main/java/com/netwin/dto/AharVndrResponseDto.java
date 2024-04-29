@@ -33,7 +33,7 @@ public void setReqEncrypt(String reqEncrypt) {
 public Date getEntryDate() {
 	return entryDate;
 }
-public long getAharReMasSrNo() {
+public long getAharReqMasSrNo() {
 	return aharReqMasSrNo;
 }
 public void setAharReqMasSrNo(long aharReqMasSrNo) {
@@ -54,9 +54,7 @@ public String getReqFor() {
 public void setReqFor(String reqFor) {
 	this.reqFor = reqFor;
 }
-public long getAharReqMasSrNo() {
-	return aharReqMasSrNo;
-}
+
 
 		
 

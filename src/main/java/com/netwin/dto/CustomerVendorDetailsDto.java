@@ -67,7 +67,7 @@ private long pnReqMasSrNo;
 	}
 	public CustomerVendorDetailsDto() {
 		super();
-		// TODO Auto-generated constructor stub
+		
 	}
 
 	

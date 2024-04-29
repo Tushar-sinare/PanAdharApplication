@@ -57,11 +57,4 @@ public String getCustName() {
 public void setCustName(String custName) {
 	this.custName = custName;
 }
-@Override
-public String toString() {
-	return "JsonStringDto [branchId=" + branchId + ", userReqSrNo=" + userReqSrNo + ", reqBy=" + reqBy + ", adharNo="
-			+ adharNo + ", custId=" + custId + ", prodId=" + prodId + ", pageId=" + pageId + ", custName=" + custName
-			+ "]";
-}
-
 }

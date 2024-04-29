@@ -64,7 +64,7 @@ public class AharVndrValidation {
 	
 	private Map<String, String> vendorRequestMap(CustomerVendorDetailsDto customerVendorDetailsDto,String reqStatus) {
 		List<Map<String, Object>> netwinFieldResults2 =null;
-		if(reqStatus=="V") {
+		if(reqStatus.equals("V")) {
 		netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWNWITHVNDRFIELDQUERY, customerVendorDetailsDto.getVendorId(), "A","V");
 		}else {
 			netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWNWITHVNDRFIELDQUERY, customerVendorDetailsDto.getVendorId(), "A","O");
