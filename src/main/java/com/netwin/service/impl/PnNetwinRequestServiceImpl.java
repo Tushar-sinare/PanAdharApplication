@@ -125,10 +125,9 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 			NetwinProductionDetails netwinProductionDetails = netwinProductionDetailsService.fetchNetwinProductionDetails(prodId);
 			if (netwinCustomerDetails == null) {
 				resultStr = ntResponse.getNtResponse(423);
-			}
-			if (netwinProductionDetails == null) {
+			}else if (netwinProductionDetails == null) {
 				resultStr = ntResponse.getNtResponse(424);
-			}
+			}else {
 			if (resultStr == null) {
 				CustomerVendorDetailsDto customerVendorDetailsDto = new CustomerVendorDetailsDto();
 
@@ -153,6 +152,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 				
 				pnResponseRepo.save(pnResponse);
 				resultStr = customerResponseDto.getReqEncrypt();
+			}
 			}
 		} else {
 			resultStr = "Error: Unable to map PnNetwinRequest entity from DTO.";
