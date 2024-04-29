@@ -9,9 +9,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.netwin.service.ErrorApplicationService;
 import com.netwin.service.PnNetwinRequestService;
-import com.netwin.util.EncryptionAndDecryptionData;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @RestController
 public class PnNetwinRequestController {
@@ -19,14 +16,12 @@ public class PnNetwinRequestController {
 	// Add this annotation to inject the service
 	private PnNetwinRequestService pnNetwinRequestService;
 	private ErrorApplicationService errorApplicationService;
-	private EncryptionAndDecryptionData encryptionAndDecryptionData;
 
 	@Autowired
 	public PnNetwinRequestController(PnNetwinRequestService pnNetwinRequestService,
-			ErrorApplicationService errorApplicationService, EncryptionAndDecryptionData encryptionAndDecryptionData) {
+			ErrorApplicationService errorApplicationService) {
 		this.pnNetwinRequestService = pnNetwinRequestService;
 		this.errorApplicationService = errorApplicationService;
-		this.encryptionAndDecryptionData = encryptionAndDecryptionData;
 	}
 
 	@PostMapping("/pnrequest")

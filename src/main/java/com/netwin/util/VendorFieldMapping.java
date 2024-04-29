@@ -3,17 +3,14 @@ package com.netwin.util;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.springframework.stereotype.Component;
 
-import com.google.gson.JsonObject;
 
 @Component
 public class VendorFieldMapping {
 	public String replaceKeys(String jsonString, Map<String, String> replacementMap) {
 		Map<String, String> vendorMap = new HashMap<>();
-		Map<String, String> resultVo = new HashMap<>();
 		// Parse the JSON string
 		JSONObject jsonObject = new JSONObject(jsonString);
 

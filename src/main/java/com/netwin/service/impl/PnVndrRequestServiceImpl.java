@@ -8,8 +8,6 @@ import java.util.stream.Collectors;
 
 import org.dozer.Mapper;
 import org.json.JSONObject;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -23,7 +21,6 @@ import org.springframework.web.client.RestTemplate;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.google.gson.Gson;
-import com.netwin.dto.AharVndrRequestDto;
 import com.netwin.dto.CustomerVendorDetailsDto;
 import com.netwin.dto.PnVndrRequestDto;
 import com.netwin.dto.PnVndrResponseDto;
@@ -48,7 +45,6 @@ public class PnVndrRequestServiceImpl implements PnVndrRequestService {
 	private EncryptionAndDecryptionData encryptionAndDecryptionData;
 	private PnVndrRequestRepo pnVndrRequestRepo;
 	private NtResponse ntResponse;
-	private ErrorApplicationService errorApplicationService;
 	private PnVendorDetailsRepo pnVendorDetailsRepo;
 	private Mapper mapper;
 	private JdbcTemplate jdbcTemplate;
@@ -62,14 +58,11 @@ public class PnVndrRequestServiceImpl implements PnVndrRequestService {
 		this.pnVndrResponseRepo = pnVndrResponseRepo;
 		this.encryptionAndDecryptionData = encryptionAndDecryptionData;
 		this.pnVndrRequestRepo = pnVndrRequestRepo;
-		this.errorApplicationService = errorApplicationService;
 		this.pnVendorDetailsRepo = pnVendorDetailsRepo;
 		this.ntResponse = ntResponse;
 		this.mapper = mapper;
 		this.jdbcTemplate = jdbcTemplate;
 	}
-
-	private static final Logger logger = LoggerFactory.getLogger(PnVndrRequestServiceImpl.class);
 
 	@Override
 	public String callVenderRequest(String vendorRequestJson, CustomerVendorDetailsDto customerVendorDetailsDto) throws JsonMappingException, JsonProcessingException {
@@ -128,8 +121,9 @@ public class PnVndrRequestServiceImpl implements PnVndrRequestService {
 		
 		
 		// Make the HTTP request using RestTemplate
-		//ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, post, requestEntity,String.class);
-		String response = "{\"panNo\":\"EVMPS3728A\",\"name\":\"TUSHAR VITTHAL SINARE\",\"fullNameSplit\":[\"TUSHAR\",\"VITTHAL\",\"SINARE\"],\"category\":\"person\",\"maskedAadhaar\":\"XXXXXXXX8735\",\"address\":\"178/1 Padali Kanhoor 414103 AHMED NAGAR MAHARASHTRA INDIA\",\"email\":\"TUSHARSINARE0202@GMAIL.COM\",\"phoneNumber\":\"7057192939\",\"gender\":\"M\",\"dob\":\"1995-02-02\",\"aadhaarLinked\":\"true\",\"dobVerified\":\"false\",\"resultVO\":{\"msgCode\":\"200\",\"msgDescr\":\"PAN Details fetched successfully\",\"isError\":false,\"success\":\"TRUE\",\"procRefUuid\":null,\"error\":false},\"statusCode\":\"200\",\"success\":\"true\",\"message\":null,\"messageCode\":\"success\"}";//responseEntity.getBody();
+		ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, post, requestEntity,String.class);
+		String response = responseEntity.getBody();
+		//"{\"panNo\":\"EVMPS3728A\",\"name\":\"TUSHAR VITTHAL SINARE\",\"fullNameSplit\":[\"TUSHAR\",\"VITTHAL\",\"SINARE\"],\"category\":\"person\",\"maskedAadhaar\":\"XXXXXXXX8735\",\"address\":\"178/1 Padali Kanhoor 414103 AHMED NAGAR MAHARASHTRA INDIA\",\"email\":\"TUSHARSINARE0202@GMAIL.COM\",\"phoneNumber\":\"7057192939\",\"gender\":\"M\",\"dob\":\"1995-02-02\",\"aadhaarLinked\":\"true\",\"dobVerified\":\"false\",\"resultVO\":{\"msgCode\":\"200\",\"msgDescr\":\"PAN Details fetched successfully\",\"isError\":false,\"success\":\"TRUE\",\"procRefUuid\":null,\"error\":false},\"statusCode\":\"200\",\"success\":\"true\",\"message\":null,\"messageCode\":\"success\"}";
 		PnVndrResponseDto pnVndrResponseDto = new PnVndrResponseDto();
 		pnVndrResponseDto.setPanNo(customerVendorDetailsDto.getPanNo());
 		pnVndrResponseDto.setEntryDate(new Date(System.currentTimeMillis()));

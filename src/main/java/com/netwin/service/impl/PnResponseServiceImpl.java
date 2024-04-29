@@ -36,7 +36,7 @@ this.vendorFieldMapping = vendorFieldMapping;
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode jsonNode = objectMapper.readTree(vndrResponseStr);
-		ObjectNode objectNode1 = (ObjectNode) objectMapper.readTree(vndrResponseStr);
+		
 		Object id1 = customerVendorDetailsDto.getPnReqMasSrNo();
 		((ObjectNode) jsonNode).put("userUuid", id1.toString());
 		List<Map<String, Object>> netwinFieldResults2=null;

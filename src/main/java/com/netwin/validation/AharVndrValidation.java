@@ -4,8 +4,6 @@ package com.netwin.validation;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -13,13 +11,11 @@ import org.springframework.stereotype.Component;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.netwin.dto.CustomerVendorDetailsDto;
 import com.netwin.logger.LoggerProvider;
 import com.netwin.logger.MyLogger;
 import com.netwin.service.impl.AharNtwnRequestServiceImpl;
 import com.netwin.util.ConstantVariable;
-import com.netwin.util.NtAharResponse;
 import com.netwin.util.QueryUtil;
 import com.netwin.util.VendorFieldMapping;
 @Component
@@ -28,12 +24,11 @@ public class AharVndrValidation {
 	String result =null;
 	static final MyLogger logger = LoggerProvider.getLogger(AharNtwnRequestServiceImpl.class);
 	private JdbcTemplate jdbcTemplate;
-	private NtAharResponse ntAharResponse;
 	@Autowired
-	public AharVndrValidation(JdbcTemplate jdbcTemplate,VendorFieldMapping vendorFieldMapping,NtAharResponse ntAharResponse) {
+	public AharVndrValidation(JdbcTemplate jdbcTemplate,VendorFieldMapping vendorFieldMapping) {
 		this.jdbcTemplate=jdbcTemplate;
 		this.vendorFieldMapping = vendorFieldMapping;
-		this.ntAharResponse = ntAharResponse;
+		
 	}
 	public String VendorRequestValidation(JsonNode jsonNode, CustomerVendorDetailsDto customerVendorDetailsDto,String reqStatus) throws JsonMappingException, JsonProcessingException {
 

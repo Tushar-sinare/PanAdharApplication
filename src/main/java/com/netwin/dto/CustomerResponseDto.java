@@ -2,7 +2,6 @@ package com.netwin.dto;
 
 import java.util.Date;
 
-import jakarta.persistence.Column;
 
 public class CustomerResponseDto {
 	private long ahaResMasSrNo;

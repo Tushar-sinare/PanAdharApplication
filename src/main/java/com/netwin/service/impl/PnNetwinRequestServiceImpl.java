@@ -109,7 +109,6 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 			JsonNode jsonNode = objectMapper.readTree(panRequestDto.getReqDecrypt());
 			String custId = jsonNode.get("custId").asText();
 			String prodId = jsonNode.get("prodId").asText();
-			ObjectNode objectNode = (ObjectNode) objectMapper.readTree(panRequestDto.getReqDecrypt());
 			Object id = pnNetwinRequest.getPnReMasSrNo();
 			((ObjectNode) jsonNode).put("userReqSrNo", id.toString()); // Convert id to String if necessary
 
