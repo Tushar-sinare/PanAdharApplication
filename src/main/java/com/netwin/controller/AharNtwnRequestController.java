@@ -1,6 +1,14 @@
 package com.netwin.controller;
 
 
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.http.HttpStatus;
@@ -30,7 +38,7 @@ private EncryptionAndDecryptionData encryptionAndDecryptionData;
 	
 	@PostMapping("/aharRequestVer")
 	public ResponseEntity<String> callAharRequestVer(@RequestBody(required = false) String aharJson
-			) {
+			) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 		String reqStatus ="V";
 		String retrnStr = "Required request body is missing";
 		HttpStatus status = HttpStatus.BAD_GATEWAY;

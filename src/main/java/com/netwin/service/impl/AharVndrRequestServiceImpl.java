@@ -1,10 +1,17 @@
 package com.netwin.service.impl;
 
 import java.lang.reflect.Type;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.dozer.Mapper;
 import org.json.JSONObject;
@@ -67,7 +74,7 @@ public class AharVndrRequestServiceImpl implements AharVndrRequestService {
 
 	@Override
 	public String callVenderRequest(String vendorRequestJson, CustomerVendorDetailsDto customerVendorDetailsDto,
-			String reqStatus) throws JsonMappingException, JsonProcessingException {
+			String reqStatus) throws JsonMappingException, JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException  {
 		String apiUrl = null;
 		AharVndrDetails aharVndrDetails = aharVndrDetailsRepo
 				.findByAharVnDrSrNo(customerVendorDetailsDto.getVendorId());
@@ -135,7 +142,7 @@ System.out.println(netwinRequestpara);
 	}
 
 	private String callPanVerifyApi(String aharVrfyURL, HttpMethod post, HttpEntity<String> requestEntity,
-			CustomerVendorDetailsDto customerVendorDetailsDto, String reqStatus) {
+			CustomerVendorDetailsDto customerVendorDetailsDto, String reqStatus) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 		RestTemplate restTemplate = new RestTemplate();
 
 		// Make the HTTP request using RestTemplate

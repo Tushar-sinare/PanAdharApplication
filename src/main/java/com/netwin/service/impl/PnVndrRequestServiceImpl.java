@@ -1,10 +1,17 @@
 package com.netwin.service.impl;
 
 import java.lang.reflect.Type;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.dozer.Mapper;
 import org.json.JSONObject;
@@ -65,7 +72,7 @@ public class PnVndrRequestServiceImpl implements PnVndrRequestService {
 	}
 
 	@Override
-	public String callVenderRequest(String vendorRequestJson, CustomerVendorDetailsDto customerVendorDetailsDto) throws JsonMappingException, JsonProcessingException {
+	public String callVenderRequest(String vendorRequestJson, CustomerVendorDetailsDto customerVendorDetailsDto) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, JsonMappingException, JsonProcessingException {
 		String apiUrl = null;
 		PnVendorDetails pnVendorDetails = pnVendorDetailsRepo.findByPnVnDrSrNo(customerVendorDetailsDto.getVendorId());
 		if (pnVendorDetails == null) {
@@ -116,7 +123,7 @@ public class PnVndrRequestServiceImpl implements PnVndrRequestService {
 	
 
 	private String callPanVerifyApi(String apiUrl, HttpMethod post, HttpEntity<String> requestEntity,
-			CustomerVendorDetailsDto customerVendorDetailsDto) {
+			CustomerVendorDetailsDto customerVendorDetailsDto) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 		RestTemplate restTemplate = new RestTemplate();
 		
 		

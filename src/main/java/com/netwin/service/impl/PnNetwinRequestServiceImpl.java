@@ -1,12 +1,19 @@
 package com.netwin.service.impl;
 
 import java.lang.reflect.Type;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -83,8 +90,8 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 	}
 
 	@Override
-	public String callPanRequest(String panRequestJson)
-			throws PnNetwinRequestException, JsonMappingException, JsonProcessingException {
+	public String callPanRequest(String panRequestJson) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, JsonMappingException, JsonProcessingException
+{
 		String resultStr = null;
 
 		PnNetwinRequestDto panRequestDto = new PnNetwinRequestDto();

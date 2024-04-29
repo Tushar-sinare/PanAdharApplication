@@ -1,11 +1,18 @@
 package com.netwin.service.impl;
 
 import java.lang.reflect.Type;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import java.util.stream.Collectors;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.dozer.Mapper;
 import org.json.JSONObject;
@@ -77,8 +84,8 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 	}
 
 	@Override
-	public String callAharRequest(String aharJson, String reqStatus)
-			throws JsonMappingException, JsonProcessingException {
+	public String callAharRequest(String aharJson, String reqStatus) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, JsonMappingException, JsonProcessingException
+			 {
 		String resultStr = null;
 		AharNtwnReqDto aharNtwnReqDto = new AharNtwnReqDto();
 		// Convert Json String Encryption to Decryption
