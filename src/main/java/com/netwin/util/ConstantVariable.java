@@ -7,7 +7,8 @@ public static final String RETURNSTR = "Please Required ";
 public static final String RETURNSTR1 = " this field";
 public static final String NTWNFIELDCOLUMN = "NETWREQKEYNAME";
 public static final String VNDRFIELDCOLUMN = "VNDRREQKEYNAME";
-
+public static final String NTWNRESCOLUMN = "NETWRESKEYNAME";
+public static final String VNDRRESCOLUMN = "VNDRRESKEYNAME";
 private ConstantVariable() {
 	
 }

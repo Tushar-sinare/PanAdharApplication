@@ -9,6 +9,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.netwin.service.ErrorApplicationService;
 import com.netwin.service.PnNetwinRequestService;
+import com.netwin.util.EncryptionAndDecryptionData;
 
 import jakarta.servlet.http.HttpServletRequest;
 
@@ -17,33 +18,46 @@ public class PnNetwinRequestController {
 
 	// Add this annotation to inject the service
 	private PnNetwinRequestService pnNetwinRequestService;
-private ErrorApplicationService errorApplicationService;
+	private ErrorApplicationService errorApplicationService;
+	private EncryptionAndDecryptionData encryptionAndDecryptionData;
+
 	@Autowired
-	public PnNetwinRequestController(PnNetwinRequestService pnNetwinRequestService,ErrorApplicationService errorApplicationService) {
+	public PnNetwinRequestController(PnNetwinRequestService pnNetwinRequestService,
+			ErrorApplicationService errorApplicationService, EncryptionAndDecryptionData encryptionAndDecryptionData) {
 		this.pnNetwinRequestService = pnNetwinRequestService;
 		this.errorApplicationService = errorApplicationService;
+		this.encryptionAndDecryptionData = encryptionAndDecryptionData;
 	}
 
 	@PostMapping("/pnrequest")
-	public ResponseEntity<String> callPanRequest(@RequestBody String panRequestJson, HttpServletRequest request) {
-		String clientIp = request.getRemoteAddr();
-		String retrnStr = "Json is Empty";
-		HttpStatus status = HttpStatus.BAD_REQUEST;
+	public ResponseEntity<String> callPanRequest(@RequestBody String panRequestJson) {
+		String retrnStr = "Required request body is missing";
+		HttpStatus status = HttpStatus.BAD_GATEWAY;
 		try {
 			if (panRequestJson != null && !panRequestJson.isEmpty()) {
-				String pnRequestStr = pnNetwinRequestService.callPanRequest(panRequestJson, clientIp);
+				String pnRequestStr = pnNetwinRequestService.callPanRequest(panRequestJson);
 				retrnStr = pnRequestStr;
-				status = HttpStatus.BAD_REQUEST;
+				status = HttpStatus.ACCEPTED;
 			}
 		} catch (Exception ex) {
-			 errorApplicationService.storeError(502,ex.getMessage());
-			 retrnStr = ex.getMessage();
-				status = HttpStatus.BAD_REQUEST;
-			 
+			StackTraceElement[] stackTrace = ex.getStackTrace();
+			String className = null;
+			String methodName = null;
+			int lineNumber = 0;
+			if (stackTrace.length > 0) {
+				StackTraceElement stackTraceElement = stackTrace[0];
+				className = stackTraceElement.getClassName();
+				methodName = stackTraceElement.getMethodName();
+				lineNumber = stackTraceElement.getLineNumber();
+			}
+
+			errorApplicationService.storeError(502, ex.getMessage(), lineNumber, className, methodName);
+			retrnStr =ex.getMessage();
+			status = HttpStatus.BAD_GATEWAY;
+
 		}
 
 		return new ResponseEntity<String>(retrnStr, status);
 	}
-	
-	
+
 }

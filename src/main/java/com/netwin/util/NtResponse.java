@@ -21,10 +21,10 @@ public class NtResponse {
 		this.jdbcTemplate = jdbcTemplate;
 	}
 
-	public Result1 getNtResponse(int msgCode) {
+	public String getNtResponse(int msgCode) {
 		List<String> netwinResFieldResults1 = jdbcTemplate.queryForList(QueryUtil.NETWRESPFIELDQUERY, String.class,
-				"P", "Y", "V");
-		String error = jdbcTemplate.queryForObject(QueryUtil.NETWRESPFIELDQUERY, String.class, msgCode);
+				"P", "Y");
+		String error = jdbcTemplate.queryForObject(QueryUtil.ERRORS, String.class, msgCode);
 
 		Map<String, Object> netResponse = new HashMap<>();
 		Map<String, Object> resultVo = new HashMap<>();
@@ -48,7 +48,7 @@ public class NtResponse {
 		}
 		netResponse.put("ResultVO", resultVo);
 
-		return new Result1 (netResponse);
+		return netResponse.toString();
 	}
 
 }

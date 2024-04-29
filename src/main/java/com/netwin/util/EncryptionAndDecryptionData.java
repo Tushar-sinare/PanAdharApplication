@@ -25,7 +25,7 @@ public class EncryptionAndDecryptionData {
        
         return strEncrypt;
     }
- public String getPnRequestDecryptData(String pnrequestJson) {
+ public String getRequestDecryptData(String pnrequestJson) {
     	
         String decryptedKey = null;
     
@@ -49,7 +49,7 @@ public class EncryptionAndDecryptionData {
                 jsonRequest1.put(decryptedKey, decryptedValue);
             } catch (Exception e) {
                 // Log the error and continue processing other entries
-                errorApplicationService.storeError(401, e.getMessage());
+                errorApplicationService.storeError(401, e.getMessage(), 0, null, null);
             }
         }
         return jsonRequest1;

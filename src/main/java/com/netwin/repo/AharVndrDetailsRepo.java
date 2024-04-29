@@ -4,11 +4,10 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import com.netwin.entiry.AharVndrDetails;
-import com.netwin.entiry.PnVendorDetails;
 
 @Repository
-public interface PnVendorDetailsRepo extends JpaRepository<PnVendorDetails, Integer>{
+public interface AharVndrDetailsRepo extends JpaRepository<AharVndrDetails, Integer> {
 
-	PnVendorDetails findByPnVnDrSrNo(int vendorId);
+	AharVndrDetails findByAharVnDrSrNo(int netwVndrs);
 
 }

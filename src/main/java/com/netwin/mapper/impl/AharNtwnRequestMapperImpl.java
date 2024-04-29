@@ -28,7 +28,7 @@ public class AharNtwnRequestMapperImpl implements AharNtwnRequestMapper{
 			return null;
 		}
 		AharNtwnReqDto aharNtwnReqDto = new AharNtwnReqDto();
-		aharNtwnReqDto.setAharReMasSrNo(aharNtwnRequest.getAdhReMasSrNo());
+		aharNtwnReqDto.setAhaReMasSrNo(aharNtwnRequest.getAhaReMasSrNo());
 		aharNtwnReqDto.setCallingIpAdr(aharNtwnRequest.getCallingIpAdr());
 		aharNtwnReqDto.setEntryDate(aharNtwnRequest.getEntryDate());
 		aharNtwnReqDto.setReqDecrypt(aharNtwnRequest.getReqDecrypt());

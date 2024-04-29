@@ -2,20 +2,27 @@ package com.netwin.dto;
 
 import java.util.Date;
 
-public class AharNtwnReqDto {
-	private long ahaReMasSrNo;
+public class AharVndrRequestDto {
+	private int vndrAharReqMasSrNo;
+
 	private String reqEncrypt;
 	private String reqDecrypt;
 	private Date entryDate;
 	private String callingIpAdr;
 	private String reqFor;
-
+	private long aharReqMasSrNo;
 	
-	public long getAhaReMasSrNo() {
-		return ahaReMasSrNo;
+	public int getVndrAharReqMasSrNo() {
+		return vndrAharReqMasSrNo;
 	}
-	public void setAhaReMasSrNo(long ahaReMasSrNo) {
-		this.ahaReMasSrNo = ahaReMasSrNo;
+	public void setVndrAharReqMasSrNo(int vndrAharReqMasSrNo) {
+		this.vndrAharReqMasSrNo = vndrAharReqMasSrNo;
+	}
+	public long getAharReqMasSrNo() {
+		return aharReqMasSrNo;
+	}
+	public void setAharReqMasSrNo(long aharReqMasSrNo) {
+		this.aharReqMasSrNo = aharReqMasSrNo;
 	}
 	public String getReqEncrypt() {
 		return reqEncrypt;
@@ -47,7 +54,5 @@ public class AharNtwnReqDto {
 	public void setReqFor(String reqFor) {
 		this.reqFor = reqFor;
 	}
-	
-	
 	
 }

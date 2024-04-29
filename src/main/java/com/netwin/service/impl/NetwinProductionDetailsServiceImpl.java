@@ -34,7 +34,7 @@ private static final Logger logger = LoggerFactory.getLogger(NetwinProductionDet
 		}catch(Exception ex) {
 			logger.error(ex.getMessage());
 			
-			errorApplicationService.storeError(401, ex.getMessage());
+			errorApplicationService.storeError(401, ex.getMessage(), 0, null, null);
 				}
 		return netwinProductionDetails;
 	}

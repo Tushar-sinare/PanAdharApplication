@@ -39,7 +39,9 @@ public class PnVndrResponse {
 
 	@Column(name = "PANNO",length=10,nullable = true)
 	private String panNo;
-
+	
+	@Column(name = "PNRESMASSRNO",nullable = true)
+	private long pnReqMasSrNo;
 	public int getVndrPnResMassNo() {
 		return vndrPnResMassNo;
 	}
@@ -78,6 +80,14 @@ public class PnVndrResponse {
 
 	public void setPanNo(String panNo) {
 		this.panNo = panNo;
+	}
+
+	public long getPnReqMasSrNo() {
+		return pnReqMasSrNo;
+	}
+
+	public void setPnReqMasSrNo(long pnReqMasSrNo) {
+		this.pnReqMasSrNo = pnReqMasSrNo;
 	}
 	
 

@@ -12,7 +12,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name="ADHVENDORMAS")
-public class AharVendorDetails {
+public class AharVndrDetails {
 	@Id
 	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ADHVENDORMAS_SEQ")
 	@SequenceGenerator(name = "ADHVENDORMAS_SEQ", sequenceName = "ADHVENDORMAS_SEQ", allocationSize = 1)

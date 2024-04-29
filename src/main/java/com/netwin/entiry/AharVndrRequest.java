@@ -9,7 +9,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
+import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
@@ -17,15 +19,15 @@ import jakarta.persistence.TemporalType;
 
 
 @Entity
-@Table(name="VNDRPNREQMAS")
-public class PnVndrRequest {
+@Table(name="VNDRAHARREQMAS")
+public class AharVndrRequest {
 	
 	
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VNDRPNREQMAS_SEQ")
-	@SequenceGenerator(name = "VNDRPNREQMAS_SEQ", sequenceName = "VNDRPNREQMAS_SEQ", allocationSize = 1)
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "VNDRAHARREQMAS_SEQ")
+	@SequenceGenerator(name = "VNDRAHARREQMAS_SEQ", sequenceName = "VNDRAHARREQMAS_SEQ", allocationSize = 1)
 	@Column(name="VNDRPNREQMASSRNO",length=10,nullable = false)
-	private int vndrPnReqMasSrNo;
+	private int vndrAharReqMasSrNo;
 	@Lob
 	@Column(name = "ACTREQSTR", columnDefinition = "TEXT")
 	private String reqEncrypt;
@@ -37,13 +39,15 @@ public class PnVndrRequest {
 	private Date entryDate;
 	@Column(name="CALLINGIPADR",length=45,nullable=true)
 	private String callingIpAdr;
-	@Column(name = "PNREQMASSRNO",nullable = true)
-	private long pnReqMasSrNo;
+	@Column(name = "ADHREMASSRNO",nullable = true)
+	private long aharReqMasSrNo;
+	@Column(name="REQESTFOR",length=1)
+	private String reqFor;
 	public int getVndrPnReqMasSrNo() {
-		return vndrPnReqMasSrNo;
+		return vndrAharReqMasSrNo;
 	}
 	public void setVndrPnReqMasSrNo(int vndrPnReqMasSrNo) {
-		this.vndrPnReqMasSrNo = vndrPnReqMasSrNo;
+		this.vndrAharReqMasSrNo = vndrPnReqMasSrNo;
 	}
 	public String getReqEncrypt() {
 		return reqEncrypt;
@@ -69,11 +73,25 @@ public class PnVndrRequest {
 	public void setCallingIpAdr(String callingIpAdr) {
 		this.callingIpAdr = callingIpAdr;
 	}
-	public long getPnReqMasSrNo() {
-		return pnReqMasSrNo;
+	public int getVndrAharReqMasSrNo() {
+		return vndrAharReqMasSrNo;
 	}
-	public void setPnReqMasSrNo(long pnReqMasSrNo) {
-		this.pnReqMasSrNo = pnReqMasSrNo;
+	public void setVndrAharReqMasSrNo(int vndrAharReqMasSrNo) {
+		this.vndrAharReqMasSrNo = vndrAharReqMasSrNo;
 	}
+	
+	public long getAharReqMasSrNo() {
+		return aharReqMasSrNo;
+	}
+	public void setAharReqMasSrNo(long aharReqMasSrNo) {
+		this.aharReqMasSrNo = aharReqMasSrNo;
+	}
+	public String getReqFor() {
+		return reqFor;
+	}
+	public void setReqFor(String reqFor) {
+		this.reqFor = reqFor;
+	}
+	
 	
 }

@@ -9,111 +9,57 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import com.netwin.entiry.PnRequest;
-import com.netwin.entiry.PnVendorDetails;
-import com.netwin.entiry.Result;
-import com.netwin.service.ErrorApplicationService;
+
+import com.fasterxml.jackson.databind.JsonNode;
+import com.netwin.dto.CustomerVendorDetailsDto;
 import com.netwin.util.ConstantVariable;
 import com.netwin.util.QueryUtil;
+import com.netwin.util.VendorFieldMapping;
 
 @Component
 public class PnVndrValidation {
 	private static final Logger logger = LoggerFactory.getLogger(PnVndrValidation.class);
-	
+	private VendorFieldMapping vendorFieldMapping;
+private JdbcTemplate jdbcTemplate;
 
-	private final JdbcTemplate jdbcTemplate;
-
-private final ErrorApplicationService errorApplicationService;
 @Autowired
-public PnVndrValidation(JdbcTemplate jdbcTemplate,ErrorApplicationService errorApplicationService) {
+public PnVndrValidation(JdbcTemplate jdbcTemplate,VendorFieldMapping vendorFieldMapping) {
 
+	this.vendorFieldMapping=vendorFieldMapping;
 	this.jdbcTemplate=jdbcTemplate;
-	this.errorApplicationService=errorApplicationService;
-}
-public Result checkMappingVendor(PnRequest pnReq, Map<String, String> pnRequestDecrypt) {
-    int pnVendorId = getPnVendorId(pnReq);
-    if (pnVendorId == 0) {
-        errorApplicationService.storeError(401, "Please Required Vendor Details ");
-        return new Result("Please Required Vendor Details ");
-    }
-
-    Map<String, String> validationNetVn = getValidationNetVn(pnVendorId);
-    Map<String, String> validationNetVn1 = getValidationNetVn1(pnVendorId);
-    Map<String, String> vendorValue = getVendorValue(validationNetVn, pnRequestDecrypt);
-
-    return validateVendorValues(validationNetVn1, vendorValue);
 }
 
-private int getPnVendorId(PnRequest pnReq) {
-    PnVendorDetails pnVendorDetails = pnReq.getPnVendorDetails();
-    if (pnVendorDetails == null) {
-        errorApplicationService.storeError(401, "Vendor details not available required Product Id");
-        return 0;
-    } else {
-        return pnVendorDetails.getPnVnDrSrNo();
-    }
+public String VendorRequestValidation(JsonNode jsonNode, CustomerVendorDetailsDto customerVendorDetailsDto) {
+	String str1 = jsonNode.toString();
+	String result =null;
+	Map<String,String> vndrRequestMap = vendorRequestMap(customerVendorDetailsDto);
+	
+result= vendorFieldMapping.replaceKeys(str1,vndrRequestMap);
+//String validKeyRequest = validRequiredKeyVndr(vndrJson,netwinCustomerDetails);
+	
+	
+	return result;
 }
 
-private Map<String, String> getValidationNetVn(int pnVendorId) {
-    List<Map<String, Object>> netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWNWITHVNDRFIELDQUERY, pnVendorId, "P");
-    Map<String, String> validationNetVn = new HashMap<>();
+private Map<String, String> vendorRequestMap(CustomerVendorDetailsDto customerVendorDetailsDto) {
+	List<Map<String, Object>> netwinFieldResults2 =null;
+
+	netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWNWITHVNDRFIELDQUERY, customerVendorDetailsDto.getVendorId(), "P","V");
+
+	
+	Map<String, String> validationNetVn = new HashMap<>();
     for (Map<String, Object> vendorField : netwinFieldResults2) {
         String key1 = (String) vendorField.get(ConstantVariable.NTWNFIELDCOLUMN);
         if (vendorField.containsKey(ConstantVariable.VNDRFIELDCOLUMN)) {
             String value1 = (String) vendorField.get(ConstantVariable.VNDRFIELDCOLUMN);
             validationNetVn.put(key1, value1);
         }
+        
     }
     return validationNetVn;
+	
 }
 
-private Map<String, String> getValidationNetVn1(int pnVendorId) {
-    List<Map<String, Object>> pnVendorResults = jdbcTemplate.queryForList(QueryUtil.PNVNDRFIELD, pnVendorId, "P", "Y");
-    Map<String, String> validationNetVn1 = new HashMap<>();
-    for (Map<String, Object> vendorField : pnVendorResults) {
-        String key1 = (String) vendorField.get(ConstantVariable.NTWNFIELDCOLUMN);
-        if (vendorField.containsKey(ConstantVariable.VNDRFIELDCOLUMN)) {
-            String value1 = (String) vendorField.get(ConstantVariable.VNDRFIELDCOLUMN);
-            validationNetVn1.put(key1, value1);
-        }
-    }
-    return validationNetVn1;
-}
-
-private Map<String, String> getVendorValue(Map<String, String> validationNetVn, Map<String, String> pnRequestDecrypt) {
-    Map<String, String> vendorValue = new HashMap<>();
-    for (Map.Entry<String, String> row : validationNetVn.entrySet()) {
-        for (Map.Entry<String, String> val : pnRequestDecrypt.entrySet()) {
-            String rowKey = row.getKey();
-            String valKey = val.getKey();
-            if (rowKey.equals(valKey)) {
-                vendorValue.put(row.getValue(), val.getValue());
-            }
-        }
-    }
-    return vendorValue;
-}
-
-private Result validateVendorValues(Map<String, String> validationNetVn1, Map<String, String> vendorValue) {
-    boolean errorLogged = false;
-    for (Map.Entry<String, String> val : validationNetVn1.entrySet()) {
-        if (!vendorValue.containsKey(val.getValue())) {
-            errorLogged = true;
-            String errorMessage = formatErrorMessage(val.getValue());
-            logger.error(errorMessage);
-            errorApplicationService.storeError(401, errorMessage);
-        }
-    }
-    if (errorLogged) {
-        return new Result(ConstantVariable.RETURNSTR + "Some errors occurred" + ConstantVariable.RETURNSTR1);
-    } else {
-        return new Result(vendorValue);
-    }
-}
-
-private String formatErrorMessage(String value) {
-    return ConstantVariable.RETURNSTR + value + ConstantVariable.RETURNSTR1;
-}
 
 
 }

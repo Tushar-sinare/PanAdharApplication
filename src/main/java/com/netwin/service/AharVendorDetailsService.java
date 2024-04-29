@@ -4,10 +4,10 @@ import java.util.Optional;
 
 import org.springframework.context.annotation.Lazy;
 
-import com.netwin.entiry.AharVendorDetails;
+import com.netwin.entiry.AharVndrDetails;
 @Lazy
 public interface AharVendorDetailsService {
 
-	Optional<AharVendorDetails> fetchPnVendorDetails(int netwVndrs);
+	Optional<AharVndrDetails> fetchPnVendorDetails(int netwVndrs);
 
 }

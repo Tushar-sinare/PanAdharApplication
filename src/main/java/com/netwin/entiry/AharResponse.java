@@ -1,7 +1,5 @@
 package com.netwin.entiry;
 
-
-
 import java.util.Date;
 
 import jakarta.persistence.Column;
@@ -9,23 +7,20 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Lob;
-import jakarta.persistence.OneToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import jakarta.persistence.Temporal;
 import jakarta.persistence.TemporalType;
-
 @Entity
+@Table(name="ADHRESMAS")
+public class AharResponse {
 
-@Table(name="PNRESMAS")
-public class PnResponse {
 	@Id
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "pnresdetails_SEQ")
-	@SequenceGenerator(name = "pnresdetails_SEQ", sequenceName = "pnresdetails_SEQ", allocationSize = 1)
-	@Column(name = "PNRESMASSRNO",length=10,nullable = false)
-	private long pnResMasSrNo;
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ADHRESMAS_SEQ")
+	@SequenceGenerator(name = "ADHRESMAS_SEQ", sequenceName = "ADHRESMAS_SEQ", allocationSize = 1)
+	@Column(name = "ADHRESMASSRNO",length=10,nullable = false)
+	private long adhResMasSrNo;
 	@Temporal(TemporalType.TIMESTAMP)
 	@Column(name = "ENTDATETM")
 	private Date entDateTM;
@@ -37,19 +32,28 @@ public class PnResponse {
 	@Lob
 	@Column(name = "REQSTR", columnDefinition = "TEXT")
 	private String reqDecrypt;
-	@Column(name="PNREQMASSRNO")
-	private long pnReqMasSrNo;
-	public long getPnResMasSrNo() {
-		return pnResMasSrNo;
+	@Column(name="ADHREMASSRNO")
+	private long ahaReqMasSrNo;
+	
+	@Column(name="REQESTFOR",length=1)
+	private String reqFor;
+	public long getAdhResMasSrNo() {
+		return ahaReqMasSrNo;
 	}
-	public void setPnResMasSrNo(long pnResMasSrNo) {
-		this.pnResMasSrNo = pnResMasSrNo;
+	public void setAdhResMasSrNo(long adhResMasSrNo) {
+		this.adhResMasSrNo = adhResMasSrNo;
 	}
 	public Date getEntDateTM() {
 		return entDateTM;
 	}
 	public void setEntDateTM(Date entDateTM) {
 		this.entDateTM = entDateTM;
+	}
+	public String getReqFor() {
+		return reqFor;
+	}
+	public void setReqFor(String reqFor) {
+		this.reqFor = reqFor;
 	}
 	public String getCallingIpAdr() {
 		return callingIpAdr;
@@ -69,13 +73,13 @@ public class PnResponse {
 	public void setReqDecrypt(String reqDecrypt) {
 		this.reqDecrypt = reqDecrypt;
 	}
-	public long getPnReqMasSrNo() {
-		return pnReqMasSrNo;
+	public long getAhaReqMasSrNo() {
+		return ahaReqMasSrNo;
 	}
-	public void setPnReqMasSrNo(long pnReqMasSrNo) {
-		this.pnReqMasSrNo = pnReqMasSrNo;
+	public void setAhaReqMasSrNo(long ahaReqMasSrNo) {
+		this.ahaReqMasSrNo = ahaReqMasSrNo;
 	}
+
+
 	
 }
-
-

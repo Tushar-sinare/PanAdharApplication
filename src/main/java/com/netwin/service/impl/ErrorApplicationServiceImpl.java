@@ -17,10 +17,13 @@ public ErrorApplicationServiceImpl(ErrorApplicationRepo errorApplicationRepo) {
 }
 
 	@Override
-	public void storeError(int errorCode, String errorDesc) {
+	public void storeError(int errorCode, String errorDesc, int line , String className,String methodName) {
 		ErrorApplication errorApplication = new ErrorApplication();
 		errorApplication.setErrorCode(errorCode);
 		errorApplication.setErroDesc(errorDesc);
+		errorApplication.setLineNumber(line);
+		errorApplication.setClassName(className);
+		errorApplication.setMethoName(methodName);
 		errorApplicationRepo.save(errorApplication);
 		errorApplication=null;
 	}
