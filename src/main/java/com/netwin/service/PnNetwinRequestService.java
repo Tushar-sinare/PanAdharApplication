@@ -10,10 +10,9 @@ import javax.crypto.NoSuchPaddingException;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.netwin.exception.PnNetwinRequestException;
 
 public interface PnNetwinRequestService {
 
-	String callPanRequest(String panRequest) throws PnNetwinRequestException, JsonMappingException, JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException;
+	String callPanRequest(String panRequest) throws  JsonMappingException, JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException;
 
 }
