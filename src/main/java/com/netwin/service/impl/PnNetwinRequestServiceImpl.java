@@ -33,7 +33,6 @@ import com.netwin.entiry.NetwinCustomerDetails;
 import com.netwin.entiry.NetwinProductionDetails;
 import com.netwin.entiry.PnNetwinRequest;
 import com.netwin.entiry.PnResponse;
-import com.netwin.exception.PnNetwinRequestException;
 import com.netwin.repo.PnNetwinRequestRepo;
 import com.netwin.repo.PnResponseRepo;
 import com.netwin.service.ErrorApplicationService;
