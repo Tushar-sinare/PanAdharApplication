@@ -88,6 +88,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 			NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException,
 			IllegalBlockSizeException, BadPaddingException, JsonMappingException, JsonProcessingException {
 		String resultStr = null;
+		String vendorRequestJson =null;
 		AharNtwnReqDto aharNtwnReqDto = new AharNtwnReqDto();
 		// Convert Json String Encryption to Decryption
 		String aharRequestDecryptString = encryptionAndDecryptionData.getRequestDecryptData(aharJson);
@@ -132,54 +133,59 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 						.fetchNetwinProductionDetails(prodId);
 				if (netwinCustomerDetails == null) {
 					resultStr = ntAharResponse.getNtResponse(423);
-				}
-				if (netwinProductionDetails == null) {
+				} else if (netwinProductionDetails == null) {
 					resultStr = ntAharResponse.getNtResponse(424);
-				}
-				if (reqStatus.equals("V")) {
-					customerVendorDetailsDto.setAdharNo(jsonNode.get("adharNo").asText());
-				}
-				customerVendorDetailsDto.setCustId(custId);
-				customerVendorDetailsDto.setProdId(prodId);
-				customerVendorDetailsDto.setVendorId(netwinCustomerDetails.getNetwVndrs());
-				customerVendorDetailsDto.setAhaReqMasSrNo(aharNtwnRequest.getAhaReMasSrNo());
-
-				// Vendor Validation and Replace Key netwn to Vendor field
-				String vendorRequestJson = aharVndrValidation.VendorRequestValidation(jsonNode,
-						customerVendorDetailsDto, reqStatus);
-				// Call Vendor Request API
-
-				if (reqStatus.equals("O")) {
-
-					String userReqSrNo = jsonNode.get("userReqSrNo").asText();
-					String client_id1 = jsonNode.get("clientId").asText();
-
-					String requestOTP = jdbcTemplate.queryForObject(QueryUtil.VERIFYOTP, new Object[] { userReqSrNo },
-							String.class);
-
-					requestOTP = requestOTP.substring(1, requestOTP.length() - 1); // Split the string by comma and
-																					// equal sign
-					String[] keyValuePairs = requestOTP.split(", ");
-
-					// Create a JSONObject and add key-value pairs
-					JSONObject jsonObject = new JSONObject();
-					for (String pair : keyValuePairs) {
-						String[] entry = pair.split("=");
-						jsonObject.put(entry[0], entry[1]);
+				} else {
+					if (reqStatus.equals("V")) {
+						customerVendorDetailsDto.setAdharNo(jsonNode.get("adharNo").asText());
 					}
+					customerVendorDetailsDto.setCustId(custId);
+					customerVendorDetailsDto.setProdId(prodId);
+					customerVendorDetailsDto.setVendorId(netwinCustomerDetails.getNetwVndrs());
+					customerVendorDetailsDto.setAhaReqMasSrNo(aharNtwnRequest.getAhaReMasSrNo());
 
-					JsonNode jsonNode2 = objectMapper.readTree(jsonObject.toString());
-					String client_id = jsonNode2.get("client_id").asText();
+					// Vendor Validation and Replace Key netwn to Vendor field
+					vendorRequestJson = aharVndrValidation.VendorRequestValidation(jsonNode,
+							customerVendorDetailsDto, reqStatus);
+					// Call Vendor Request API
 
-					if (!client_id.equals(client_id1)) {
-						resultStr = ntAharResponse.getNtResponse(500);
+					if (reqStatus.equals("O")) {
+
+						String userReqSrNo = jsonNode.get("userReqSrNo").asText();
+						String client_id1 = jsonNode.get("clientId").asText();
+
+						String requestOTP = jdbcTemplate.queryForObject(QueryUtil.VERIFYOTP,
+								new Object[] { userReqSrNo }, String.class);
+						if (requestOTP == null) {
+							
+							resultStr = ntAharResponse.getNtResponse(504);
+						}else {
+							requestOTP = requestOTP.substring(1, requestOTP.length() - 1); // Split the string by comma
+																							// and
+																							// equal sign
+							String[] keyValuePairs = requestOTP.split(", ");
+
+							// Create a JSONObject and add key-value pairs
+							JSONObject jsonObject = new JSONObject();
+							for (String pair : keyValuePairs) {
+								String[] entry = pair.split("=");
+								jsonObject.put(entry[0], entry[1]);
+							}
+
+							JsonNode jsonNode2 = objectMapper.readTree(jsonObject.toString());
+							String client_id = jsonNode2.get("client_id").asText();
+
+							if (!client_id.equals(client_id1)) {
+								resultStr = ntAharResponse.getNtResponse(500);
+							}
+						}
 					}
 				}
 				if (resultStr == null) {
 					resultStr = aharVndrRequestService.callVenderRequest(vendorRequestJson, customerVendorDetailsDto,
 							reqStatus);
-				}
 
+				}
 			}
 			// call Vendor request
 			CustomerResponseDto customerResponseDto = new CustomerResponseDto();
