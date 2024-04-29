@@ -1,14 +1,10 @@
 package com.netwin.util;
 
-import java.security.InvalidAlgorithmParameterException;
-import java.security.InvalidKeyException;
-import java.security.NoSuchAlgorithmException;
+
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -25,14 +21,14 @@ public class EncryptionAndDecryptionData {
 	        this.errorApplicationService = errorApplicationService;
 	    }
 
-    public String getEncryptResponse(String response) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+    public String getEncryptResponse(String response)  {
         String strEncrypt = null;
 
             strEncrypt = AESExample.encrypt(response, ConstantVariable.SECRETEKEY);
        
         return strEncrypt;
     }
- public String getRequestDecryptData(String pnrequestJson) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+ public String getRequestDecryptData(String pnrequestJson)  {
     	
         String decryptedKey = null;
     
@@ -61,6 +57,11 @@ public class EncryptionAndDecryptionData {
         }
         return jsonRequest1;
     }
+    
+    
+    
+    
+
 }
 
 
