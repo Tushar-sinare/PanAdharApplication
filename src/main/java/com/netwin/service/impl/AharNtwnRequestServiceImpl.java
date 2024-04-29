@@ -15,7 +15,6 @@ import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 
 import org.dozer.Mapper;
-import org.json.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
@@ -87,7 +86,8 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 	@Override
 	public String callAharRequest(String aharJson, String reqStatus) throws JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 	    String resultStr = null;
-	    AharNtwnReqDto aharNtwnReqDto = initializeAharNtwnReqDto(aharJson, reqStatus);
+	    AharNtwnReqDto aharNtwnReqDto = new AharNtwnReqDto();
+	    aharNtwnReqDto = initializeAharNtwnReqDto(aharNtwnReqDto,aharJson, reqStatus);
 
 	    if (aharNtwnReqDto != null) {
 	        resultStr = handleAharNtwnRequest(aharNtwnReqDto, reqStatus);
@@ -97,8 +97,8 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 	    return resultStr;
 	}
 
-	private AharNtwnReqDto initializeAharNtwnReqDto(String aharJson, String reqStatus) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-	    AharNtwnReqDto aharNtwnReqDto = new AharNtwnReqDto();
+	private AharNtwnReqDto initializeAharNtwnReqDto(AharNtwnReqDto aharNtwnReqDto,String aharJson, String reqStatus) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+	   
 	    String aharRequestDecryptString = encryptionAndDecryptionData.getRequestDecryptData(aharJson);
 	    aharNtwnReqDto.setReqDecrypt(aharRequestDecryptString);
 	    aharNtwnReqDto.setReqEncrypt(aharJson);
