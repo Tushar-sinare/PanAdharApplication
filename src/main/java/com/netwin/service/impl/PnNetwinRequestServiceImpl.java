@@ -119,8 +119,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 			((ObjectNode) jsonNode).put("userReqSrNo", id.toString()); // Convert id to String if necessary
 
 			// Fetch Customer Details and check Available or Not
-			NetwinCustomerDetails netwinCustomerDetails = netwinCustomerDetailsService
-					.fetchNetwinCustomerDetails(custId);
+			NetwinCustomerDetails netwinCustomerDetails = netwinCustomerDetailsService.fetchNetwinCustomerDetails(custId);
 			// Fetch Product Details and check Available or Not
 			NetwinProductionDetails netwinProductionDetails = netwinProductionDetailsService.fetchNetwinProductionDetails(prodId);
 			if (netwinCustomerDetails == null) {
@@ -139,7 +138,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 				
 				// Customer key to Vendor Key Replace Request
 				String vendorRequestJson = pnVndrValidation.VendorRequestValidation(jsonNode, customerVendorDetailsDto);
-				System.out.println("vendorRequestJson" + vendorRequestJson);
+				
 				// Call Vendor Request API
 				resultStr = pnVndrRequestService.callVenderRequest(vendorRequestJson, customerVendorDetailsDto);
 				CustomerResponseDto customerResponseDto = new CustomerResponseDto();
@@ -155,7 +154,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 			}
 			}
 		} else {
-			resultStr = "Error: Unable to map PnNetwinRequest entity from DTO.";
+			resultStr = ntResponse.getNtResponse(421);
 		}
 		// Call to mapping database field Name
 		// if decrypt string null then return error show

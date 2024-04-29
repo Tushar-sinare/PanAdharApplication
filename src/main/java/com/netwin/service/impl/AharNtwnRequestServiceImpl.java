@@ -27,6 +27,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
 import com.netwin.dto.AharNtwnReqDto;
 import com.netwin.dto.CustomerResponseDto;
@@ -126,6 +127,8 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 			if (resultStr == null) {
 				String custId = jsonNode.get("custId").asText();
 				String prodId = jsonNode.get("prodId").asText();
+				Object id = aharNtwnRequest.getAhaReMasSrNo();
+				((ObjectNode) jsonNode).put("userReqSrNo", id.toString());
 				// Customer Details Fetch
 				NetwinCustomerDetails netwinCustomerDetails = netwinCustomerDetailsService
 						.fetchNetwinCustomerDetails(custId);
@@ -155,8 +158,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 						String userReqSrNo = jsonNode.get("userReqSrNo").asText();
 						String client_id1 = jsonNode.get("clientId").asText();
 
-						String requestOTP = jdbcTemplate.queryForObject(QueryUtil.VERIFYOTP,
-								new Object[] { userReqSrNo }, String.class);
+						String requestOTP = jdbcTemplate.queryForObject(QueryUtil.VERIFYOTP,new Object[] { userReqSrNo }, String.class);
 						if (requestOTP == null) {
 							
 							resultStr = ntAharResponse.getNtResponse(504);
