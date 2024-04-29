@@ -86,25 +86,24 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 	@Override
 	public String callAharRequest(String aharJson, String reqStatus) throws JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 	    String resultStr = null;
-	    AharNtwnReqDto aharNtwnReqDto = new AharNtwnReqDto();
-	    aharNtwnReqDto = initializeAharNtwnReqDto(aharNtwnReqDto,aharJson, reqStatus);
+	    AharNtwnReqDto aharNtwnReqDto = initializeAharNtwnReqDto(aharJson, reqStatus);
 
 	    if (aharNtwnReqDto != null) {
 	        resultStr = handleAharNtwnRequest(aharNtwnReqDto, reqStatus);
 	    } else {
-	        resultStr = "Error: Unable to map AharNtwnRequest entity from DTO.";
+	        resultStr = ntAharResponse.getNtResponse(421);
 	    }
 	    return resultStr;
 	}
 
-	private AharNtwnReqDto initializeAharNtwnReqDto(AharNtwnReqDto aharNtwnReqDto,String aharJson, String reqStatus) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
-	   
+	private AharNtwnReqDto initializeAharNtwnReqDto(String aharJson, String reqStatus) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+		AharNtwnReqDto aharNtwnReqDto1 = new AharNtwnReqDto();
 	    String aharRequestDecryptString = encryptionAndDecryptionData.getRequestDecryptData(aharJson);
-	    aharNtwnReqDto.setReqDecrypt(aharRequestDecryptString);
-	    aharNtwnReqDto.setReqEncrypt(aharJson);
-	    aharNtwnReqDto.setEntryDate(date);
-	    aharNtwnReqDto.setReqFor(reqStatus);
-	    return aharNtwnReqDto;
+	    aharNtwnReqDto1.setReqDecrypt(aharRequestDecryptString);
+	    aharNtwnReqDto1.setReqEncrypt(aharJson);
+	    aharNtwnReqDto1.setEntryDate(date);
+	    aharNtwnReqDto1.setReqFor(reqStatus);
+	    return aharNtwnReqDto1;
 	}
 
 	private String handleAharNtwnRequest(AharNtwnReqDto aharNtwnReqDto, String reqStatus) throws JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
