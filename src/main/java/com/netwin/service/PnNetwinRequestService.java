@@ -13,6 +13,6 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 
 public interface PnNetwinRequestService {
 
-	String callPanRequest(String panRequest) throws  JsonMappingException, JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException;
+	String callPanRequest(String panRequest) throws JsonProcessingException;
 
 }

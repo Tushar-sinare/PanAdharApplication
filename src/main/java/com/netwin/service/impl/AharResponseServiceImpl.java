@@ -28,7 +28,7 @@ public AharResponseServiceImpl(JdbcTemplate jdbcTemplate,VendorFieldMapping vend
 	this.vendorFieldMapping=vendorFieldMapping;
 }
 	@Override
-	public String customerResponseMapping(String vndrResponseStr, CustomerVendorDetailsDto customerVendorDetailsDto,String reqStatus) throws JsonMappingException, JsonProcessingException{
+	public String customerResponseMapping(String vndrResponseStr, CustomerVendorDetailsDto customerVendorDetailsDto,String reqStatus) throws JsonProcessingException{
 		ObjectMapper objectMapper = new ObjectMapper();
 		ObjectNode jsonNode = (ObjectNode)objectMapper.readTree(vndrResponseStr);
 		

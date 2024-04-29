@@ -32,7 +32,7 @@ this.vendorFieldMapping = vendorFieldMapping;
 	}
 	
 	@Override
-	public String customerResponseMapping(String vndrResponseStr, CustomerVendorDetailsDto customerVendorDetailsDto) throws JsonMappingException, JsonProcessingException {
+	public String customerResponseMapping(String vndrResponseStr, CustomerVendorDetailsDto customerVendorDetailsDto) throws JsonMappingException, JsonProcessingException{
 		
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode jsonNode = objectMapper.readTree(vndrResponseStr);

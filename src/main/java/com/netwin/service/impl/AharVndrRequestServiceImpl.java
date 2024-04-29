@@ -26,7 +26,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -74,7 +73,7 @@ public class AharVndrRequestServiceImpl implements AharVndrRequestService {
 
 	@Override
 	public String callVenderRequest(String vendorRequestJson, CustomerVendorDetailsDto customerVendorDetailsDto,
-			String reqStatus) throws JsonMappingException, JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException  {
+			String reqStatus) throws JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 		String apiUrl = null;
 		AharVndrDetails aharVndrDetails = aharVndrDetailsRepo
 				.findByAharVnDrSrNo(customerVendorDetailsDto.getVendorId());
@@ -125,9 +124,7 @@ public class AharVndrRequestServiceImpl implements AharVndrRequestService {
 		Map<String, Object> netwinRequestpara = getNetwinRequestParas(reqStatus);
 
 		for (Map.Entry<String, Object> netwinField : netwinRequestpara.entrySet()) {
-			if (!aharRequestJsonMap.containsKey(netwinField.getKey())
-					&& (netwinField.getValue().toString()).equals("Y")) {
-
+			if (!aharRequestJsonMap.containsKey(netwinField.getKey())&& (netwinField.getValue().toString()).equals("Y")) {
 				return ntAharResponse.getNtResponse(500);
 
 			}

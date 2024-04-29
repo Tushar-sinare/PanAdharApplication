@@ -21,7 +21,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -89,7 +88,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 	}
 
 	@Override
-	public String callPanRequest(String panRequestJson) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, JsonMappingException, JsonProcessingException
+	public String callPanRequest(String panRequestJson) throws JsonProcessingException
 {
 		String resultStr = null;
 
@@ -162,8 +161,8 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 
 	}
 
-	private String validateRequest(PnNetwinRequestDto panRequestDto)
-			throws JsonMappingException, JsonProcessingException {
+	private String validateRequest(PnNetwinRequestDto panRequestDto) throws JsonProcessingException
+		{
 		String result = null;
 		// adhar check validation
 

@@ -6,6 +6,6 @@ import com.netwin.dto.CustomerVendorDetailsDto;
 
 public interface AharResponseService {
 
-	String customerResponseMapping(String vndrResponseStr, CustomerVendorDetailsDto customerVendorDetailsDto,String reqStatus) throws JsonMappingException, JsonProcessingException;
+	String customerResponseMapping(String vndrResponseStr, CustomerVendorDetailsDto customerVendorDetailsDto,String reqStatus) throws JsonProcessingException;
 
 }

@@ -24,7 +24,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
@@ -88,7 +87,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 	}
 
 	@Override
-	public String callAharRequest(String aharJson, String reqStatus) throws  JsonProcessingException, DataAccessException, InvalidKeyException, MappingException, JSONException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
+	public String callAharRequest(String aharJson, String reqStatus) throws JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException{
 		String resultStr = null;
 		String vendorRequestJson =null;
 		AharNtwnReqDto aharNtwnReqDto = new AharNtwnReqDto();
@@ -209,8 +208,7 @@ public class AharNtwnRequestServiceImpl implements AharNtwnRequestService {
 		return resultStr;
 	}
 
-	private String validateRequest(AharNtwnReqDto aharNtwnReqDto, String reqStatus) throws JsonMappingException, JsonProcessingException
-			{
+	private String validateRequest(AharNtwnReqDto aharNtwnReqDto, String reqStatus) throws JsonProcessingException{
 		String result = null;
 //adhar check validation 
 		if (reqStatus.equals("V")) {

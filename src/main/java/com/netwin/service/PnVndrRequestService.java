@@ -17,7 +17,7 @@ public interface PnVndrRequestService {
 
 	//Result fetchPnVndrRequest(PnRequest pnRequest2,Map<String, String> pnRequestDecrypt);
 
-	String callVenderRequest(String vendorRequestJson, CustomerVendorDetailsDto customerVendorDetailsDto) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException, JsonMappingException, JsonProcessingException;
+	String callVenderRequest(String vendorRequestJson, CustomerVendorDetailsDto customerVendorDetailsDto) throws JsonMappingException, JsonProcessingException;
 
 
 }
