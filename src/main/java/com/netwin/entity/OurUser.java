@@ -10,7 +10,7 @@ public class OurUser {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private int id;
 	@Column(unique = true,name="USERNAME")
-	private String userName;
+	private String userNames;
 	@Column(unique = true,name="PASSWORD")
 	private String password;
 	@Column(name = "NETWCUSTSRNO")
@@ -23,12 +23,12 @@ public class OurUser {
 		this.id = id;
 	}
 
-	public String getUserName() {
-		return userName;
+	public String getUserNames() {
+		return userNames;
 	}
 
-	public void setUserName(String userName) {
-		this.userName = userName;
+	public void setUserNames(String userName) {
+		this.userNames = userName;
 	}
 
 	public String getPassword() {

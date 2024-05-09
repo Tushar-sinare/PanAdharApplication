@@ -90,7 +90,7 @@ public class PnNetwinRequestController {
 	 @PostMapping("/save")
 	    public ResponseEntity<Object> saveUSer(@RequestBody OurUser ourUser){
 	      			ourUser.setPassword(passwordEncoder.encode(ourUser.getPassword()));
-	      	Optional<OurUser> user  = ourUserRepo.findByUserName(ourUser.getUserName());
+	      	Optional<OurUser> user  = ourUserRepo.findByUserName(ourUser.getUserNames());
 	      	if(user.isPresent()) {
 	      		return ResponseEntity.status(404).body("User Already Registred.....");
 

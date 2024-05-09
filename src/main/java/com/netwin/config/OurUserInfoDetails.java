@@ -18,7 +18,7 @@ public class OurUserInfoDetails implements UserDetails {
     private int ntwnCustMassSrNo;
 
     public OurUserInfoDetails(OurUser ourUser){
-        this.userName = ourUser.getUserName();
+        this.userName = ourUser.getUserNames();
         this.password = ourUser.getPassword();
      this.ntwnCustMassSrNo = ourUser.getNetwCustSrno();
        
