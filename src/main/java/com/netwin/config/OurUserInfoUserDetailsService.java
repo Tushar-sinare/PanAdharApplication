@@ -21,7 +21,7 @@ public class OurUserInfoUserDetailsService implements UserDetailsService {
    
 	 @Autowired
 	private NetwinCustomerDetailsRepo customerDetailsRepo;
-public String custName = "SHARNIRA CBSV21";
+public static String custName = "SHARNIRA CBSV2";
     @Override
     public UserDetails loadUserByUsername(String userName) throws UsernameNotFoundException {
         Optional<OurUser> user = ourUserRepo.findByUserName(userName);
