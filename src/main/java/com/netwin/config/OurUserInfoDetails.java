@@ -36,10 +36,7 @@ public class OurUserInfoDetails implements UserDetails {
         return this.password;
     }
 
-    @Override
-    public String getUsername() {
-        return this.userName;
-    }
+  
 
     @Override
     public boolean isAccountNonExpired() {
@@ -67,8 +64,10 @@ public class OurUserInfoDetails implements UserDetails {
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-	public String getUserName() {
-		return userName;
+	@Override
+	public String getUsername() {
+		
+		return this.userName;
 	}
 	
 	
