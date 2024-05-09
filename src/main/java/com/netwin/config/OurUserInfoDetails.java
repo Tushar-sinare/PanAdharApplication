@@ -14,12 +14,12 @@ public class OurUserInfoDetails implements UserDetails {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private String userName;
+	private String username;
     private String password;
     private int ntwnCustMassSrNo;
 
     public OurUserInfoDetails(OurUser ourUser){
-        this.userName = ourUser.getUserNames();
+        this.username = ourUser.getUserNames();
         this.password = ourUser.getPassword();
      this.ntwnCustMassSrNo = ourUser.getNetwCustSrno();
        
@@ -67,7 +67,7 @@ public class OurUserInfoDetails implements UserDetails {
 	@Override
 	public String getUsername() {
 		
-		return this.userName;
+		return this.username;
 	}
 	
 	
