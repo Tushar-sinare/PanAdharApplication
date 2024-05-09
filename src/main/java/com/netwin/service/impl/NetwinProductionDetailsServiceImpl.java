@@ -5,7 +5,8 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import com.netwin.entiry.NetwinProductionDetails;
+
+import com.netwin.entity.NetwinProductionDetails;
 import com.netwin.repo.NetwinProductionDetailsRepo;
 import com.netwin.service.ErrorApplicationService;
 import com.netwin.service.NetwinProductionDetailsService;

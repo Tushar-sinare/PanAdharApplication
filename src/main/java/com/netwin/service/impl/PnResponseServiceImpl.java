@@ -18,45 +18,46 @@ import com.netwin.service.PnResponseService;
 import com.netwin.util.ConstantVariable;
 import com.netwin.util.QueryUtil;
 import com.netwin.util.VendorFieldMapping;
+
 @Service
 public class PnResponseServiceImpl implements PnResponseService {
 
-
 	private JdbcTemplate jdbcTemplate;
-private VendorFieldMapping vendorFieldMapping; 
+	private VendorFieldMapping vendorFieldMapping;
+
 	@Autowired
-	public PnResponseServiceImpl(JdbcTemplate jdbcTemplate,VendorFieldMapping vendorFieldMapping) {
-	
-		this.jdbcTemplate =jdbcTemplate;
-this.vendorFieldMapping = vendorFieldMapping;
+	public PnResponseServiceImpl(JdbcTemplate jdbcTemplate, VendorFieldMapping vendorFieldMapping) {
+
+		this.jdbcTemplate = jdbcTemplate;
+		this.vendorFieldMapping = vendorFieldMapping;
 	}
-	
+
 	@Override
-	public String customerResponseMapping(String vndrResponseStr, CustomerVendorDetailsDto customerVendorDetailsDto) throws JsonMappingException, JsonProcessingException{
-		
+	public String customerResponseMapping(String vndrResponseStr, CustomerVendorDetailsDto customerVendorDetailsDto)
+			throws JsonMappingException, JsonProcessingException {
+
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode jsonNode = objectMapper.readTree(vndrResponseStr);
-		
 		Object id1 = customerVendorDetailsDto.getPnReqMasSrNo();
 		((ObjectNode) jsonNode).put("userUuid", id1.toString());
-		List<Map<String, Object>> netwinFieldResults2=null;
-	
-			netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWNWITHVNDRRESPQUERY, customerVendorDetailsDto.getVendorId(), "P");
-		
-			Map<String, String> validationNetVn = new HashMap<>();
-			  for (Map<String,Object> vendorField : netwinFieldResults2) { 
-				  String key1 = (String)vendorField.get(ConstantVariable.VNDRRESCOLUMN);
-			  if(vendorField.containsKey(ConstantVariable.NTWNRESCOLUMN))
-			  { 
-			 String value1 =(String) vendorField.get(ConstantVariable.NTWNRESCOLUMN);
-			  validationNetVn.put(key1,value1); 
-			  }
-			  }
-			String result= vendorFieldMapping.replaceKeys1(jsonNode.toString(),validationNetVn);
-		    
-		    return result;
-			
+		List<Map<String, Object>> netwinFieldResults2 = null;
+
+		netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWNWITHVNDRRESPQUERY,
+				customerVendorDetailsDto.getVendorId(), "P","Y");
+
+		Map<String, String> validationNetVn = new HashMap<>();
+		for (Map<String, Object> vendorField : netwinFieldResults2) {
+			String key1 = (String) vendorField.get(ConstantVariable.VNDRRESCOLUMN);
+			if (vendorField.containsKey(ConstantVariable.NTWNRESCOLUMN)) {
+				String value1 = (String) vendorField.get(ConstantVariable.NTWNRESCOLUMN);
+				validationNetVn.put(key1, value1);
+			}
+		}
+
+		String result = vendorFieldMapping.replaceKeys1(jsonNode.toString(), validationNetVn);
+
+		return result;
+
 	}
-		
 
 }

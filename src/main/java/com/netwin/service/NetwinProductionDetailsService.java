@@ -1,6 +1,6 @@
 package com.netwin.service;
 
-import com.netwin.entiry.NetwinProductionDetails;
+import com.netwin.entity.NetwinProductionDetails;
 
 public interface NetwinProductionDetailsService {
 

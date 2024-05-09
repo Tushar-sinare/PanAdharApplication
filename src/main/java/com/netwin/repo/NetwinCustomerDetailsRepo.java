@@ -1,15 +1,25 @@
 package com.netwin.repo;
 
+
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import com.netwin.entiry.NetwinCustomerDetails;
+import com.netwin.dto.NetwnCustomerDto;
+import com.netwin.entity.NetwinCustomerDetails;
 
 @Repository
 public interface NetwinCustomerDetailsRepo extends JpaRepository<NetwinCustomerDetails, Integer> {
 
+	
 
-	NetwinCustomerDetails findByNetwCustId(String netwCustSrNo);
+	
+
+	NetwnCustomerDto findByNetwCustId(String netwCustId);
+
+
+
+
 
 
 

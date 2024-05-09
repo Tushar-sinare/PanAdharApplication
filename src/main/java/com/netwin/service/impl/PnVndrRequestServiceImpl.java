@@ -1,10 +1,17 @@
 package com.netwin.service.impl;
 
 import java.lang.reflect.Type;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.dozer.Mapper;
 import org.json.JSONObject;
@@ -23,9 +30,9 @@ import com.google.gson.Gson;
 import com.netwin.dto.CustomerVendorDetailsDto;
 import com.netwin.dto.PnVndrRequestDto;
 import com.netwin.dto.PnVndrResponseDto;
-import com.netwin.entiry.PnVendorDetails;
-import com.netwin.entiry.PnVndrRequest;
-import com.netwin.entiry.PnVndrResponse;
+import com.netwin.entity.PnVendorDetails;
+import com.netwin.entity.PnVndrRequest;
+import com.netwin.entity.PnVndrResponse;
 import com.netwin.repo.PnVendorDetailsRepo;
 import com.netwin.repo.PnVndrRequestRepo;
 import com.netwin.repo.PnVndrResponseRepo;
@@ -64,11 +71,12 @@ public class PnVndrRequestServiceImpl implements PnVndrRequestService {
 	}
 
 	@Override
-	public String callVenderRequest(String vendorRequestJson, CustomerVendorDetailsDto customerVendorDetailsDto) throws JsonProcessingException {
+	public String callVenderRequest(String vendorRequestJson, CustomerVendorDetailsDto customerVendorDetailsDto) throws JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 		String apiUrl = null;
+		Object id = customerVendorDetailsDto.getAhaReqMasSrNo();
 		PnVendorDetails pnVendorDetails = pnVendorDetailsRepo.findByPnVnDrSrNo(customerVendorDetailsDto.getVendorId());
 		if (pnVendorDetails == null) {
-			return ntResponse.getNtResponse(425);
+			return ntResponse.getNtResponse(425,id.toString());
 		}
 		apiUrl = pnVendorDetails.getPnVrfyURL();
 		HttpHeaders headers = new HttpHeaders();
@@ -98,31 +106,33 @@ public class PnVndrRequestServiceImpl implements PnVndrRequestService {
 		
 		pnVndrRequestRepo.save(pnVndrRequest);
 		Map<String, String> aharRequestJsonMap = jsonStringToMap(pnVndrRequestDto);
+		
 		// details object
 		// Database field Name Fetch.
 		Map<String, Object> netwinRequestpara = getNetwinRequestParas();
-
+	
 		for (Map.Entry<String, Object> netwinField : netwinRequestpara.entrySet()) {
 			if (!aharRequestJsonMap.containsKey(netwinField.getKey())
 					&& (netwinField.getValue().toString()).equals("Y")) {
-				return ntResponse.getNtResponse(500);
+				return ntResponse.getNtResponse(500,id.toString());
 
 			}
 		}
 		String vndrResponseStr = callPanVerifyApi(apiUrl, HttpMethod.POST, requestEntity, customerVendorDetailsDto);
+		
 		return pnResponseService.customerResponseMapping(vndrResponseStr, customerVendorDetailsDto);
 	}
 	
 
 	private String callPanVerifyApi(String apiUrl, HttpMethod post, HttpEntity<String> requestEntity,
-			CustomerVendorDetailsDto customerVendorDetailsDto){
+			CustomerVendorDetailsDto customerVendorDetailsDto) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException{
 		RestTemplate restTemplate = new RestTemplate();
 		
 		
 		// Make the HTTP request using RestTemplate
-		ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, post, requestEntity,String.class);
-		String response = responseEntity.getBody();
-		//"{\"panNo\":\"EVMPS3728A\",\"name\":\"TUSHAR VITTHAL SINARE\",\"fullNameSplit\":[\"TUSHAR\",\"VITTHAL\",\"SINARE\"],\"category\":\"person\",\"maskedAadhaar\":\"XXXXXXXX8735\",\"address\":\"178/1 Padali Kanhoor 414103 AHMED NAGAR MAHARASHTRA INDIA\",\"email\":\"TUSHARSINARE0202@GMAIL.COM\",\"phoneNumber\":\"7057192939\",\"gender\":\"M\",\"dob\":\"1995-02-02\",\"aadhaarLinked\":\"true\",\"dobVerified\":\"false\",\"resultVO\":{\"msgCode\":\"200\",\"msgDescr\":\"PAN Details fetched successfully\",\"isError\":false,\"success\":\"TRUE\",\"procRefUuid\":null,\"error\":false},\"statusCode\":\"200\",\"success\":\"true\",\"message\":null,\"messageCode\":\"success\"}";
+		//ResponseEntity<String> responseEntity = restTemplate.exchange(apiUrl, post, requestEntity,String.class);
+		//String response = responseEntity.getBody();
+		String response="{\"panNo\":\"EVMPS3728A\",\"name\":\"TUSHAR VITTHAL SINARE\",\"fullNameSplit\":[\"TUSHAR\",\"VITTHAL\",\"SINARE\"],\"category\":\"person\",\"maskedAadhaar\":\"XXXXXXXX8735\",\"address\":\"178/1 Padali Kanhoor 414103 AHMED NAGAR MAHARASHTRA INDIA\",\"email\":\"TUSHARSINARE0202@GMAIL.COM\",\"phoneNumber\":\"7057192939\",\"gender\":\"M\",\"dob\":\"1995-02-02\",\"aadhaarLinked\":\"true\",\"dobVerified\":\"false\",\"resultVO\":{\"msgCode\":\"200\",\"msgDescr\":\"PAN Details fetched successfully\",\"isError\":false,\"success\":\"TRUE\",\"procRefUuid\":null,\"error\":false},\"statusCode\":\"200\",\"success\":\"true\",\"message\":null,\"messageCode\":\"success\"}";
 		PnVndrResponseDto pnVndrResponseDto = new PnVndrResponseDto();
 		pnVndrResponseDto.setPanNo(customerVendorDetailsDto.getPanNo());
 		pnVndrResponseDto.setEntryDate(new Date(System.currentTimeMillis()));
@@ -131,8 +141,7 @@ public class PnVndrRequestServiceImpl implements PnVndrRequestService {
 		pnVndrResponseDto.setPnReqMasSrNo(customerVendorDetailsDto.getPnReqMasSrNo());
 		PnVndrResponse pnVndrResponse = mapper.map(pnVndrResponseDto,PnVndrResponse.class);
 		pnVndrResponseRepo.save(pnVndrResponse);
-	
-return response;
+	return response;
 	
 	}
 	private Map<String, Object> getNetwinRequestParas() {
@@ -140,7 +149,7 @@ return response;
 		List<Map<String, Object>> netwinFieldResultsMap = null;
 
 			netwinFieldResultsMap = jdbcTemplate.queryForList(QueryUtil.NETWNFIELDQUERY11, "P");
-		
+			
 		// Process the results using Java Streams
 		return netwinFieldResultsMap.stream()
 				.collect(Collectors.toMap(vendorField -> (String) vendorField.get("VNDRREQKEYNAME"),
@@ -149,11 +158,11 @@ return response;
 	
 //JsonString to Map Convert Method
 	private Map<String, String> jsonStringToMap(PnVndrRequestDto pnVndrRequestDto) {
-		String aharRequestDecryptString = pnVndrRequestDto.getReqDecrypt();
+		String pnRequestDecryptString = pnVndrRequestDto.getReqDecrypt();
 		Gson gson = new Gson();
 		Type type = new com.google.gson.reflect.TypeToken<Map<String, String>>() {
 		}.getType();
-		return gson.fromJson(aharRequestDecryptString, type);
+		return gson.fromJson(pnRequestDecryptString, type);
 	}
 
 }

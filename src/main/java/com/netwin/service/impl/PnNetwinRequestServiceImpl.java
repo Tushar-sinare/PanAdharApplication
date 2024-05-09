@@ -1,6 +1,9 @@
 package com.netwin.service.impl;
 
 import java.lang.reflect.Type;
+import java.security.InvalidAlgorithmParameterException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
 import java.sql.Date;
 import java.util.List;
 import java.util.Map;
@@ -8,7 +11,9 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
-
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 
 import org.dozer.Mapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,10 +28,10 @@ import com.google.gson.Gson;
 import com.netwin.dto.CustomerResponseDto;
 import com.netwin.dto.CustomerVendorDetailsDto;
 import com.netwin.dto.PnNetwinRequestDto;
-import com.netwin.entiry.NetwinCustomerDetails;
-import com.netwin.entiry.NetwinProductionDetails;
-import com.netwin.entiry.PnNetwinRequest;
-import com.netwin.entiry.PnResponse;
+import com.netwin.entity.NetwinCustomerDetails;
+import com.netwin.entity.NetwinProductionDetails;
+import com.netwin.entity.PnNetwinRequest;
+import com.netwin.entity.PnResponse;
 import com.netwin.repo.PnNetwinRequestRepo;
 import com.netwin.repo.PnResponseRepo;
 import com.netwin.service.ErrorApplicationService;
@@ -59,7 +64,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 	private PnVndrRequestService pnVndrRequestService;
 	private NtResponse ntResponse;
 	private PnResponseRepo pnResponseRepo;
-	private Date date = new Date(System.currentTimeMillis());
+
 
 	@Autowired
 	public PnNetwinRequestServiceImpl(PnNetwinRequestRepo pnNetwinRequestRepository, Mapper mapper,
@@ -83,10 +88,12 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 	}
 
 	@Override
-	public String callPanRequest(String panRequestJson) throws JsonProcessingException
+	public String callPanRequest(String panRequestJson) throws JsonProcessingException, InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException
 {
+		 Date date = new Date(System.currentTimeMillis());
+		String userUuid= null;
 		String resultStr = null;
-
+		CustomerVendorDetailsDto customerVendorDetailsDto = new CustomerVendorDetailsDto();
 		PnNetwinRequestDto panRequestDto = new PnNetwinRequestDto();
 		// Json String Encrypt
 		String pnRequestDecryptString = encryptionAndDecryptionData.getRequestDecryptData(panRequestJson);
@@ -94,66 +101,82 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 		panRequestDto.setReqDecrypt(pnRequestDecryptString);
 		panRequestDto.setEntryDate(date);
 
+		
 		// Mapping Dto to Entity
 		PnNetwinRequest pnNetwinRequest = mapper.map(panRequestDto, PnNetwinRequest.class);
 		if (pnNetwinRequest != null) {
+			
 			// Save client PnrequestMas Data
 			pnNetwinRequest = pnNetwinRequestRepository.save(pnNetwinRequest);
+			
+	
 			// Mapping Entity to Dto
 			panRequestDto = mapper.map(pnNetwinRequest, PnNetwinRequestDto.class);
-			System.out.println("panRequestDto " + panRequestDto);
 			// Verify Pan No and Netwin required Json Field
 			resultStr = validateRequest(panRequestDto);
 			ObjectMapper objectMapper = new ObjectMapper();
 			// String to convert Json Node required get CustId & ProdId
 			JsonNode jsonNode = objectMapper.readTree(panRequestDto.getReqDecrypt());
-			String custId = jsonNode.get("custId").asText();
-			String prodId = jsonNode.get("prodId").asText();
-			Object id = pnNetwinRequest.getPnReMasSrNo();
-			((ObjectNode) jsonNode).put("userReqSrNo", id.toString()); // Convert id to String if necessary
+			JsonNode custIdNode = jsonNode.get("custId");
+			
+			JsonNode prodIdNode = jsonNode.get("prodId");
 
+		
+			if (custIdNode == null) {
+				resultStr =  ntResponse.getNtResponse(502,userUuid);
+			}
+			if (prodIdNode == null) {
+				resultStr =  ntResponse.getNtResponse(503,userUuid);
+			}
+			Object id = pnNetwinRequest.getPnReMasSrNo();
+			userUuid=id.toString();
+			((ObjectNode) jsonNode).put("userReqSrNo", id.toString()); // Convert id to String if necessary
 			// Fetch Customer Details and check Available or Not
-			NetwinCustomerDetails netwinCustomerDetails = netwinCustomerDetailsService.fetchNetwinCustomerDetails(custId);
+		
+			NetwinCustomerDetails netwinCustomerDetails = netwinCustomerDetailsService.fetchNetwinCustomerDetails(custIdNode.asText());
+			
 			// Fetch Product Details and check Available or Not
-			NetwinProductionDetails netwinProductionDetails = netwinProductionDetailsService.fetchNetwinProductionDetails(prodId);
+			NetwinProductionDetails netwinProductionDetails = netwinProductionDetailsService.fetchNetwinProductionDetails(prodIdNode.asText());
 			if (netwinCustomerDetails == null) {
-				resultStr = ntResponse.getNtResponse(423);
+				resultStr = ntResponse.getNtResponse(423,userUuid);
 			}else if (netwinProductionDetails == null) {
-				resultStr = ntResponse.getNtResponse(424);
+				resultStr = ntResponse.getNtResponse(424,userUuid);
 			}else {
 			if (resultStr == null) {
-				CustomerVendorDetailsDto customerVendorDetailsDto = new CustomerVendorDetailsDto();
+				
 
 				customerVendorDetailsDto.setPanNo(jsonNode.get("panNo").asText());
-				customerVendorDetailsDto.setCustId(custId);
-				customerVendorDetailsDto.setProdId(prodId);
+				customerVendorDetailsDto.setCustId(custIdNode.asText());
+				customerVendorDetailsDto.setProdId(prodIdNode.asText());
 				customerVendorDetailsDto.setVendorId(netwinCustomerDetails.getNetwVndrs());
 				customerVendorDetailsDto.setPnReqMasSrNo(pnNetwinRequest.getPnReMasSrNo());
 				
 				// Customer key to Vendor Key Replace Request
+			
 				String vendorRequestJson = pnVndrValidation.VendorRequestValidation(jsonNode, customerVendorDetailsDto);
 				
 				// Call Vendor Request API
 				resultStr = pnVndrRequestService.callVenderRequest(vendorRequestJson, customerVendorDetailsDto);
-				CustomerResponseDto customerResponseDto = new CustomerResponseDto();
-				customerResponseDto.setPnReqMasSrNo(pnNetwinRequest.getPnReMasSrNo());
-				customerResponseDto.setEntDateTM(date);
-				customerResponseDto.setReqDecrypt(resultStr);
-				customerResponseDto.setReqEncrypt(encryptionAndDecryptionData.getEncryptResponse(resultStr));
-				customerResponseDto.setPnReqMasSrNo(customerVendorDetailsDto.getPnReqMasSrNo());
-				PnResponse pnResponse = mapper.map(customerResponseDto, PnResponse.class);
 				
-				pnResponseRepo.save(pnResponse);
-				resultStr = customerResponseDto.getReqEncrypt();
 			}
+			
 			}
 		} else {
-			resultStr = ntResponse.getNtResponse(421);
+			resultStr = ntResponse.getNtResponse(421,userUuid);
 		}
+		CustomerResponseDto customerResponseDto = new CustomerResponseDto();
+		customerResponseDto.setPnReqMasSrNo(pnNetwinRequest.getPnReMasSrNo());
+		customerResponseDto.setEntDateTM(date);
+		customerResponseDto.setReqDecrypt(resultStr);
+		customerResponseDto.setReqEncrypt(encryptionAndDecryptionData.getEncryptResponse(resultStr));
+		
+		PnResponse pnResponse = mapper.map(customerResponseDto, PnResponse.class);
+		
+		pnResponseRepo.save(pnResponse);
+		resultStr = customerResponseDto.getReqEncrypt();
 		// Call to mapping database field Name
 		// if decrypt string null then return error show
 		return resultStr;// getMappingDataBaseThrough(pnRequestDecryptString, pnNetwinRequest);
-
 	}
 
 	private String validateRequest(PnNetwinRequestDto panRequestDto) throws JsonProcessingException
@@ -164,14 +187,14 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 		ObjectMapper objectMapper = new ObjectMapper();
 		JsonNode jsonNode = objectMapper.readTree(panRequestDto.getReqDecrypt());
 		String panNo = jsonNode.get("panNo").asText();
-
+Object id  = panRequestDto.getPnReMasSrNo();
 		final String panPattern = "[A-Z]{5}\\d{4}[A-Z]";
 		Pattern pattern = Pattern.compile(panPattern);
 		Matcher matcher = pattern.matcher(panNo);
 
 		boolean flag = matcher.matches();
 		if (!flag) {
-			result = ntResponse.getNtResponse(2003);
+			result = ntResponse.getNtResponse(2003,id.toString());
 			return result.toString();
 		}
 		Map<String, String> pnRequestJsonMap = jsonStringToMap(panRequestDto);
@@ -183,7 +206,7 @@ public class PnNetwinRequestServiceImpl implements PnNetwinRequestService {
 
 			if (!pnRequestJsonMap.containsKey(netwinField.getKey()) && netwinField.getValue().toString().equals("Y")) {
 
-				result = ntResponse.getNtResponse(500);
+				result = ntResponse.getNtResponse(500,id.toString());
 
 			}
 

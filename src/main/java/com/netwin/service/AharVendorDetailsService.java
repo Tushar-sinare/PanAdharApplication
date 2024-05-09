@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.context.annotation.Lazy;
 
-import com.netwin.entiry.AharVndrDetails;
+import com.netwin.entity.AharVndrDetails;
 @Lazy
 public interface AharVendorDetailsService {
 

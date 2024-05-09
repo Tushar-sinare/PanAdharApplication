@@ -10,8 +10,10 @@ public class CustomerVendorDetailsDto {
 	private String custId;
 	private int vendorId;
 	private String panNo;
+private String userGstNo;
 private long ahaReqMasSrNo;
 private long pnReqMasSrNo;
+private long gtReqMasSrNo;
 	public int getVendorId() {
 		return vendorId;
 	}
@@ -53,6 +55,12 @@ private long pnReqMasSrNo;
 
 
 
+	public String getUserGstNo() {
+		return userGstNo;
+	}
+	public void setUserGstNo(String userGstNo) {
+		this.userGstNo = userGstNo;
+	}
 	public long getAhaReqMasSrNo() {
 		return ahaReqMasSrNo;
 	}
@@ -68,6 +76,12 @@ private long pnReqMasSrNo;
 	public CustomerVendorDetailsDto() {
 		super();
 		
+	}
+	public long getGtReqMasSrNo() {
+		return gtReqMasSrNo;
+	}
+	public void setGtReqMasSrNo(long gtReqMasSrNo) {
+		this.gtReqMasSrNo = gtReqMasSrNo;
 	}
 
 	

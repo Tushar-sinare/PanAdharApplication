@@ -35,9 +35,9 @@ public AharResponseServiceImpl(JdbcTemplate jdbcTemplate,VendorFieldMapping vend
 		((ObjectNode) jsonNode).put("userUuid", id.toString());
 		List<Map<String, Object>> netwinFieldResults2=null;
 		if (reqStatus.equals("V")) {
-			netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWNWITHVNDRRESPQUERY, customerVendorDetailsDto.getVendorId(), "AV");
+			netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWNWITHVNDRRESPQUERY, customerVendorDetailsDto.getVendorId(), "AV","Y");
 		}else {
-			netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWNWITHVNDRRESPQUERY, customerVendorDetailsDto.getVendorId(), "AO");
+			netwinFieldResults2 = jdbcTemplate.queryForList(QueryUtil.NETWNWITHVNDRRESPQUERY, customerVendorDetailsDto.getVendorId(), "AO","Y");
 				
 		}
 			Map<String, String> validationNetVn = new HashMap<>();
@@ -49,7 +49,7 @@ public AharResponseServiceImpl(JdbcTemplate jdbcTemplate,VendorFieldMapping vend
 			  validationNetVn.put(key1,value1); 
 			  }
 			  }
-			String result= vendorFieldMapping.replaceKeys(jsonNode.toString(),validationNetVn);
+			String result= vendorFieldMapping.replaceKeys(validationNetVn,jsonNode.toString(), reqStatus);
 		    
 		    return result;
 			

@@ -2,7 +2,7 @@ package com.netwin.service;
 
 import java.util.Optional;
 
-import com.netwin.entiry.PnVendorDetails;
+import com.netwin.entity.PnVendorDetails;
 
 public interface PnVendorDetailsService {
 

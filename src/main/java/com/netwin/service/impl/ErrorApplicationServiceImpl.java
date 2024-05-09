@@ -3,7 +3,7 @@ package com.netwin.service.impl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.netwin.entiry.ErrorApplication;
+import com.netwin.entity.ErrorApplication;
 import com.netwin.repo.ErrorApplicationRepo;
 import com.netwin.service.ErrorApplicationService;
 

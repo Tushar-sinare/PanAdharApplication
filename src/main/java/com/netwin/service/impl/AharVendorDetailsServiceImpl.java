@@ -4,7 +4,7 @@ import java.util.Optional;
 
 import org.springframework.stereotype.Service;
 
-import com.netwin.entiry.AharVndrDetails;
+import com.netwin.entity.AharVndrDetails;
 import com.netwin.repo.AharVndrDetailsRepo;
 import com.netwin.service.AharVendorDetailsService;
 @Service

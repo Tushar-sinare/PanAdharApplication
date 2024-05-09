@@ -10,6 +10,7 @@ public class CustomerResponseDto {
 	private Date entDateTM;
 	private long pnReqMasSrNo;
 	private long ahaReqMasSrNo;
+	private long gtReqMasSrNo;
 	private String reqFor;
 	public long getAhaResMasSrNo() {
 		return ahaResMasSrNo;
@@ -53,6 +54,12 @@ public class CustomerResponseDto {
 	}
 	public void setAhaReqMasSrNo(long ahaReqMasSrNo) {
 		this.ahaReqMasSrNo = ahaReqMasSrNo;
+	}
+	public long getGtReqMasSrNo() {
+		return gtReqMasSrNo;
+	}
+	public void setGtReqMasSrNo(long gtReqMasSrNo) {
+		this.gtReqMasSrNo = gtReqMasSrNo;
 	}
 
 

@@ -15,24 +15,29 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.netwin.service.AharNtwnRequestService;
 import com.netwin.service.ErrorApplicationService;
 import com.netwin.util.EncryptionAndDecryptionData;
+import com.netwin.util.NtAharResponse;
 
 @RestController
+@RequestMapping("api/v2")
 public class AharNtwnRequestController {
 	private ErrorApplicationService errorApplicationService;
 	private AharNtwnRequestService aharNtwnRequestService;
+	private NtAharResponse ntAharResponse;
 private EncryptionAndDecryptionData encryptionAndDecryptionData;
 	@Lazy
 	@Autowired
 	public AharNtwnRequestController(AharNtwnRequestService aharNtwnRequestService,
-			ErrorApplicationService errorApplicationService,EncryptionAndDecryptionData encryptionAndDecryptionData) {
+			ErrorApplicationService errorApplicationService,EncryptionAndDecryptionData encryptionAndDecryptionData,NtAharResponse ntAharResponse) {
 		this.aharNtwnRequestService = aharNtwnRequestService;
 		this.errorApplicationService = errorApplicationService;
 		this.encryptionAndDecryptionData = encryptionAndDecryptionData;
+		this.ntAharResponse = ntAharResponse;
 	}
 //HttpServletRequest Check mobile to need to change
 	
@@ -61,22 +66,24 @@ private EncryptionAndDecryptionData encryptionAndDecryptionData;
 			}
 
 			errorApplicationService.storeError(502,ex.getMessage(), lineNumber, className, methodName);
-			retrnStr =encryptionAndDecryptionData.getEncryptResponse(ex.getMessage());
+			retrnStr = encryptionAndDecryptionData.getEncryptResponse(ntAharResponse.getNtResponses(502,ex.getMessage()));
 			status = HttpStatus.BAD_GATEWAY;
+		
 
 		}
-		aharNtwnRequestService = null;
+		
 
 		return new ResponseEntity<String>(retrnStr, status);
 	}
 	@PostMapping("/aharRequestOtp")
-	public ResponseEntity<String> callAharRequest(@RequestBody(required = false) String aharJson) {
+	public ResponseEntity<String> callAharRequest(@RequestBody(required = false) String aharJson) throws InvalidKeyException, NoSuchAlgorithmException, NoSuchPaddingException, InvalidAlgorithmParameterException, IllegalBlockSizeException, BadPaddingException {
 	String reqStatus ="O";
 		String retrnStr = "Required request body is missing";
 		HttpStatus status = HttpStatus.BAD_GATEWAY;
 		try {
 			if (aharJson != null && !aharJson.isEmpty()) {
 				String pnRequestStr = aharNtwnRequestService.callAharRequest(aharJson,reqStatus);
+			
 				retrnStr = pnRequestStr;
 				status = HttpStatus.ACCEPTED;
 			}
@@ -93,12 +100,11 @@ private EncryptionAndDecryptionData encryptionAndDecryptionData;
 			}
 
 			errorApplicationService.storeError(502,ex.getMessage(), lineNumber, className, methodName);
-			retrnStr = ex.getMessage();
-			
+			retrnStr = encryptionAndDecryptionData.getEncryptResponse(ntAharResponse.getNtResponses(502,ex.getMessage()));
 			status = HttpStatus.BAD_GATEWAY;
 
 		}
-		aharNtwnRequestService = null;
+		
 
 		return new ResponseEntity<String>(retrnStr, status);
 	}
