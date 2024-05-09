@@ -1,8 +1,5 @@
 package com.netwin.entity;
 
-import java.util.Optional;
-
-import com.netwin.dto.NetwnCustomerDto;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;

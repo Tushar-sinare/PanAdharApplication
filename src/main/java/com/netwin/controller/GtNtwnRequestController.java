@@ -18,10 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.netwin.service.ErrorApplicationService;
 import com.netwin.service.GSTNtwnRequestService;
-import com.netwin.service.PnNetwinRequestService;
 import com.netwin.util.EncryptionAndDecryptionData;
 import com.netwin.util.GtNtResponse;
-import com.netwin.util.NtResponse;
 
 @RestController
 @RequestMapping("api/v2")
